@@ -1,23 +1,49 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter/material.dart';
 
 class BluetoothService {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
+  // Advertising BLE désactivé, on prépare le serveur GATT
+  final String meshServiceUuid = "0000181C-0000-1000-8000-00805f9b34fb"; // exemple UUID mesh
+  final String meshDeviceName = "EcoBlockMeshNode";
 
-  Stream<DiscoveredDevice> scanForDevices() {
-    print('[BLE] Démarrage du scan BLE...');
-    return _ble.scanForDevices(withServices: [], scanMode: ScanMode.lowLatency).map((device) {
-      print('[BLE] Appareil détecté: ${device.name}, ${device.id}, RSSI: ${device.rssi}');
+  // Scan continu pour découvrir les voisins mesh
+  Stream<DiscoveredDevice> scanForMeshNodes() {
+    print('[MESH] Scan BLE mesh...');
+    return _ble.scanForDevices(
+      withServices: [Uuid.parse(meshServiceUuid)],
+      scanMode: ScanMode.lowLatency,
+    ).map((device) {
+      print('[MESH] Mesh node détecté: ${device.name}, ${device.id}, RSSI: ${device.rssi}');
       return device;
     });
   }
+  // Démarrage du serveur GATT (à compléter avec natif ou plugin)
+    static const MethodChannel _channel = MethodChannel('ecoblock/gatt_server');
+  Future<void> startGattServer(String nodeId) async {
+    print('[GATT] Démarrage serveur GATT avec nodeId: $nodeId');
+    await _channel.invokeMethod('startGattServer', {'nodeId': nodeId});
+  }
 
-  Stream<ConnectionStateUpdate> connectToDevice(String id) {
-    print('[BLE] Connexion à l’appareil: $id');
+  // Connexion automatique à un nœud mesh détecté (client BLE)
+  Stream<ConnectionStateUpdate> connectToMeshNode(String id) {
+    print('[MESH] Connexion auto à un mesh node: $id');
     return _ble.connectToDevice(id: id, connectionTimeout: const Duration(seconds: 5)).map((update) {
-      print('[BLE] Connexion update: $update');
+      print('[MESH] Connexion update: $update');
       return update;
     });
+  }
+  // Relais de message mesh (à compléter selon ta logique métier)
+  Future<void> relayMeshMessage(String deviceId, Uuid serviceUuid, Uuid characteristicUuid, List<int> message) async {
+    print('[MESH] Relais message vers $deviceId');
+    await writeCharacteristic(
+      deviceId: deviceId,
+      serviceUuid: serviceUuid,
+      characteristicUuid: characteristicUuid,
+      value: message,
+    );
+    print('[MESH] Message relayé');
   }
 
   Future<void> disconnectDevice(String id) async {
@@ -25,22 +51,7 @@ class BluetoothService {
     // Ici, on expose une méthode pour la cohérence, mais il faut gérer le cancel du stream côté appelant
   }
 
-  // Exemple lecture caractéristique
-  Future<List<int>> readCharacteristic({
-    required String deviceId,
-    required Uuid serviceUuid,
-    required Uuid characteristicUuid,
-  }) async {
-    final characteristic = QualifiedCharacteristic(
-      serviceId: serviceUuid,
-      characteristicId: characteristicUuid,
-      deviceId: deviceId,
-    );
-    print('[BLE] Lecture caractéristique: service=$serviceUuid, char=$characteristicUuid, device=$deviceId');
-    final result = await _ble.readCharacteristic(characteristic);
-    print('[BLE] Valeur lue: $result');
-    return result;
-  }
+  // ...existing code...
 
   // Exemple écriture caractéristique
   Future<void> writeCharacteristic({

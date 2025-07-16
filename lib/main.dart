@@ -1,21 +1,36 @@
 
-
-import 'dart:convert';
-
-import 'package:permission_handler/permission_handler.dart';
-
 import 'package:flutter/material.dart';
-import 'package:ecoblock_mobile/src/rust/api/simple.dart';
-import 'package:ecoblock_mobile/src/rust/frb_generated.dart';
-import 'package:ecoblock_mobile/services/bluetooth_service.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+void main() {
+  runApp(const ProviderScope(child: EcoBlockApp()));
+}
+
+class EcoBlockApp extends StatelessWidget {
+  const EcoBlockApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'EcoBlock',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: const Scaffold(
+        body: Center(child: Text('EcoBlock App Structure Ready')),
+      ),
+    );
+  }
+}
 
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await RustLib.init();
-  // Vérification et demande des permissions BLE/Localisation
   await checkAndRequestPermissions();
-  runApp(const MyApp());
+  // Démarre advertising mesh BLE au lancement
+  final bluetoothService = BluetoothService();
+  runApp(MyApp(bluetoothService: bluetoothService));
 }
 
 Future<void> checkAndRequestPermissions() async {
@@ -37,81 +52,74 @@ Future<void> checkAndRequestPermissions() async {
   }
 }
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final BluetoothService bluetoothService;
+  const MyApp({super.key, required this.bluetoothService});
 
   @override
   Widget build(BuildContext context) {
-    final bluetoothService = BluetoothService();
     return MaterialApp(
       supportedLocales: const [
         Locale('en', ''),
       ],
       home: Scaffold(
-        appBar: AppBar(title: const Text('flutter_rust_bridge quickstart')),
+        appBar: AppBar(title: const Text('EcoBlock Mesh BLE')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                'Action: Call Rust `greet("Tom")`\nResult: `${greet(name: "Tom")}`',
-              ),
+              Text('EcoBlock Mesh BLE'),
               const SizedBox(height: 20),
               Builder(
                 builder: (buttonContext) => Column(
                   children: [
                     ElevatedButton(
-                      onPressed: () => displayTangleSize(buttonContext),
-                      child: const Text('Afficher la taille du Tangle'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => displayCreateBlock(buttonContext),
-                      child: const Text('Créer un bloc'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => displayAddPeerConnection(buttonContext),
-                      child: const Text('Ajouter une connexion peer'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => displayListPeers(buttonContext),
-                      child: const Text('Lister les voisins d’un peer'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => displayPublicKey(buttonContext),
-                      child: const Text('Afficher la clé publique'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () => displayPropagateBlock(buttonContext),
-                      child: const Text('Propager un bloc'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
                       onPressed: () async {
-                        print('[UI] Scan Bluetooth demandé');
+                        print('[UI] Scan Mesh demandé');
                         showDialog(
                           context: buttonContext,
                           builder: (ctx) => AlertDialog(
-                            title: const Text('Scan Bluetooth'),
+                            title: const Text('Mesh Neighbors'),
                             content: SizedBox(
                               height: 200,
                               width: 300,
                               child: StreamBuilder(
-                                stream: bluetoothService.scanForDevices(),
+                                stream: bluetoothService.scanForMeshNodes(),
                                 builder: (context, snapshot) {
-                                  print('[UI] Scan snapshot: ${snapshot.connectionState}, hasData: ${snapshot.hasData}');
                                   if (!snapshot.hasData) {
-                                    return const Text('Scanning...');
+                                    return const Text('Scanning mesh...');
                                   }
                                   final device = snapshot.data;
                                   if (device == null) {
-                                    return const Text('Aucun appareil trouvé');
+                                    return const Text('Aucun voisin mesh trouvé');
                                   }
-                                  print('[UI] Device trouvé: ${device.name}, ${device.id}, RSSI: ${device.rssi}');
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text('Nom: ${device.name}'),
                                       Text('ID: ${device.id}'),
                                       Text('RSSI: ${device.rssi}'),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          print('[UI] Connexion auto à ${device.id}');
+                                          bluetoothService.connectToMeshNode(device.id).listen((update) {
+                                            print('[UI] Connexion update: $update');
+                                          });
+                                        },
+                                        child: const Text('Connecter'),
+                                      ),
+                                      ElevatedButton(
+                                        onPressed: () async {
+                                          print('[UI] Relais message vers ${device.id}');
+                                          await bluetoothService.relayMeshMessage(
+                                            device.id,
+                                            Uuid.parse(bluetoothService.meshServiceUuid),
+                                            Uuid.parse(bluetoothService.meshServiceUuid),
+                                            // Add the missing fourth argument, for example an empty List<int> as message payload
+                                            <int>[]
+                                          );
+                                        },
+                                        child: const Text('Relayer message'),
+                                      ),
                                     ],
                                   );
                                 },
@@ -121,7 +129,14 @@ class MyApp extends StatelessWidget {
                           ),
                         );
                       },
-                      child: const Text('Scanner Bluetooth'),
+                      child: const Text('Scanner Mesh BLE'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        print('[UI] Démarrage serveur GATT local');
+                        await bluetoothService.startGattServer("node-ecoblock-123");
+                      },
+                      child: const Text('Start GATT Server'),
                     ),
                   ],
                 ),
