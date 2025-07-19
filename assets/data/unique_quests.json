@@ -1,0 +1,32 @@
+[
+  {
+    "id": "uq1",
+    "type": "unique",
+    "title": "Créer ton compte EcoBlock",
+    "description": "Finalise la création de ton compte et découvre l’écosystème.",
+    "goal": 1,
+    "progress": 1,
+    "startDate": "2025-07-01",
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": "uq2",
+    "type": "unique",
+    "title": "Activer la synchronisation mesh BLE",
+    "description": "Active la synchronisation mesh BLE pour rejoindre le réseau.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-01",
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": "uq3",
+    "type": "unique",
+    "title": "Obtenir ton premier badge",
+    "description": "Débloque ton premier badge en réalisant une action éco-responsable.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-01",
+    "endDate": "2025-12-31"
+  }
+]

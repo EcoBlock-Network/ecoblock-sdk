@@ -2,6 +2,7 @@
 enum QuestType {
   personal,
   community,
+  unique,
 }
 
 extension QuestTypeExt on QuestType {
@@ -12,6 +13,8 @@ extension QuestTypeExt on QuestType {
         return QuestType.personal;
       case 'community':
         return QuestType.community;
+      case 'unique':
+        return QuestType.unique;
       default:
         throw ArgumentError('Unknown quest type: $type');
     }

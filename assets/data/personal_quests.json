@@ -8,5 +8,65 @@
     "progress": 1,
     "startDate": "2025-07-19",
     "endDate": "2025-07-31"
+  },
+  {
+    "id": "qp2",
+    "type": "personal",
+    "title": "Planter un arbre virtuel",
+    "description": "Utilise l’app pour planter un arbre dans ton profil.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-31"
+  },
+  {
+    "id": "qp3",
+    "type": "personal",
+    "title": "Partager une astuce éco",
+    "description": "Publie une astuce écologique dans la communauté.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-31"
+  },
+  {
+    "id": "qp4",
+    "type": "personal",
+    "title": "Récolter 10 blocs d’énergie",
+    "description": "Collecte 10 blocs d’énergie via les actions quotidiennes.",
+    "goal": 10,
+    "progress": 2,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-31"
+  },
+  {
+    "id": "qp5",
+    "type": "personal",
+    "title": "Inviter un ami sur EcoBlock",
+    "description": "Invite un ami à rejoindre l’application.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-31"
+  },
+  {
+    "id": "qp6",
+    "type": "personal",
+    "title": "Participer à un défi communautaire",
+    "description": "Rejoins un défi dans la section communauté.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-31"
+  },
+  {
+    "id": "qp7",
+    "type": "personal",
+    "title": "Lire une histoire EcoBlock",
+    "description": "Lis une histoire dans la bannière dédiée.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-31"
   }
 ]

@@ -1,11 +1,121 @@
 import 'dart:math';
 import 'dart:ui';
-// ...existing code...
+import 'dart:convert';
 import 'package:ecoblock_mobile/features/story/presentation/story_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_provider.dart';
-import 'package:ecoblock_mobile/features/quests/presentation/widgets/quest_card.dart';
+import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
+import 'package:ecoblock_mobile/features/quests/data/models/quest_type.dart';
+
+// Widget timer avant le renouvellement des quêtes
+class _DailyQuestTimer extends StatefulWidget {
+  @override
+  State<_DailyQuestTimer> createState() => _DailyQuestTimerState();
+}
+
+class _DailyQuestTimerState extends State<_DailyQuestTimer> {
+  late Duration timeLeft;
+  late final ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTime();
+    ticker = Stream.periodic(const Duration(seconds: 1), (_) => _updateTime()).listen((_) {});
+  }
+
+  void _updateTime() {
+    final now = DateTime.now();
+    final nextMidnight = DateTime(now.year, now.month, now.day + 1);
+    setState(() {
+      timeLeft = nextMidnight.difference(now);
+    });
+  }
+
+  @override
+  void dispose() {
+    ticker.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final h = timeLeft.inHours;
+    final m = timeLeft.inMinutes % 60;
+    final s = timeLeft.inSeconds % 60;
+    return Row(
+      children: [
+        Icon(Icons.timer, color: Theme.of(context).colorScheme.primary, size: 18),
+        const SizedBox(width: 6),
+        Text('Nouvelles quêtes dans : ${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}',
+          style: TextStyle(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.7), fontSize: 13)),
+      ],
+    );
+  }
+}
+
+// Widget minimaliste pour une quête avec titre, icône, progression et flèche pour déplier
+class _QuestListItem extends StatefulWidget {
+  final dynamic quest;
+  const _QuestListItem({Key? key, required this.quest}) : super(key: key);
+  @override
+  State<_QuestListItem> createState() => _QuestListItemState();
+}
+
+class _QuestListItemState extends State<_QuestListItem> {
+  bool expanded = false;
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Column(
+      children: [
+        InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => setState(() => expanded = !expanded),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+            child: Row(
+              children: [
+                Icon(Icons.bolt, color: scheme.primary),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    widget.quest.title,
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: scheme.onBackground),
+                  ),
+                ),
+                SizedBox(
+                  width: 80,
+                  child: LinearProgressIndicator(
+                    value: (widget.quest.progress) / (widget.quest.goal == 0 ? 1 : widget.quest.goal),
+                    backgroundColor: scheme.surface,
+                    color: scheme.primary,
+                  ),
+                ),
+                Icon(expanded ? Icons.expand_less : Icons.chevron_right, color: scheme.primary),
+              ],
+            ),
+          ),
+        ),
+        if (expanded)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.quest.description, style: TextStyle(color: scheme.onBackground.withOpacity(0.8))),
+                Text('Objectif : ${widget.quest.goal}', style: TextStyle(color: scheme.primary)),
+                Text('Progression : ${widget.quest.progress}/${widget.quest.goal}', style: TextStyle(color: scheme.primary)),
+                Text('Du ${widget.quest.startDate.day}/${widget.quest.startDate.month}/${widget.quest.startDate.year} au ${widget.quest.endDate.day}/${widget.quest.endDate.month}/${widget.quest.endDate.year}', style: TextStyle(color: scheme.onBackground.withOpacity(0.6), fontSize: 12)),
+              ],
+            ),
+          ),
+        Divider(height: 1, color: scheme.surface),
+      ],
+    );
+  }
+}
 
 final dashboardProgressProvider = StateNotifierProvider<DashboardProgressNotifier, double>((ref) {
   return DashboardProgressNotifier();
@@ -23,6 +133,20 @@ class DashboardPage extends ConsumerStatefulWidget {
 }
 
 class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTickerProviderStateMixin {
+  Future<List<Quest>> _loadUniqueQuests(BuildContext context) async {
+    final data = await DefaultAssetBundle.of(context).loadString('assets/data/unique_quests.json');
+    final List<dynamic> jsonList = jsonDecode(data);
+    return jsonList.map((e) => Quest(
+      id: e['id'],
+      type: QuestTypeExt.fromString(e['type']),
+      title: e['title'],
+      description: e['description'],
+      goal: e['goal'],
+      progress: e['progress'],
+      startDate: DateTime.parse(e['startDate']),
+      endDate: DateTime.parse(e['endDate']),
+    )).toList();
+  }
   late AnimationController _controller;
   late Animation<double> _progressAnim;
 
@@ -180,24 +304,103 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(height: 4),
+                    _DailyQuestTimer(),
                     const SizedBox(height: 8),
                     Consumer(
                       builder: (context, ref, _) {
                         final questsAsync = ref.watch(personalQuestsProvider);
                         return questsAsync.when(
                           data: (quests) => Column(
-                            children: quests.map((q) => 
-                              AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 400),
-                                child: QuestCard(key: ValueKey(q.id), quest: q),
-                              )
-                            ).toList(),
+                            children: quests.take(3).map((q) => _QuestListItem(quest: q)).toList(),
                           ),
                           loading: () => const Center(child: CircularProgressIndicator()),
-                          error: (e, _) => Center(child: Text('Erreur de chargement des quêtes')), 
+                          error: (e, _) => Center(child: Text('Erreur de chargement des quêtes')),
                         );
                       },
                     ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Quêtes communautaires',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: scheme.onBackground,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final commQuestsAsync = ref.watch(communityQuestsProvider);
+                        return commQuestsAsync.when(
+                          data: (quests) => Column(
+                            children: [
+                              ...quests.take(2).map((q) => _QuestListItem(quest: q)),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () {
+                                    showModalBottomSheet(
+                                      context: context,
+                                      builder: (ctx) => Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: ListView(
+                                          children: quests.map((q) => _QuestListItem(quest: q)).toList(),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: Text('Voir plus', style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600)),
+                                ),
+                              ),
+                            ],
+                          ),
+                          loading: () => const Center(child: CircularProgressIndicator()),
+                          error: (e, _) => Center(child: Text('Erreur de chargement des quêtes communautaires')),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Quêtes uniques du compte',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: scheme.onBackground,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    FutureBuilder<List<Quest>>(
+                      future: _loadUniqueQuests(context),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+                        if (snapshot.hasError) {
+                          return Center(child: Text('Erreur de chargement des quêtes uniques'));
+                        }
+                        final quests = snapshot.data ?? [];
+                        return Column(
+                          children: [
+                            ...quests.take(2).map((q) => _QuestListItem(quest: q)),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (ctx) => Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: ListView(
+                                        children: quests.map((q) => _QuestListItem(quest: q)).toList(),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Text('Voir plus', style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600)),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+// Charge les quêtes uniques du compte depuis le JSON
                   ],
                 ),
               ),

@@ -81,6 +81,7 @@ flutter:
   assets:
     - assets/data/personal_quests.json
     - assets/data/community_quests.json
+    - assets/data/unique_quests.json
     - assets/data/profile/mock_badges.json
     - assets/data/profile/mock_blocks.json
     - assets/data/profile/mock_loot.json
