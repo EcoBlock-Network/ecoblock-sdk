@@ -1,0 +1,5 @@
+[
+  {"id": "dq1", "title": "Plantation d'arbres", "description": "Planter 50 arbres dans le quartier.", "progress": 35, "goal": 50},
+  {"id": "dq2", "title": "Collecte de déchets", "description": "Ramasser 100kg de déchets.", "progress": 80, "goal": 100},
+  {"id": "dq3", "title": "Atelier compostage", "description": "Organiser un atelier pour 20 personnes.", "progress": 12, "goal": 20}
+]

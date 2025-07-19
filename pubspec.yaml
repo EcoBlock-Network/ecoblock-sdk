@@ -79,7 +79,18 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-     - assets/rive/tree.riv
+    - assets/data/personal_quests.json
+    - assets/data/community_quests.json
+    - assets/data/profile/mock_badges.json
+    - assets/data/profile/mock_blocks.json
+    - assets/data/profile/mock_loot.json
+    - assets/data/profile/mock_stats.json
+    - assets/community/daily_quests.json
+    - assets/community/leaderboard.json
+    - assets/community/mesh_map.json
+    - assets/community/rewards.json
+    - assets/community/upcoming_quests.json
+    - assets/rive/tree.riv
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

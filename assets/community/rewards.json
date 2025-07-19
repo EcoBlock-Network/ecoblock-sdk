@@ -1,0 +1,7 @@
+[
+  {"id": "r1", "name": "Coffre Bronze", "icon": "bronze_chest.png", "threshold": 500},
+  {"id": "r2", "name": "Badge Collaborateur", "icon": "collab_badge.png", "threshold": 1000},
+  {"id": "r3", "name": "Coffre Argent", "icon": "silver_chest.png", "threshold": 1500},
+  {"id": "r4", "name": "Badge EcoBlock", "icon": "ecoblock_badge.png", "threshold": 2000},
+  {"id": "r5", "name": "Coffre Or", "icon": "gold_chest.png", "threshold": 3000}
+]

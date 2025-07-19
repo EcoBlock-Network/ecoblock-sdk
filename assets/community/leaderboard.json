@@ -1,0 +1,12 @@
+[
+  {"id": "1", "pseudo": "LynxVert", "avatar": "lynx.png", "score": 1200},
+  {"id": "2", "pseudo": "RenardBleu", "avatar": "fox.png", "score": 1150},
+  {"id": "3", "pseudo": "HibouSage", "avatar": "owl.png", "score": 1100},
+  {"id": "4", "pseudo": "CerfLibre", "avatar": "deer.png", "score": 1050},
+  {"id": "5", "pseudo": "EcureuilRapide", "avatar": "squirrel.png", "score": 1000},
+  {"id": "6", "pseudo": "LoutreJoyeuse", "avatar": "otter.png", "score": 950},
+  {"id": "7", "pseudo": "LapinMalin", "avatar": "rabbit.png", "score": 900},
+  {"id": "8", "pseudo": "SanglierFort", "avatar": "boar.png", "score": 850},
+  {"id": "9", "pseudo": "ChouetteDouce", "avatar": "owl2.png", "score": 800},
+  {"id": "10", "pseudo": "CastorBâtisseur", "avatar": "beaver.png", "score": 750}
+]

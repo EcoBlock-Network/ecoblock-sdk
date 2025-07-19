@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:ecoblock_mobile/features/story/presentation/story_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_provider.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/widgets/quest_card.dart';
 
 final dashboardProgressProvider = StateNotifierProvider<DashboardProgressNotifier, double>((ref) {
   return DashboardProgressNotifier();
@@ -179,18 +181,22 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
                       ),
                     ),
                     const SizedBox(height: 8),
-                    _QuestCard(
-                      icon: Icons.radar,
-                      title: 'Scanner 5 nouveaux nœuds',
-                      progress: 3 / 5,
-                      color: scheme.primary,
-                    ),
-                    const SizedBox(height: 12),
-                    _QuestCard(
-                      icon: Icons.group,
-                      title: 'Rejoindre 2 défis communautaires',
-                      progress: 1 / 2,
-                      color: scheme.secondary,
+                    Consumer(
+                      builder: (context, ref, _) {
+                        final questsAsync = ref.watch(personalQuestsProvider);
+                        return questsAsync.when(
+                          data: (quests) => Column(
+                            children: quests.map((q) => 
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 400),
+                                child: QuestCard(key: ValueKey(q.id), quest: q),
+                              )
+                            ).toList(),
+                          ),
+                          loading: () => const Center(child: CircularProgressIndicator()),
+                          error: (e, _) => Center(child: Text('Erreur de chargement des quêtes')), 
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -251,49 +257,5 @@ class _CircleProgressPainter extends CustomPainter {
   @override
   bool shouldRepaint(_CircleProgressPainter old) {
     return old.progress != progress;
-  }
-}
-
-class _QuestCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final double progress;
-  final Color color;
-
-  const _QuestCard({
-    Key? key,
-    required this.icon,
-    required this.title,
-    required this.progress,
-    required this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: scheme.surface.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(title, style: TextStyle(color: scheme.onSurface)),
-          ),
-          SizedBox(
-            width: 60,
-            child: LinearProgressIndicator(
-              value: progress,
-              color: color,
-              backgroundColor: Colors.white24,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

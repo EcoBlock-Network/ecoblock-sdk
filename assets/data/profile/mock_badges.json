@@ -1,0 +1,4 @@
+[
+  {"id": "badge1", "nom": "Eco Warrior", "description": "Collecte 10 blocs", "condition": "10 blocs", "unlocked": true},
+  {"id": "badge2", "nom": "Water Saver", "description": "Collecte 5 blocs d'eau", "condition": "5 blocs d'eau", "unlocked": false}
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "id": "qc1",
+    "type": "community",
+    "title": "1000 nœuds en 3 jours",
+    "description": "Collectivement, atteignez 1000 nœuds scannés.",
+    "goal": 1000,
+    "progress": 432,
+    "startDate": "2025-07-19",
+    "endDate": "2025-07-22"
+  }
+]

@@ -1,0 +1,5 @@
+[
+  {"id": "b1", "type": "air", "value": 12, "timestamp": "2025-07-18T10:00:00Z", "parents": [], "statut": "collected", "hash": "abc123"},
+  {"id": "b2", "type": "water", "value": 8, "timestamp": "2025-07-18T11:00:00Z", "parents": ["b1"], "statut": "collected", "hash": "def456"},
+  {"id": "b3", "type": "earth", "value": 15, "timestamp": "2025-07-18T12:00:00Z", "parents": ["b1"], "statut": "pending", "hash": "ghi789"}
+]

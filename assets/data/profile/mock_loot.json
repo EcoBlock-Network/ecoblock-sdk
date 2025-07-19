@@ -1,0 +1,4 @@
+[
+  {"id": "loot1", "nom": "Coffre en bois", "type": "coffre", "image": "assets/images/loot_chest.png", "debloque": true},
+  {"id": "loot2", "nom": "Graine rare", "type": "objet", "image": "assets/images/loot_seed.png", "debloque": false}
+]
