@@ -122,7 +122,7 @@ final dashboardProgressProvider = StateNotifierProvider<DashboardProgressNotifie
 });
 
 class DashboardProgressNotifier extends StateNotifier<double> {
-  DashboardProgressNotifier() : super(0.72);
+  DashboardProgressNotifier() : super(0.0);
   void setProgress(double value) => state = value;
 }
 
@@ -133,6 +133,14 @@ class DashboardPage extends ConsumerStatefulWidget {
 }
 
 class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTickerProviderStateMixin {
+  int _currentLevel = 0;
+  bool _showLevelUp = false;
+  @override
+  void didUpdateWidget(covariant DashboardPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // For hot reload
+    setState(() {});
+  }
   Future<List<Quest>> _loadUniqueQuests(BuildContext context) async {
     final data = await DefaultAssetBundle.of(context).loadString('assets/data/unique_quests.json');
     final List<dynamic> jsonList = jsonDecode(data);
@@ -173,12 +181,22 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final newLevel = 1 + (_progressAnim.value * 5).floor();
+    if (newLevel > _currentLevel) {
+      _currentLevel = newLevel;
+      _showLevelUp = true;
+      Future.delayed(const Duration(milliseconds: 1800), () {
+        if (mounted) setState(() => _showLevelUp = false);
+      });
+    }
     return Scaffold(
       backgroundColor: scheme.background,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
             SizedBox(
               height: 110,
               child: ListView.builder(
@@ -206,6 +224,11 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
                           ),
                         ],
                       );
+                      // Ajout XP et progression à la première vue d'une story
+                      if (_currentLevel == 0 && _progressAnim.value == 0.0) {
+                        ref.read(dashboardProgressProvider.notifier).setProgress(0.2); // +20% XP
+                        // Ici, tu peux aussi mettre à jour la progression de la quête du jour via le provider si besoin
+                      }
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -261,7 +284,7 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mon Arbre',
+                      'Mon Noeud',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         color: scheme.onBackground,
                         fontWeight: FontWeight.bold,
@@ -289,11 +312,31 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
                     ),
                     const SizedBox(height: 8),
                     Center(
-                      child: Text(
-                        '${(_progressAnim.value * 100).round()}% de progression aujourd\'hui',
-                        style: TextStyle(
-                          color: scheme.onBackground.withOpacity(0.7),
-                        ),
+                      child: Column(
+                        children: [
+                          Text(
+                            '${(_progressAnim.value * 100).round()}% de progression du profil',
+                            style: TextStyle(
+                              color: scheme.onBackground.withOpacity(0.7),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Niveau $_currentLevel',
+                            style: TextStyle(
+                              color: scheme.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            'Prochain palier à ${((_currentLevel) * 20)}%',
+                            style: TextStyle(
+                              color: scheme.onBackground.withOpacity(0.5),
+                              fontSize: 13,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 24),
@@ -408,7 +451,35 @@ class _DashboardPageState extends ConsumerState<DashboardPage> with SingleTicker
           ],
         ),
       ),
-    );
+      if (_showLevelUp)
+        Positioned.fill(
+          child: Container(
+            color: Colors.black.withOpacity(0.55),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.emoji_events, color: scheme.primary, size: 80),
+                  const SizedBox(height: 16),
+                  Text('Level Up!', style: TextStyle(
+                    color: scheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                    shadows: [Shadow(color: Colors.white, blurRadius: 12)],
+                  )),
+                  const SizedBox(height: 8),
+                  Text('Niveau $_currentLevel débloqué', style: TextStyle(
+                    color: scheme.onPrimary,
+                    fontSize: 18,
+                  )),
+                ],
+              ),
+            ),
+          ),
+        ),
+    ],
+  ),
+);
   }
 }
 
