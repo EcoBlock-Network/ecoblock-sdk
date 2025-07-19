@@ -1,6 +1,11 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final bluetoothServiceProvider = Provider<BluetoothService>((ref) {
+  return BluetoothService();
+});
 
 class BluetoothService {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
@@ -51,7 +56,7 @@ class BluetoothService {
     // Ici, on expose une méthode pour la cohérence, mais il faut gérer le cancel du stream côté appelant
   }
 
-  // ...existing code...
+
 
   // Exemple écriture caractéristique
   Future<void> writeCharacteristic({

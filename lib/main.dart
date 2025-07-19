@@ -1,28 +1,52 @@
 
+
+
+import 'dart:convert';
+
+import 'package:permission_handler/permission_handler.dart';
+
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/src/rust/api/simple.dart';
+import 'package:ecoblock_mobile/src/rust/frb_generated.dart';
+import 'package:ecoblock_mobile/services/bluetooth_service.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'app_shell.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() {
-  runApp(const ProviderScope(child: EcoBlockApp()));
-}
 
-class EcoBlockApp extends StatelessWidget {
-  const EcoBlockApp({Key? key}) : super(key: key);
+final forestLightScheme = ColorScheme(
+  brightness: Brightness.light,
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EcoBlock',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const Scaffold(
-        body: Center(child: Text('EcoBlock App Structure Ready')),
-      ),
-    );
-  }
-}
+  // Couleurs principales
+  primary: Color(0xFF6E7426),      // Vert olive dense (#6e7426)
+  onPrimary: Color(0xFFFBEFDF),    // Ivoire doux (#fbefdf) - excellent contraste
 
+  secondary: Color(0xFF957C4F),    // Brun olive (#957c4f)
+  onSecondary: Color(0xFFFBFDF0),  // Clair pour contraste sur brun
+
+  // Arrière-plan principal
+  background: Color(0xFFFBEFDF),   // Ivoire (#fbefdf)
+  onBackground: Color(0xFF120E09), // Noir forêt (#120e09)
+
+  // Surface (cartes, feuilles)
+  surface: Color(0xFFEFD5B7),      // Beige clair (#efd5b7)
+  onSurface: Color(0xFF3F321B),    // Brun profond (#3f321b)
+
+  // Couleur d’erreur
+  error: Color(0xFF6D5438),        // Terre brûlée (#6d5438)
+  onError: Color(0xFFFBEFDF),      // Ivoire clair
+
+  // Tertiaire (support neutre, accents complémentaires)
+  tertiary: Color(0xFF50551D),     // Vert forêt (#50551d)
+  onTertiary: Color(0xFFFBEFDF),   // Ivoire
+
+  // Optionnelles (si besoin de plus de nuances dans votre design system)
+  primaryContainer: Color(0xFFA5A954),   // Vert mousse
+  secondaryContainer: Color(0xFF726055), // Brun rosé
+  tertiaryContainer: Color(0xFFCFB580),  // Sable doré
+  outline: Color(0xFF523B2B),            // Brun foncé
+);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +54,11 @@ Future<void> main() async {
   await checkAndRequestPermissions();
   // Démarre advertising mesh BLE au lancement
   final bluetoothService = BluetoothService();
-  runApp(MyApp(bluetoothService: bluetoothService));
+  runApp(
+    ProviderScope(
+      child: MyApp(bluetoothService: bluetoothService),
+    ),
+  );
 }
 
 Future<void> checkAndRequestPermissions() async {
@@ -51,6 +79,7 @@ Future<void> checkAndRequestPermissions() async {
     print('[PERM] Request Location: $res');
   }
 }
+
 class MyApp extends StatelessWidget {
   final BluetoothService bluetoothService;
   const MyApp({super.key, required this.bluetoothService});
@@ -58,93 +87,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      supportedLocales: const [
+      theme: ThemeData(
+        useMaterial3: true,
+        colorScheme: forestLightScheme,               //  [oai_citation:0‡api.flutter.dev](https://api.flutter.dev/flutter/material/ThemeData/colorScheme.html?utm_source=chatgpt.com)
+        textTheme: Typography.material2021().black.apply(
+              bodyColor: forestLightScheme.onBackground,
+              displayColor: forestLightScheme.onBackground,
+            ),
+      ),      supportedLocales: const [
         Locale('en', ''),
       ],
-      home: Scaffold(
-        appBar: AppBar(title: const Text('EcoBlock Mesh BLE')),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('EcoBlock Mesh BLE'),
-              const SizedBox(height: 20),
-              Builder(
-                builder: (buttonContext) => Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        print('[UI] Scan Mesh demandé');
-                        showDialog(
-                          context: buttonContext,
-                          builder: (ctx) => AlertDialog(
-                            title: const Text('Mesh Neighbors'),
-                            content: SizedBox(
-                              height: 200,
-                              width: 300,
-                              child: StreamBuilder(
-                                stream: bluetoothService.scanForMeshNodes(),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return const Text('Scanning mesh...');
-                                  }
-                                  final device = snapshot.data;
-                                  if (device == null) {
-                                    return const Text('Aucun voisin mesh trouvé');
-                                  }
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('Nom: ${device.name}'),
-                                      Text('ID: ${device.id}'),
-                                      Text('RSSI: ${device.rssi}'),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          print('[UI] Connexion auto à ${device.id}');
-                                          bluetoothService.connectToMeshNode(device.id).listen((update) {
-                                            print('[UI] Connexion update: $update');
-                                          });
-                                        },
-                                        child: const Text('Connecter'),
-                                      ),
-                                      ElevatedButton(
-                                        onPressed: () async {
-                                          print('[UI] Relais message vers ${device.id}');
-                                          await bluetoothService.relayMeshMessage(
-                                            device.id,
-                                            Uuid.parse(bluetoothService.meshServiceUuid),
-                                            Uuid.parse(bluetoothService.meshServiceUuid),
-                                            // Add the missing fourth argument, for example an empty List<int> as message payload
-                                            <int>[]
-                                          );
-                                        },
-                                        child: const Text('Relayer message'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                            actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Fermer'))],
-                          ),
-                        );
-                      },
-                      child: const Text('Scanner Mesh BLE'),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        print('[UI] Démarrage serveur GATT local');
-                        await bluetoothService.startGattServer("node-ecoblock-123");
-                      },
-                      child: const Text('Start GATT Server'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+      home: AppShell(),
     );
   }
 }
@@ -247,3 +200,5 @@ Future<void> displayPropagateBlock(BuildContext context) async {
     ),
   );
 }
+
+

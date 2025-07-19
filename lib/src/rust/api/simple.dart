@@ -3,11 +3,41 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
+
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-String greet({required String name}) =>
-    RustLib.instance.api.crateApiSimpleGreet(name: name);
+
+final rustApiProvider = Provider<RustApiService>((ref) {
+  return RustApiService();
+});
+
+class RustApiService {
+  String greet({required String name}) =>
+      RustLib.instance.api.crateApiSimpleGreet(name: name);
+
+  Future<String> frbCreateBlock({required List<int> data, required List<String> parents}) =>
+      RustLib.instance.api.crateApiSimpleFrbCreateBlock(data: data, parents: parents);
+
+  Future<BigInt> frbGetTangleSize() =>
+      RustLib.instance.api.crateApiSimpleFrbGetTangleSize();
+
+  Future<void> frbAddPeerConnection({required String from, required String to, required double weight}) =>
+      RustLib.instance.api.crateApiSimpleFrbAddPeerConnection(from: from, to: to, weight: weight);
+
+  Future<List<String>> frbListPeers({required String peerId}) =>
+      RustLib.instance.api.crateApiSimpleFrbListPeers(peerId: peerId);
+
+  Future<String> frbCreateBlockWithParents({required List<int> data, required List<String> parents}) =>
+      RustLib.instance.api.crateApiSimpleFrbCreateBlockWithParents(data: data, parents: parents);
+
+  Future<String> frbGetPublicKey() =>
+      RustLib.instance.api.crateApiSimpleFrbGetPublicKey();
+
+  Future<String> frbPropagateBlock({required List<int> data, required List<String> parents}) =>
+      RustLib.instance.api.crateApiSimpleFrbPropagateBlock(data: data, parents: parents);
+}
 
 /// Wrapper pour créer un bloc depuis Flutter
 Future<String> frbCreateBlock({
