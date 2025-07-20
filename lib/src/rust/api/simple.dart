@@ -49,29 +49,26 @@ Future<String> frbPropagateBlock({
   parents: parents,
 );
 
-Future<String> frbGenerateKeypair() =>
-    RustLib.instance.api.crateApiSimpleFrbGenerateKeypair();
+Future<String> frbGenerateKeypair({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbGenerateKeypair(path: path);
 
-Future<String> frbGetPublicKey() =>
-    RustLib.instance.api.crateApiSimpleFrbGetPublicKey();
+Future<String> frbGetPublicKey({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbGetPublicKey(path: path);
 
-Future<String> frbGetNodeId() =>
-    RustLib.instance.api.crateApiSimpleFrbGetNodeId();
+Future<String> frbGetNodeId({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbGetNodeId(path: path);
 
-Future<bool> frbNodeIsInitialized() =>
-    RustLib.instance.api.crateApiSimpleFrbNodeIsInitialized();
+Future<bool> frbNodeIsInitialized({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbNodeIsInitialized(path: path);
 
-Future<String> frbCreateLocalNode() =>
-    RustLib.instance.api.crateApiSimpleFrbCreateLocalNode();
+Future<String> frbCreateLocalNode({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbCreateLocalNode(path: path);
 
-Future<void> frbResetNode() =>
-    RustLib.instance.api.crateApiSimpleFrbResetNode();
+Future<void> frbResetNode({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbResetNode(path: path);
 
 Future<void> frbInitializeTangle() =>
     RustLib.instance.api.crateApiSimpleFrbInitializeTangle();
 
-Future<void> frbInitializeMesh() =>
-    RustLib.instance.api.crateApiSimpleFrbInitializeMesh();
-
-// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BridgeError>>
-abstract class BridgeError implements RustOpaqueInterface {}
+Future<void> frbInitializeMesh({required String path}) =>
+    RustLib.instance.api.crateApiSimpleFrbInitializeMesh(path: path);

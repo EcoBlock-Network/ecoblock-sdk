@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
 import 'features/scan/presentation/pages/scan_page.dart';
@@ -25,13 +26,21 @@ class _AppShellState extends State<AppShell> {
     SettingsPage(),
   ];
 
-  static final List<BottomNavigationBarItem> _navItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.dashboard), label: 'Accueil'),
-    BottomNavigationBarItem(icon: Icon(Icons.radar), label: 'Scan'),
-    BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: 'Profil'),
-    BottomNavigationBarItem(icon: Icon(Icons.groups), label: 'Communauté'),
-    BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
-    BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Réglages'),
+  static const _navBarIcons = [
+    Icons.dashboard_rounded,
+    Icons.radar_rounded,
+    Icons.account_circle_rounded,
+    Icons.groups_rounded,
+    Icons.message_rounded,
+    Icons.settings_rounded,
+  ];
+  static const _navLabels = [
+    'Home',
+    'Scan',
+    'Profile',
+    'Community',
+    'Messages',
+    'Settings',
   ];
 
   void _onItemTapped(int index) {
@@ -41,16 +50,124 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      body: SafeArea(child: _pages[_selectedIndex]),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _navItems,
-        currentIndex: _selectedIndex,
-        selectedItemColor: scheme.primary,
-        unselectedItemColor: scheme.onSurface.withOpacity(0.6),
-        backgroundColor: scheme.surface,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onItemTapped,
+      extendBody: true,
+      body:  _pages[_selectedIndex],
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(left: 13, right: 13, bottom: 12),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+            child: Container(
+              height: 70,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(color: scheme.primary.withOpacity(0.08), width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.primary.withOpacity(0.10),
+                    blurRadius: 22,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(_navBarIcons.length, (i) {
+                  final selected = i == _selectedIndex;
+                  return _EcoNavBarItem(
+                    icon: _navBarIcons[i],
+                    label: _navLabels[i],
+                    selected: selected,
+                    onTap: () => _onItemTapped(i),
+                  );
+                }),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _EcoNavBarItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  const _EcoNavBarItem({
+    required this.icon,
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.translucent,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(horizontal: 7, vertical: selected ? 6 : 10),
+        decoration: selected
+            ? BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                gradient: LinearGradient(
+                  colors: [
+                    scheme.primary.withOpacity(0.12),
+                    scheme.primaryContainer.withOpacity(0.32),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.primary.withOpacity(0.14),
+                    blurRadius: 14,
+                    offset: const Offset(0, 3),
+                  )
+                ],
+              )
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: selected ? 32 : 26,
+              color: selected
+                  ? scheme.primary
+                  : scheme.onSurface.withOpacity(0.5),
+              shadows: selected
+                  ? [Shadow(color: scheme.primary.withOpacity(0.21), blurRadius: 8)]
+                  : [],
+            ),
+            const SizedBox(height: 2),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 250),
+              style: TextStyle(
+                fontSize: selected ? 13.7 : 11.7,
+                color: selected
+                    ? scheme.primary
+                    : scheme.onSurface.withOpacity(0.48),
+                fontWeight: selected ? FontWeight.bold : FontWeight.w500,
+                letterSpacing: selected ? 0.05 : 0.02,
+                shadows: selected
+                    ? [Shadow(color: scheme.primary.withOpacity(0.10), blurRadius: 5)]
+                    : [],
+              ),
+              child: Text(label),
+            ),
+          ],
+        ),
       ),
     );
   }

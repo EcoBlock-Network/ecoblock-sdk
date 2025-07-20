@@ -1,7 +1,7 @@
 use ecoblock_bridge::{
     add_peer_connection, create_block, create_local_node, get_node_id,
     get_public_key, get_tangle_size, initialize_mesh, initialize_tangle, list_peers,
-    node_is_initialized, reset_node, BridgeError,
+    node_is_initialized, reset_node
 };
 
 #[flutter_rust_bridge::frb(sync)]
@@ -45,46 +45,43 @@ pub fn frb_propagate_block(data: Vec<u8>, parents: Vec<String>) -> String {
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_generate_keypair() -> Result<String, BridgeError> {
-    // Cette ligne risque de causer une boucle infinie si tu appelles toi-même (voir explication plus bas)
-    // frb_generate_keypair()
-    // Il faut appeler la FONCTION sous-jacente, pas le wrapper
-    ecoblock_bridge::generate_keypair()
+pub fn frb_generate_keypair(path: String) -> Result<String, String> {
+    ecoblock_bridge::generate_keypair(path)
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_get_public_key() -> Result<String, BridgeError> {
-    get_public_key()
+pub fn frb_get_public_key(path: String) -> Result<String, String> {
+    get_public_key(path)
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_get_node_id() -> Result<String, BridgeError> {
-    get_node_id()
+pub fn frb_get_node_id(path: String) -> Result<String, String> {
+    get_node_id(path)
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_node_is_initialized() -> Result<bool, BridgeError> {
-    node_is_initialized()
+pub fn frb_node_is_initialized(path: String) -> Result<bool, String> {
+    node_is_initialized(path)
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_create_local_node() -> Result<String, BridgeError> {
-    create_local_node()
+pub fn frb_create_local_node(path: String) -> Result<String, String> {
+    create_local_node(path)
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_reset_node() -> Result<(), BridgeError> {
-    reset_node()
+pub fn frb_reset_node(path: String) -> Result<(), String> {
+    reset_node(path)
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_initialize_tangle() -> Result<(), BridgeError> {
+pub fn frb_initialize_tangle() -> Result<(), String> {
     initialize_tangle()
 }
 
 #[flutter_rust_bridge::frb]
-pub fn frb_initialize_mesh() -> Result<(), BridgeError> {
-    initialize_mesh()
+pub fn frb_initialize_mesh(path: String) -> Result<(), String> {
+    initialize_mesh(path)
 }
 
 // -------------- TESTS UNITAIRES -----------------

@@ -93,42 +93,34 @@ abstract class RustLibApi extends BaseApi {
     required List<String> parents,
   });
 
-  Future<String> crateApiSimpleFrbCreateLocalNode();
+  Future<String> crateApiSimpleFrbCreateLocalNode({required String path});
 
-  Future<String> crateApiSimpleFrbGenerateKeypair();
+  Future<String> crateApiSimpleFrbGenerateKeypair({required String path});
 
-  Future<String> crateApiSimpleFrbGetNodeId();
+  Future<String> crateApiSimpleFrbGetNodeId({required String path});
 
-  Future<String> crateApiSimpleFrbGetPublicKey();
+  Future<String> crateApiSimpleFrbGetPublicKey({required String path});
 
   Future<BigInt> crateApiSimpleFrbGetTangleSize();
 
-  Future<void> crateApiSimpleFrbInitializeMesh();
+  Future<void> crateApiSimpleFrbInitializeMesh({required String path});
 
   Future<void> crateApiSimpleFrbInitializeTangle();
 
   Future<List<String>> crateApiSimpleFrbListPeers({required String peerId});
 
-  Future<bool> crateApiSimpleFrbNodeIsInitialized();
+  Future<bool> crateApiSimpleFrbNodeIsInitialized({required String path});
 
   Future<String> crateApiSimpleFrbPropagateBlock({
     required List<int> data,
     required List<String> parents,
   });
 
-  Future<void> crateApiSimpleFrbResetNode();
+  Future<void> crateApiSimpleFrbResetNode({required String path});
 
   String crateApiSimpleGreet({required String name});
 
   Future<void> crateApiSimpleInitApp();
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_BridgeError;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_BridgeError;
-
-  CrossPlatformFinalizerArg get rust_arc_decrement_strong_count_BridgeErrorPtr;
 }
 
 class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
@@ -247,11 +239,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<String> crateApiSimpleFrbCreateLocalNode() {
+  Future<String> crateApiSimpleFrbCreateLocalNode({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -261,25 +254,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbCreateLocalNodeConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbCreateLocalNodeConstMeta =>
-      const TaskConstMeta(debugName: "frb_create_local_node", argNames: []);
+      const TaskConstMeta(
+        debugName: "frb_create_local_node",
+        argNames: ["path"],
+      );
 
   @override
-  Future<String> crateApiSimpleFrbGenerateKeypair() {
+  Future<String> crateApiSimpleFrbGenerateKeypair({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -289,25 +285,28 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbGenerateKeypairConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbGenerateKeypairConstMeta =>
-      const TaskConstMeta(debugName: "frb_generate_keypair", argNames: []);
+      const TaskConstMeta(
+        debugName: "frb_generate_keypair",
+        argNames: ["path"],
+      );
 
   @override
-  Future<String> crateApiSimpleFrbGetNodeId() {
+  Future<String> crateApiSimpleFrbGetNodeId({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -317,25 +316,25 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbGetNodeIdConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbGetNodeIdConstMeta =>
-      const TaskConstMeta(debugName: "frb_get_node_id", argNames: []);
+      const TaskConstMeta(debugName: "frb_get_node_id", argNames: ["path"]);
 
   @override
-  Future<String> crateApiSimpleFrbGetPublicKey() {
+  Future<String> crateApiSimpleFrbGetPublicKey({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -345,18 +344,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_String,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbGetPublicKeyConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbGetPublicKeyConstMeta =>
-      const TaskConstMeta(debugName: "frb_get_public_key", argNames: []);
+      const TaskConstMeta(debugName: "frb_get_public_key", argNames: ["path"]);
 
   @override
   Future<BigInt> crateApiSimpleFrbGetTangleSize() {
@@ -386,11 +384,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "frb_get_tangle_size", argNames: []);
 
   @override
-  Future<void> crateApiSimpleFrbInitializeMesh() {
+  Future<void> crateApiSimpleFrbInitializeMesh({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -400,18 +399,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbInitializeMeshConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbInitializeMeshConstMeta =>
-      const TaskConstMeta(debugName: "frb_initialize_mesh", argNames: []);
+      const TaskConstMeta(debugName: "frb_initialize_mesh", argNames: ["path"]);
 
   @override
   Future<void> crateApiSimpleFrbInitializeTangle() {
@@ -428,8 +426,7 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbInitializeTangleConstMeta,
         argValues: [],
@@ -470,11 +467,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       const TaskConstMeta(debugName: "frb_list_peers", argNames: ["peerId"]);
 
   @override
-  Future<bool> crateApiSimpleFrbNodeIsInitialized() {
+  Future<bool> crateApiSimpleFrbNodeIsInitialized({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -484,18 +482,20 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_bool,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbNodeIsInitializedConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbNodeIsInitializedConstMeta =>
-      const TaskConstMeta(debugName: "frb_node_is_initialized", argNames: []);
+      const TaskConstMeta(
+        debugName: "frb_node_is_initialized",
+        argNames: ["path"],
+      );
 
   @override
   Future<String> crateApiSimpleFrbPropagateBlock({
@@ -533,11 +533,12 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
       );
 
   @override
-  Future<void> crateApiSimpleFrbResetNode() {
+  Future<void> crateApiSimpleFrbResetNode({required String path}) {
     return handler.executeNormal(
       NormalTask(
         callFfi: (port_) {
           final serializer = SseSerializer(generalizedFrbRustBinding);
+          sse_encode_String(path, serializer);
           pdeCallFfi(
             generalizedFrbRustBinding,
             serializer,
@@ -547,18 +548,17 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
         },
         codec: SseCodec(
           decodeSuccessData: sse_decode_unit,
-          decodeErrorData:
-              sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError,
+          decodeErrorData: sse_decode_String,
         ),
         constMeta: kCrateApiSimpleFrbResetNodeConstMeta,
-        argValues: [],
+        argValues: [path],
         apiImpl: this,
       ),
     );
   }
 
   TaskConstMeta get kCrateApiSimpleFrbResetNodeConstMeta =>
-      const TaskConstMeta(debugName: "frb_reset_node", argNames: []);
+      const TaskConstMeta(debugName: "frb_reset_node", argNames: ["path"]);
 
   @override
   String crateApiSimpleGreet({required String name}) {
@@ -609,32 +609,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
 
   TaskConstMeta get kCrateApiSimpleInitAppConstMeta =>
       const TaskConstMeta(debugName: "init_app", argNames: []);
-
-  RustArcIncrementStrongCountFnType
-  get rust_arc_increment_strong_count_BridgeError => wire
-      .rust_arc_increment_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError;
-
-  RustArcDecrementStrongCountFnType
-  get rust_arc_decrement_strong_count_BridgeError => wire
-      .rust_arc_decrement_strong_count_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError;
-
-  @protected
-  BridgeError
-  dco_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BridgeErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
-
-  @protected
-  BridgeError
-  dco_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError(
-    dynamic raw,
-  ) {
-    // Codec=Dco (DartCObject based), see doc to use other codecs
-    return BridgeErrorImpl.frbInternalDcoDecode(raw as List<dynamic>);
-  }
 
   @protected
   String dco_decode_String(dynamic raw) {
@@ -688,30 +662,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   BigInt dco_decode_usize(dynamic raw) {
     // Codec=Dco (DartCObject based), see doc to use other codecs
     return dcoDecodeU64(raw);
-  }
-
-  @protected
-  BridgeError
-  sse_decode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BridgeErrorImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
-  }
-
-  @protected
-  BridgeError
-  sse_decode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError(
-    SseDeserializer deserializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    return BridgeErrorImpl.frbInternalSseDecode(
-      sse_decode_usize(deserializer),
-      sse_decode_i_32(deserializer),
-    );
   }
 
   @protected
@@ -780,32 +730,6 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
   int sse_decode_i_32(SseDeserializer deserializer) {
     // Codec=Sse (Serialization based), see doc to use other codecs
     return deserializer.buffer.getInt32();
-  }
-
-  @protected
-  void
-  sse_encode_Auto_Owned_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError(
-    BridgeError self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as BridgeErrorImpl).frbInternalSseEncode(move: true),
-      serializer,
-    );
-  }
-
-  @protected
-  void
-  sse_encode_RustOpaque_flutter_rust_bridgefor_generatedRustAutoOpaqueInnerBridgeError(
-    BridgeError self,
-    SseSerializer serializer,
-  ) {
-    // Codec=Sse (Serialization based), see doc to use other codecs
-    sse_encode_usize(
-      (self as BridgeErrorImpl).frbInternalSseEncode(move: null),
-      serializer,
-    );
   }
 
   @protected
@@ -879,24 +803,4 @@ class RustLibApiImpl extends RustLibApiImplPlatform implements RustLibApi {
     // Codec=Sse (Serialization based), see doc to use other codecs
     serializer.buffer.putInt32(self);
   }
-}
-
-@sealed
-class BridgeErrorImpl extends RustOpaque implements BridgeError {
-  // Not to be used by end users
-  BridgeErrorImpl.frbInternalDcoDecode(List<dynamic> wire)
-    : super.frbInternalDcoDecode(wire, _kStaticData);
-
-  // Not to be used by end users
-  BridgeErrorImpl.frbInternalSseDecode(BigInt ptr, int externalSizeOnNative)
-    : super.frbInternalSseDecode(ptr, externalSizeOnNative, _kStaticData);
-
-  static final _kStaticData = RustArcStaticData(
-    rustArcIncrementStrongCount:
-        RustLib.instance.api.rust_arc_increment_strong_count_BridgeError,
-    rustArcDecrementStrongCount:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BridgeError,
-    rustArcDecrementStrongCountPtr:
-        RustLib.instance.api.rust_arc_decrement_strong_count_BridgeErrorPtr,
-  );
 }

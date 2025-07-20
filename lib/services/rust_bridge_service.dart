@@ -1,8 +1,12 @@
 import 'package:ecoblock_mobile/src/rust/frb_generated.dart';
-
 import '../src/rust/api/simple.dart';
+import 'package:path_provider/path_provider.dart';
 
 class RustBridgeService {
+  Future<String> _getWritablePath() async {
+    final dir = await getApplicationDocumentsDirectory();
+    return dir.path;
+  }
   Future<void> init() async {
     await RustLib.init();
   }
@@ -32,27 +36,33 @@ class RustBridgeService {
   }
 
   Future<String> generateKeypair() async {
-    return await frbGenerateKeypair();
+    final path = await _getWritablePath();
+    return await frbGenerateKeypair(path: path);
   }
 
   Future<String> getPublicKey() async {
-    return await frbGetPublicKey();
+    final path = await _getWritablePath();
+    return await frbGetPublicKey(path: path);
   }
 
   Future<String> getNodeId() async {
-    return await frbGetNodeId();
+    final path = await _getWritablePath();
+    return await frbGetNodeId(path: path);
   }
 
   Future<bool> nodeIsInitialized() async {
-    return await frbNodeIsInitialized();
+    final path = await _getWritablePath();
+    return await frbNodeIsInitialized(path: path);
   }
 
   Future<String> createLocalNode() async {
-    return await frbCreateLocalNode();
+    final path = await _getWritablePath();
+    return await frbCreateLocalNode(path: path);
   }
 
   Future<void> resetNode() async {
-    await frbResetNode();
+    final path = await _getWritablePath();
+    await frbResetNode(path: path);
   }
 
   Future<void> initializeTangle() async {
@@ -60,6 +70,7 @@ class RustBridgeService {
   }
 
   Future<void> initializeMesh() async {
-    await frbInitializeMesh();
+    final path = await _getWritablePath();
+    await frbInitializeMesh(path: path);
   }
 }

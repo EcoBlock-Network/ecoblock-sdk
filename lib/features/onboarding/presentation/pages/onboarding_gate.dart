@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/features/onboarding/presentation/pages/join_ecoblock_page.dart';
-// import 'package:ecoblock_mobile/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:ecoblock_mobile/app_shell.dart';
 import 'package:ecoblock_mobile/features/onboarding/data/datasources/onboarding_local_data_source.dart';
 

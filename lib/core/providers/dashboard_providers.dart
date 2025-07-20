@@ -1,3 +1,4 @@
+import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -27,13 +28,6 @@ class DashboardQuests {
   DashboardQuests({required this.daily});
   factory DashboardQuests.fromJson(Map<String, dynamic> json) => DashboardQuests(
     daily: Quest.fromJson(json['daily']),
-  );
-}
-class Quest {
-  final String title;
-  Quest({required this.title});
-  factory Quest.fromJson(Map<String, dynamic> json) => Quest(
-    title: json['title'],
   );
 }
 class DashboardStory {
