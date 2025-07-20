@@ -2,6 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Bluetooth (scan/connect/advertise) -->
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>EcoBlock nécessite le Bluetooth pour découvrir, connecter et relayer les données entre les nœuds du réseau local.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>EcoBlock utilise le Bluetooth pour interagir avec d'autres appareils autour de vous.</string>
+	<key>NSBluetoothAlwaysAndWhenInUseUsageDescription</key>
+	<string>EcoBlock utilise le Bluetooth en arrière-plan pour relayer et recevoir les données du réseau maillé.</string>
+
+	<!-- Localisation (obligatoire sur iOS pour le scan BLE) -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>EcoBlock requiert l'accès à votre localisation pour activer le Bluetooth et détecter les appareils à proximité.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>EcoBlock utilise la localisation pour fonctionner en arrière-plan et relayer les données du réseau.</string>
+
+	<!-- Pour background mode BLE -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
+		<string>location</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

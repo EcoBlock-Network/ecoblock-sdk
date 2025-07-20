@@ -1,4 +1,6 @@
 
+import 'package:ecoblock_mobile/features/profile/presentation/pages/block_history_page.dart';
+import 'package:ecoblock_mobile/services/rust_bridge_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -8,7 +10,7 @@ import '../providers/badge_list_provider.dart';
 import '../providers/loot_provider.dart';
 import '../widgets/tree_growth_widget.dart';
 import '../widgets/profile_widgets.dart';
-import 'block_history_page.dart';
+import '../../../../src/rust/api/simple.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -48,6 +50,18 @@ class ProfilePage extends ConsumerWidget {
                           children: [
                             Text(profile.pseudonyme, style: Theme.of(context).textTheme.titleLarge),
                             Text('Mode anonyme', style: TextStyle(color: colorScheme.secondary)),
+                            FutureBuilder<String>(
+                              future: RustBridgeService().getPublicKey(),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return const Text('Numéro de node : ...');
+                                } else if (snapshot.hasError) {
+                                  return const Text('Numéro de node : erreur');
+                                } else {
+                                  return Text('Numéro de node : ${snapshot.data ?? "inconnu"}', style: TextStyle(fontSize: 13, color: colorScheme.primary));
+                                }
+                              },
+                            ),
                           ],
                         ),
                       ),

@@ -3,43 +3,12 @@
 
 // ignore_for_file: invalid_use_of_internal_member, unused_import, unnecessary_import
 
-
 import '../frb_generated.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+String greet({required String name}) =>
+    RustLib.instance.api.crateApiSimpleGreet(name: name);
 
-final rustApiProvider = Provider<RustApiService>((ref) {
-  return RustApiService();
-});
-
-class RustApiService {
-  String greet({required String name}) =>
-      RustLib.instance.api.crateApiSimpleGreet(name: name);
-
-  Future<String> frbCreateBlock({required List<int> data, required List<String> parents}) =>
-      RustLib.instance.api.crateApiSimpleFrbCreateBlock(data: data, parents: parents);
-
-  Future<BigInt> frbGetTangleSize() =>
-      RustLib.instance.api.crateApiSimpleFrbGetTangleSize();
-
-  Future<void> frbAddPeerConnection({required String from, required String to, required double weight}) =>
-      RustLib.instance.api.crateApiSimpleFrbAddPeerConnection(from: from, to: to, weight: weight);
-
-  Future<List<String>> frbListPeers({required String peerId}) =>
-      RustLib.instance.api.crateApiSimpleFrbListPeers(peerId: peerId);
-
-  Future<String> frbCreateBlockWithParents({required List<int> data, required List<String> parents}) =>
-      RustLib.instance.api.crateApiSimpleFrbCreateBlockWithParents(data: data, parents: parents);
-
-  Future<String> frbGetPublicKey() =>
-      RustLib.instance.api.crateApiSimpleFrbGetPublicKey();
-
-  Future<String> frbPropagateBlock({required List<int> data, required List<String> parents}) =>
-      RustLib.instance.api.crateApiSimpleFrbPropagateBlock(data: data, parents: parents);
-}
-
-/// Wrapper pour créer un bloc depuis Flutter
 Future<String> frbCreateBlock({
   required List<int> data,
   required List<String> parents,
@@ -48,11 +17,9 @@ Future<String> frbCreateBlock({
   parents: parents,
 );
 
-/// Wrapper pour obtenir la taille du tangle depuis Flutter
 Future<BigInt> frbGetTangleSize() =>
     RustLib.instance.api.crateApiSimpleFrbGetTangleSize();
 
-/// Wrapper pour ajouter une connexion entre deux peers
 Future<void> frbAddPeerConnection({
   required String from,
   required String to,
@@ -63,11 +30,9 @@ Future<void> frbAddPeerConnection({
   weight: weight,
 );
 
-/// Wrapper pour lister les voisins d'un peer
 Future<List<String>> frbListPeers({required String peerId}) =>
     RustLib.instance.api.crateApiSimpleFrbListPeers(peerId: peerId);
 
-/// Wrapper complet pour créer un bloc avec parents
 Future<String> frbCreateBlockWithParents({
   required List<int> data,
   required List<String> parents,
@@ -76,9 +41,6 @@ Future<String> frbCreateBlockWithParents({
   parents: parents,
 );
 
-Future<String> frbGetPublicKey() =>
-    RustLib.instance.api.crateApiSimpleFrbGetPublicKey();
-
 Future<String> frbPropagateBlock({
   required List<int> data,
   required List<String> parents,
@@ -86,3 +48,30 @@ Future<String> frbPropagateBlock({
   data: data,
   parents: parents,
 );
+
+Future<String> frbGenerateKeypair() =>
+    RustLib.instance.api.crateApiSimpleFrbGenerateKeypair();
+
+Future<String> frbGetPublicKey() =>
+    RustLib.instance.api.crateApiSimpleFrbGetPublicKey();
+
+Future<String> frbGetNodeId() =>
+    RustLib.instance.api.crateApiSimpleFrbGetNodeId();
+
+Future<bool> frbNodeIsInitialized() =>
+    RustLib.instance.api.crateApiSimpleFrbNodeIsInitialized();
+
+Future<String> frbCreateLocalNode() =>
+    RustLib.instance.api.crateApiSimpleFrbCreateLocalNode();
+
+Future<void> frbResetNode() =>
+    RustLib.instance.api.crateApiSimpleFrbResetNode();
+
+Future<void> frbInitializeTangle() =>
+    RustLib.instance.api.crateApiSimpleFrbInitializeTangle();
+
+Future<void> frbInitializeMesh() =>
+    RustLib.instance.api.crateApiSimpleFrbInitializeMesh();
+
+// Rust type: RustOpaqueMoi<flutter_rust_bridge::for_generated::RustAutoOpaqueInner<BridgeError>>
+abstract class BridgeError implements RustOpaqueInterface {}

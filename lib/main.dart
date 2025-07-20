@@ -11,6 +11,7 @@ import 'package:ecoblock_mobile/src/rust/frb_generated.dart';
 import 'package:ecoblock_mobile/services/bluetooth_service.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'app_shell.dart';
+import 'features/onboarding/presentation/pages/onboarding_gate.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -89,15 +90,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: forestLightScheme,               //  [oai_citation:0‡api.flutter.dev](https://api.flutter.dev/flutter/material/ThemeData/colorScheme.html?utm_source=chatgpt.com)
+        colorScheme: forestLightScheme,
         textTheme: Typography.material2021().black.apply(
-              bodyColor: forestLightScheme.onBackground,
-              displayColor: forestLightScheme.onBackground,
-            ),
-      ),      supportedLocales: const [
+          bodyColor: forestLightScheme.onBackground,
+          displayColor: forestLightScheme.onBackground,
+        ),
+      ),
+      supportedLocales: const [
         Locale('en', ''),
       ],
-      home: AppShell(),
+      home: const OnboardingGate(),
     );
   }
 }

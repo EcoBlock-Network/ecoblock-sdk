@@ -9,6 +9,13 @@ crate-type = ["cdylib", "staticlib"]
 [dependencies]
 flutter_rust_bridge = "=2.11.1"
 ecoblock_bridge = { path = "../../ecoblock-bridge" }
+serial_test = "3.2.0"
+serde_json = "1.0.141"
+serde = { version = "1.0", features = ["derive"] }
 
 [lints.rust]
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(frb_expand)'] }
+
+[[bin]]
+name = "patch_frb_imports"
+path = "scripts/patch_frb_imports.rs"
