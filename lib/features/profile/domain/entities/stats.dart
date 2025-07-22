@@ -15,4 +15,21 @@ class Stats {
     required this.niveau,
     required this.xp,
   });
+  Map<String, dynamic> toJson() => {
+    'nbBlocs': nbBlocs,
+    'nbNodes': nbNodes,
+    'xpParJour': xpParJour,
+    'progression': progression,
+    'niveau': niveau,
+    'xp': xp,
+  };
+
+  factory Stats.fromJson(Map<String, dynamic> json) => Stats(
+    nbBlocs: json['nbBlocs'],
+    nbNodes: json['nbNodes'],
+    xpParJour: List<int>.from(json['xpParJour'] ?? []),
+    progression: (json['progression'] as num).toDouble(),
+    niveau: json['niveau'],
+    xp: json['xp'],
+  );
 }

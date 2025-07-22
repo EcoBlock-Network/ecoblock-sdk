@@ -2,6 +2,7 @@
 import 'package:ecoblock_mobile/features/quests/data/models/quest_type.dart';
 
 class Quest {
+  bool get isCompleted => progress >= goal;
   final String id;
   final String title;
   final String description;

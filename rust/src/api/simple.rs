@@ -93,7 +93,6 @@ mod tests {
     use std::env;
     use std::fs;
 
-    // Utilitaire pour isoler l’environnement de test (évite les conflits)
     fn test_env(name: &str) {
         let path = format!("/tmp/frb_simple_test_{}.bin", name);
         env::set_var("ECOBLOCK_TEST_KEYPAIR", &path);
@@ -152,7 +151,6 @@ mod tests {
         test_env("frb_create_local_node");
         let node_id = frb_create_local_node().expect("FRB: Should create local node");
         assert!(!node_id.is_empty());
-        // Double appel doit échouer (AlreadyInitialized)
         let result = frb_create_local_node();
         assert!(result.is_err());
         cleanup_env();

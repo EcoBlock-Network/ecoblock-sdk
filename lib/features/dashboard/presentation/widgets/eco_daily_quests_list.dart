@@ -1,59 +1,79 @@
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/quest_timer_placeholder.dart';
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_persistence_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'quest_types.dart';
+
 import 'eco_quest_card.dart';
-import '../pages/dashboard_page.dart' show personalQuestsProvider;
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
-class EcoDailyQuestsList extends StatefulWidget {
+class EcoDailyQuestsList extends ConsumerStatefulWidget {
   const EcoDailyQuestsList({super.key});
   @override
-  State<EcoDailyQuestsList> createState() => _EcoDailyQuestsListState();
+  ConsumerState<EcoDailyQuestsList> createState() => _EcoDailyQuestsListState();
 }
 
-class _EcoDailyQuestsListState extends State<EcoDailyQuestsList> {
+class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
   List<Quest?> _visibleQuests = [null, null, null];
-  List<DateTime?> _deletedTimes = [null, null, null];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadQuests(context);
+      _syncWithProvider();
     });
   }
 
-  void _loadQuests(BuildContext context) {
-    final ref = ProviderScope.containerOf(context, listen: false);
+  void _syncWithProvider() {
     final asyncValue = ref.read(personalQuestsProvider);
+    final persistence = ref.read(questPersistenceProvider);
     asyncValue.whenData((quests) {
       setState(() {
         for (int i = 0; i < 3; i++) {
-          _visibleQuests[i] = i < quests.length ? quests[i] : null;
+          final id = persistence.visibleQuestIds.length > i
+              ? persistence.visibleQuestIds[i]
+              : null;
+          if (id != null) {
+            final found = quests.where((q) => q.id == id).toList();
+            _visibleQuests[i] = found.isNotEmpty
+                ? found.first
+                : (i < quests.length ? quests[i] : null);
+          } else {
+            _visibleQuests[i] = i < quests.length ? quests[i] : null;
+          }
         }
       });
     });
   }
 
-  void _deleteQuest(int index) {
+  void _deleteQuest(int index) async {
     setState(() {
       _visibleQuests[index] = null;
-      _deletedTimes[index] = DateTime.now();
     });
-    // Start timer to restore quest after 3 hours
-    Future.delayed(const Duration(hours: 3), () {
-      setState(() {
-        _deletedTimes[index] = null;
-        // Optionally reload a new quest here
-      });
+    await ref
+        .read(questPersistenceProvider.notifier)
+        .setVisibleQuestId(index, null);
+    await ref
+        .read(questPersistenceProvider.notifier)
+        .setDeletedTime(index, DateTime.now());
+    Future.delayed(const Duration(hours: 3), () async {
+      await ref
+          .read(questPersistenceProvider.notifier)
+          .setDeletedTime(index, null);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final asyncValue = ref.watch(personalQuestsProvider);
+    final persistence = ref.watch(questPersistenceProvider);
+    asyncValue.whenData((quests) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _syncWithProvider();
+      });
+    });
     return Column(
       children: [
         Row(
@@ -64,8 +84,17 @@ class _EcoDailyQuestsListState extends State<EcoDailyQuestsList> {
           ],
         ),
         ...List.generate(3, (i) {
-          final quest = _visibleQuests[i];
-          final deletedAt = _deletedTimes[i];
+          var quest = _visibleQuests[i];
+          final deletedAt = persistence.deletedTimes.length > i
+              ? persistence.deletedTimes[i]
+              : null;
+          if (quest == null) {
+            final fallback = _visibleQuests.firstWhere(
+              (q) => q != null,
+              orElse: () => null,
+            );
+            if (fallback != null) quest = fallback;
+          }
           if (quest != null && deletedAt == null) {
             return Dismissible(
               key: ValueKey(quest.id),
@@ -87,7 +116,6 @@ class _EcoDailyQuestsListState extends State<EcoDailyQuestsList> {
           } else if (deletedAt != null) {
             return QuestTimerPlaceholder(deletedAt: deletedAt);
           } else {
-            // Empty slot
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 0),
               padding: const EdgeInsets.all(18),
@@ -114,10 +142,15 @@ class _EcoDailyQuestsListState extends State<EcoDailyQuestsList> {
 class AnimatedQuestCard extends StatefulWidget {
   final Quest quest;
   final Duration delay;
-  const AnimatedQuestCard({required this.quest, this.delay = Duration.zero, super.key});
+  const AnimatedQuestCard({
+    required this.quest,
+    this.delay = Duration.zero,
+    super.key,
+  });
   @override
   State<AnimatedQuestCard> createState() => _AnimatedQuestCardState();
 }
+
 class _AnimatedQuestCardState extends State<AnimatedQuestCard>
     with SingleTickerProviderStateMixin {
   late AnimationController _anim;
@@ -131,8 +164,10 @@ class _AnimatedQuestCardState extends State<AnimatedQuestCard>
       duration: const Duration(milliseconds: 600),
     );
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic);
-    _slide = Tween<Offset>(begin: Offset(0, 0.09), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutBack));
+    _slide = Tween<Offset>(
+      begin: Offset(0, 0.09),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutBack));
     Future.delayed(widget.delay, () => mounted ? _anim.forward() : null);
   }
 
@@ -159,6 +194,7 @@ class _DailyQuestTimer extends StatefulWidget {
   @override
   State<_DailyQuestTimer> createState() => _DailyQuestTimerState();
 }
+
 class _DailyQuestTimerState extends State<_DailyQuestTimer> {
   late Duration timeLeft;
   late final StreamSubscription ticker;
@@ -166,8 +202,10 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
   void initState() {
     super.initState();
     _updateTime();
-    ticker =
-        Stream.periodic(const Duration(seconds: 1), (_) => _updateTime()).listen((_) {});
+    ticker = Stream.periodic(
+      const Duration(seconds: 1),
+      (_) => _updateTime(),
+    ).listen((_) {});
   }
 
   void _updateTime() {
@@ -200,7 +238,7 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
             color: scheme.primary.withOpacity(0.05),
             blurRadius: 7,
             offset: const Offset(0, 1),
-          )
+          ),
         ],
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
@@ -222,9 +260,10 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
           Text(
             "until refresh",
             style: TextStyle(
-                color: scheme.onBackground.withOpacity(0.45),
-                fontSize: 11,
-                fontWeight: FontWeight.w400),
+              color: scheme.onBackground.withOpacity(0.45),
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ],
       ),

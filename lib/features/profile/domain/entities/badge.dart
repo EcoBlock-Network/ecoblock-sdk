@@ -13,4 +13,19 @@ class Badge {
     required this.condition,
     required this.unlocked,
   });
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'nom': nom,
+    'description': description,
+    'condition': condition,
+    'unlocked': unlocked,
+  };
+
+  factory Badge.fromJson(Map<String, dynamic> json) => Badge(
+    id: json['id'],
+    nom: json['nom'],
+    description: json['description'],
+    condition: json['condition'],
+    unlocked: json['unlocked'],
+  );
 }

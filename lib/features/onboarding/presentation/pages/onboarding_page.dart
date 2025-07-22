@@ -1,19 +1,13 @@
-import 'dart:ui';
-import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../widgets/eco_dashboard_header.dart';
-import '../widgets/eco_section_title.dart';
-import '../widgets/eco_progress_circle.dart';
-import '../widgets/eco_daily_quests_list.dart';
-import '../widgets/eco_unique_quests_list.dart';
+import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
+import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dashboard_header.dart';
+import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_progress_circle.dart';
+import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_section_title.dart';
 
-
-final dashboardProgressProvider = StateProvider<double>((ref) => 0.0);
-
-
-class DashboardPage extends ConsumerWidget {
+class OnboardingPage extends ConsumerWidget {
+  const OnboardingPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,7 +22,7 @@ class DashboardPage extends ConsumerWidget {
             Positioned(
               top: -70,
               left: -80,
-              child: _DashboardCircle(
+              child: _OnboardingCircle(
                 diameter: 220,
                 color: scheme.primary.withOpacity(0.13),
               ),
@@ -36,7 +30,7 @@ class DashboardPage extends ConsumerWidget {
             Positioned(
               bottom: -50,
               right: -40,
-              child: _DashboardCircle(
+              child: _OnboardingCircle(
                 diameter: 140,
                 color: scheme.tertiaryContainer.withOpacity(0.12),
               ),
@@ -53,16 +47,31 @@ class DashboardPage extends ConsumerWidget {
                       Center(child: EcoProgressCircle(xp: profile.xp)),
                       const SizedBox(height: 13),
                       const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Daily Quests', icon: Icons.eco),
+                      EcoSectionTitle(title: 'Welcome to EcoBlock', icon: Icons.eco),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13),
-                        child: EcoDailyQuestsList(),
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: Text(
+                          "Let's get started! Complete your profile and discover your first quests.",
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: scheme.onBackground.withOpacity(0.7),
+                                fontWeight: FontWeight.w500,
+                              ),
+                        ),
                       ),
-                      const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Unique Quests', icon: Icons.star),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: EcoUniqueQuestsList(),
+                      const SizedBox(height: 32),
+                      // Add onboarding steps or actions here
+                      Center(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.arrow_forward_rounded),
+                          label: const Text('Start my adventure'),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                          ),
+                          onPressed: () {
+                            // TODO: Navigate to main dashboard or next onboarding step
+                          },
+                        ),
                       ),
                       const SizedBox(height: 36),
                     ],
@@ -79,10 +88,10 @@ class DashboardPage extends ConsumerWidget {
   }
 }
 
-class _DashboardCircle extends StatelessWidget {
+class _OnboardingCircle extends StatelessWidget {
   final double diameter;
   final Color color;
-  const _DashboardCircle({required this.diameter, required this.color});
+  const _OnboardingCircle({required this.diameter, required this.color});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -98,4 +107,3 @@ class _DashboardCircle extends StatelessWidget {
     );
   }
 }
-
