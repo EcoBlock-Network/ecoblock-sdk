@@ -137,7 +137,7 @@ class _StoryViewerState extends ConsumerState<StoryViewer>
                 Container(
                   height: 4.5,
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.3),
+                    color: Colors.white.withValues(alpha:0.3),
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),

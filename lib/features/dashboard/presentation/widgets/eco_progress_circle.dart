@@ -69,11 +69,11 @@ class EcoProgressCircle extends StatelessWidget {
               width: size + 10,
               height: size + 10,
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.11),
+                color: Colors.white.withValues(alpha:0.11),
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withOpacity(0.12),
+                    color: scheme.primary.withValues(alpha:0.12),
                     blurRadius: 20,
                     offset: const Offset(0, 7),
                   ),
@@ -93,7 +93,7 @@ class EcoProgressCircle extends StatelessWidget {
               return CircularProgressIndicator(
                 value: val,
                 strokeWidth: 14,
-                backgroundColor: scheme.surface.withOpacity(0.14),
+                backgroundColor: scheme.surface.withValues(alpha:0.14),
                 valueColor: AlwaysStoppedAnimation(scheme.primary),
               );
             },
@@ -117,7 +117,7 @@ class EcoProgressCircle extends StatelessWidget {
               '$xpCurrent / $xpNeeded XP',
               style: TextStyle(
                 fontSize: 12.2,
-                color: scheme.primary.withOpacity(0.63),
+                color: scheme.primary.withValues(alpha:0.63),
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.15,
               ),

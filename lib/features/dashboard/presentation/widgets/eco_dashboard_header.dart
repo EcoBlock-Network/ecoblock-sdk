@@ -28,8 +28,8 @@ class EcoDashboardHeader extends StatelessWidget {
                   ),
                 ),
                 child: CircleAvatar(
-                  backgroundColor: Colors.white.withOpacity(0.28),
-                  backgroundImage: AssetImage('assets/images/avatar.png'),
+                  backgroundColor: Colors.white.withValues(alpha:0.28),
+                  backgroundImage: AssetImage('assets/images/mock_avatar.png'),
                   radius: 22,
                 ),
               ),
@@ -52,7 +52,7 @@ class EcoDashboardHeader extends StatelessWidget {
                 Text(
                   "Welcome to the EcoBlock mesh",
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: scheme.onBackground.withOpacity(0.53),
+                        color: scheme.onSurface.withValues(alpha:0.53),
                         fontWeight: FontWeight.w500,
                         letterSpacing: 0.03,
                       ),
@@ -64,11 +64,11 @@ class EcoDashboardHeader extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 7),
             decoration: BoxDecoration(
-              color: scheme.primaryContainer.withOpacity(0.95),
+              color: scheme.primaryContainer.withValues(alpha:0.95),
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: scheme.primary.withOpacity(0.10),
+                  color: scheme.primary.withValues(alpha:0.10),
                   blurRadius: 10,
                   offset: const Offset(0, 3),
                 )

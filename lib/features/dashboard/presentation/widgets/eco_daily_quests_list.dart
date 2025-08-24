@@ -101,7 +101,7 @@ class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
               direction: DismissDirection.endToStart,
               onDismissed: (_) => _deleteQuest(i),
               background: Container(
-                color: Colors.red.withOpacity(0.13),
+                color: Colors.red.withValues(alpha:0.13),
                 alignment: Alignment.centerRight,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 24.0),
@@ -121,7 +121,7 @@ class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.grey.withOpacity(0.18),
+                  color: Colors.grey.withValues(alpha:0.18),
                   style: BorderStyle.solid,
                   width: 2,
                 ),
@@ -230,12 +230,12 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
     final scheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.44),
+        color: Colors.white.withValues(alpha:0.44),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: scheme.primary.withOpacity(0.10)),
+        border: Border.all(color: scheme.primary.withValues(alpha:0.10)),
         boxShadow: [
           BoxShadow(
-            color: scheme.primary.withOpacity(0.05),
+            color: scheme.primary.withValues(alpha:0.05),
             blurRadius: 7,
             offset: const Offset(0, 1),
           ),
@@ -260,7 +260,7 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
           Text(
             "until refresh",
             style: TextStyle(
-              color: scheme.onBackground.withOpacity(0.45),
+              color: scheme.onSurface.withValues(alpha:0.45),
               fontSize: 11,
               fontWeight: FontWeight.w400,
             ),

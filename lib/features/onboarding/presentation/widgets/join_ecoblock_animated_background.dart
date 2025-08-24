@@ -16,7 +16,7 @@ class JoinEcoBlockAnimatedBackground extends StatelessWidget {
         ),
       ),
       child: Center(
-        child: Icon(CupertinoIcons.tree, size: 180, color: Color(0xFF2E7D32).withOpacity(0.15)),
+        child: Icon(CupertinoIcons.tree, size: 180, color: Color(0xFF2E7D32).withValues(alpha:0.15)),
       ),
     );
   }

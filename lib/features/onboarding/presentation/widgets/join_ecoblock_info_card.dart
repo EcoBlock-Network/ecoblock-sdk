@@ -18,11 +18,11 @@ class JoinEcoBlockInfoCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.35),
+                color: Colors.white.withValues(alpha:0.35),
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha:0.08),
                     blurRadius: 12,
                   ),
                 ],

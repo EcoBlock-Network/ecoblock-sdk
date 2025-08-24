@@ -30,7 +30,7 @@ class DashboardPage extends ConsumerWidget {
               left: -80,
               child: _DashboardCircle(
                 diameter: 220,
-                color: scheme.primary.withOpacity(0.13),
+                color: scheme.primary.withValues(alpha:0.13),
               ),
             ),
             Positioned(
@@ -38,7 +38,7 @@ class DashboardPage extends ConsumerWidget {
               right: -40,
               child: _DashboardCircle(
                 diameter: 140,
-                color: scheme.tertiaryContainer.withOpacity(0.12),
+                color: scheme.tertiaryContainer.withValues(alpha:0.12),
               ),
             ),
             SafeArea(

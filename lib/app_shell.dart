@@ -65,10 +65,10 @@ class _AppShellState extends State<AppShell> {
               decoration: BoxDecoration(
                 color: Colors.transparent,
                 borderRadius: BorderRadius.circular(25),
-                border: Border.all(color: scheme.primary.withOpacity(0.08), width: 1),
+                border: Border.all(color: scheme.primary.withValues(alpha:0.08), width: 1),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withOpacity(0.10),
+                    color: scheme.primary.withValues(alpha:0.10),
                     blurRadius: 22,
                     offset: const Offset(0, 6),
                   ),
@@ -122,15 +122,15 @@ class _EcoNavBarItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 gradient: LinearGradient(
                   colors: [
-                    scheme.primary.withOpacity(0.12),
-                    scheme.primaryContainer.withOpacity(0.32),
+                    scheme.primary.withValues(alpha:0.12),
+                    scheme.primaryContainer.withValues(alpha:0.32),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withOpacity(0.14),
+                    color: scheme.primary.withValues(alpha:0.14),
                     blurRadius: 14,
                     offset: const Offset(0, 3),
                   )
@@ -145,9 +145,9 @@ class _EcoNavBarItem extends StatelessWidget {
               size: selected ? 32 : 26,
               color: selected
                   ? scheme.primary
-                  : scheme.onSurface.withOpacity(0.5),
+                  : scheme.onSurface.withValues(alpha:0.5),
               shadows: selected
-                  ? [Shadow(color: scheme.primary.withOpacity(0.21), blurRadius: 8)]
+                  ? [Shadow(color: scheme.primary.withValues(alpha:0.21), blurRadius: 8)]
                   : [],
             ),
             const SizedBox(height: 2),
@@ -157,11 +157,11 @@ class _EcoNavBarItem extends StatelessWidget {
                 fontSize: selected ? 13.7 : 11.7,
                 color: selected
                     ? scheme.primary
-                    : scheme.onSurface.withOpacity(0.48),
+                    : scheme.onSurface.withValues(alpha:0.48),
                 fontWeight: selected ? FontWeight.bold : FontWeight.w500,
                 letterSpacing: selected ? 0.05 : 0.02,
                 shadows: selected
-                    ? [Shadow(color: scheme.primary.withOpacity(0.10), blurRadius: 5)]
+                    ? [Shadow(color: scheme.primary.withValues(alpha:0.10), blurRadius: 5)]
                     : [],
               ),
               child: Text(label),

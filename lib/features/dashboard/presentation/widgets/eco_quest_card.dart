@@ -23,8 +23,8 @@ class EcoQuestCard extends StatelessWidget {
         ? LinearGradient(
             colors: [
               Colors.greenAccent.shade100,
-              scheme.primary.withOpacity(0.18),
-              Colors.white.withOpacity(0.85)
+              scheme.primary.withValues(alpha:0.18),
+              Colors.white.withValues(alpha:0.85)
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -36,7 +36,7 @@ class EcoQuestCard extends StatelessWidget {
                 end: Alignment.bottomRight,
               )
             : LinearGradient(
-                colors: [scheme.surface, Colors.white.withOpacity(0.93)],
+                colors: [scheme.surface, Colors.white.withValues(alpha:0.93)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ));
@@ -67,7 +67,7 @@ class EcoQuestCard extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text("“${quest.title}” — ${quest.progress}/${quest.goal}"),
-                    backgroundColor: scheme.primary.withOpacity(0.88),
+                    backgroundColor: scheme.primary.withValues(alpha:0.88),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                     duration: Duration(milliseconds: 900),
                   ),
@@ -87,15 +87,15 @@ class EcoQuestCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(small ? 15 : 20),
                   border: Border.all(
                     color: isCompleted
-                        ? Colors.green.withOpacity(0.35)
-                        : scheme.primary.withOpacity(vibrant ? 0.19 : 0.08),
+                        ? Colors.green.withValues(alpha:0.35)
+                        : scheme.primary.withValues(alpha:vibrant ? 0.19 : 0.08),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
                         color: isCompleted
-                            ? Colors.green.withOpacity(0.13)
-                            : scheme.primary.withOpacity(0.07),
+                            ? Colors.green.withValues(alpha:0.13)
+                            : scheme.primary.withValues(alpha:0.07),
                         blurRadius: 17,
                         offset: const Offset(0, 5)),
                   ],
@@ -116,8 +116,8 @@ class EcoQuestCard extends StatelessWidget {
                             : LinearGradient(
                                 colors: [
                                   Colors.greenAccent.shade100,
-                                  scheme.primary.withOpacity(0.84),
-                                  if (vibrant) Colors.yellowAccent.withOpacity(0.56),
+                                  scheme.primary.withValues(alpha:0.84),
+                                  if (vibrant) Colors.yellowAccent.withValues(alpha:0.56),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -150,7 +150,7 @@ class EcoQuestCard extends StatelessWidget {
                           LinearProgressIndicator(
                             value: quest.goal == 0 ? 0 : quest.progress / quest.goal,
                             minHeight: small ? 3.0 : 4.2,
-                            backgroundColor: scheme.surfaceVariant.withOpacity(0.17),
+                            backgroundColor: scheme.surfaceVariant.withValues(alpha:0.17),
                             color: isCompleted ? Colors.green : scheme.primary,
                             borderRadius: BorderRadius.circular(4),
                           ),

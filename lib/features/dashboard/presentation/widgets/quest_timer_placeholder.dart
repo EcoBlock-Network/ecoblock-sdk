@@ -40,7 +40,7 @@ class QuestTimerPlaceholderState extends State<QuestTimerPlaceholder> {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey.withOpacity(0.35),
+          color: Colors.grey.withValues(alpha:0.35),
           style: BorderStyle.solid,
           width: 2,
         ),
