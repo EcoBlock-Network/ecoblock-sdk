@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/daily_quest.dart';
 
 class DailyQuestsWidget extends StatelessWidget {
@@ -10,7 +11,7 @@ class DailyQuestsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Défis communautaires du jour', style: Theme.of(context).textTheme.titleMedium),
+  Text(tr(context, 'community.daily_title'), style: Theme.of(context).textTheme.titleMedium),
         ...quests.map((q) => Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           child: Padding(
@@ -30,7 +31,7 @@ class DailyQuestsWidget extends StatelessWidget {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('${q.progress}/${q.goal}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    Text(tr(context, 'daily.progress', {'progress': q.progress.toString(), 'goal': q.goal.toString()}), style: const TextStyle(fontWeight: FontWeight.bold)),
                     SizedBox(
                       width: 60,
                       child: LinearProgressIndicator(value: q.progress/q.goal, minHeight: 6),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/upcoming_quest.dart';
 
 class UpcomingQuestsWidget extends StatelessWidget {
@@ -8,7 +9,7 @@ class UpcomingQuestsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      title: Text('Historique & défis à venir', style: Theme.of(context).textTheme.titleMedium),
+      title: Text(tr(context, 'community.upcoming_title'), style: Theme.of(context).textTheme.titleMedium),
       children: quests.map((q) {
         final color = q.status == 'past' ? Colors.grey[300] : q.status == 'current' ? Colors.green[100] : Colors.blue[100];
         return Container(

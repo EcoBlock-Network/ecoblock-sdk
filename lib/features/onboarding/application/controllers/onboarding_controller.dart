@@ -5,16 +5,20 @@ import '../../../../src/rust/api/simple.dart';
 
 final onboardingControllerProvider =
     StateNotifierProvider<OnboardingController, bool>((ref) {
-      final localDataSource = OnboardingLocalDataSource();
-      return OnboardingController(localDataSource);
-    });
+  final localDataSource = OnboardingLocalDataSource();
+  return OnboardingController(localDataSource);
+});
 
 class OnboardingController extends StateNotifier<bool> {
   final OnboardingLocalDataSource localDataSource;
-  OnboardingController(this.localDataSource) : super(false);
+  final RustBridgeService rustApi;
+
+  // Allow injecting a RustBridgeService for tests; default to real implementation.
+  OnboardingController(this.localDataSource, {RustBridgeService? rustApi})
+      : rustApi = rustApi ?? RustBridgeService(),
+        super(false);
 
   Future<void> associateNode() async {
-    final rustApi = RustBridgeService();
     try {
       // Vérifie si déjà initialisé (pour éviter le double init)
       final isInit = await rustApi.nodeIsInitialized();

@@ -2,6 +2,7 @@ import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/quest_ti
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'dart:async';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_persistence_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -129,7 +130,7 @@ class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
                 color: Colors.transparent,
               ),
               child: Center(
-                child: Text('No quest', style: TextStyle(color: Colors.grey)),
+                child: Text(tr(context, 'no_quest'), style: TextStyle(color: Colors.grey)),
               ),
             );
           }
@@ -258,7 +259,7 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
           ),
           const SizedBox(width: 4),
           Text(
-            "until refresh",
+            tr(context, 'until_refresh'),
             style: TextStyle(
               color: scheme.onSurface.withValues(alpha:0.45),
               fontSize: 11,

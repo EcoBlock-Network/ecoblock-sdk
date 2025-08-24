@@ -11,7 +11,6 @@ class EcoDashboardHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 22.0),
       child: Row(
         children: [
-          // Avatar glass & gradient
           ClipRRect(
             borderRadius: BorderRadius.circular(40),
             child: BackdropFilter(
@@ -29,8 +28,8 @@ class EcoDashboardHeader extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   backgroundColor: Colors.white.withValues(alpha:0.28),
-                  backgroundImage: AssetImage('assets/images/mock_story.png'),
                   radius: 22,
+                  child: Icon(Icons.person, color: scheme.primary, size: 22),
                 ),
               ),
             ),

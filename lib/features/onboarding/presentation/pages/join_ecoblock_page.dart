@@ -26,7 +26,7 @@ class JoinEcoBlockPage extends ConsumerWidget {
                   Icon(Icons.eco, color: Color(0xFF6E7426), size: 96),
                   const SizedBox(height: 32),
                   Text(
-                    "Bienvenue dans EcoBlock",
+                    "🌍 Bienvenue dans EcoBlock",
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -93,14 +93,16 @@ class JoinEcoBlockPage extends ConsumerWidget {
                             children: [
                               Row(
                                 children: [
-                                  Text(
-                                    "1. Crée ton nœud local sécurisé",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFF50551D),
+                                  Expanded(
+                                    child: Text(
+                                      "1. Crée ton nœud local sécurisé",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF50551D),
+                                      ),
                                     ),
                                   ),
-                                  Spacer(),
+                                  const SizedBox(width: 8),
                                   Chip(
                                     label: Text(
                                       "+10 XP",
@@ -115,14 +117,16 @@ class JoinEcoBlockPage extends ConsumerWidget {
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  Text(
-                                    "2. Découvre et associe des voisins",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFF50551D),
+                                  Expanded(
+                                    child: Text(
+                                      "2. Découvre et associe des voisins",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF50551D),
+                                      ),
                                     ),
                                   ),
-                                  Spacer(),
+                                  const SizedBox(width: 8),
                                   Chip(
                                     label: Text(
                                       "+20 XP",
@@ -137,14 +141,16 @@ class JoinEcoBlockPage extends ConsumerWidget {
                               const SizedBox(height: 8),
                               Row(
                                 children: [
-                                  Text(
-                                    "3. Participe à la propagation des blocs et à la collecte de données",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFF50551D),
+                                  Expanded(
+                                    child: Text(
+                                      "3. Participe à la propagation des blocs et à la collecte de données",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(0xFF50551D),
+                                      ),
                                     ),
                                   ),
-                                  Spacer(),
+                                  const SizedBox(width: 8),
                                   Chip(
                                     label: Text(
                                       "+30 XP",

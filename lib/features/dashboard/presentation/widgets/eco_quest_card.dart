@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
 class EcoQuestCard extends StatelessWidget {
   final Quest quest;
@@ -46,18 +47,18 @@ class EcoQuestCard extends StatelessWidget {
       child: Stack(
         children: [
           GestureDetector(
-        onTap: isCompleted
+                onTap: isCompleted
             ? (onCompletedTap ?? () {
                 // Default completed quest tap: show a dialog
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
-                    title: const Text('Quest completed!'),
-                    content: Text('You have completed "${quest.title}".'),
+                    title: Text(tr(context, 'quest_completed_title')),
+                    content: Text(tr(context, 'quest_completed_content', {'title': quest.title})),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(ctx).pop(),
-                        child: const Text('OK'),
+                        child: Text(tr(context, 'ok')),
                       ),
                     ],
                   ),
@@ -66,7 +67,11 @@ class EcoQuestCard extends StatelessWidget {
             : () {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text("“${quest.title}” — ${quest.progress}/${quest.goal}"),
+                    content: Text(tr(context, 'quest_progress', {
+                      'title': quest.title,
+                      'progress': quest.progress.toString(),
+                      'goal': quest.goal.toString()
+                    })),
                     backgroundColor: scheme.primary.withValues(alpha:0.88),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                     duration: Duration(milliseconds: 900),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
 class HelpPage extends StatelessWidget {
   const HelpPage({Key? key}) : super(key: key);
@@ -7,7 +8,7 @@ class HelpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('FAQ, support, à propos', style: Theme.of(context).textTheme.titleLarge),
+  child: Text(tr(context, 'help_title'), style: Theme.of(context).textTheme.titleLarge),
       ),
     );
   }

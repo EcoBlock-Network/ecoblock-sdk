@@ -1,6 +1,7 @@
 
 import 'package:ecoblock_mobile/features/profile/presentation/pages/block_history_page.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dashboard_header.dart';
@@ -55,39 +56,39 @@ class ProfilePage extends ConsumerWidget {
                       const SizedBox(height: 22),
                       Center(child: EcoProgressCircle(xp: profile.xp)),
                       const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Statistiques', icon: Icons.bar_chart),
+                      EcoSectionTitle(title: tr(context, 'profile.stats'), icon: Icons.bar_chart),
                       statsAsync.when(
                         data: (stats) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 13),
                           child: StatGrid(stats: stats),
                         ),
                         loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => const Text('Erreur stats'),
+                        error: (e, _) => Text(tr(context, 'profile.error_stats')),
                       ),
                       const SizedBox(height: 22),
-                      EcoSectionTitle(title: 'Badges', icon: Icons.emoji_events),
+                      EcoSectionTitle(title: tr(context, 'profile.badges'), icon: Icons.emoji_events),
                       badgesAsync.when(
                         data: (badges) => Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 13),
                           child: BadgeList(badges: badges),
                         ),
                         loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => const Text('Erreur badges'),
+                        error: (e, _) => Text(tr(context, 'profile.error_badges')),
                       ),
                       const SizedBox(height: 22),
-                      EcoSectionTitle(title: 'Loots', icon: Icons.card_giftcard),
+                      EcoSectionTitle(title: tr(context, 'profile.loots'), icon: Icons.card_giftcard),
                       lootAsync.when(
                         data: (loot) => loot.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 13),
                                 child: LootList(loot: loot),
                               )
-                            : const Center(child: Text('Aucun loot débloqué', style: TextStyle(color: Colors.grey))),
+                            : Center(child: Text(tr(context, 'no_loot'), style: TextStyle(color: Colors.grey))),
                         loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (e, _) => const Text('Erreur loots'),
+                        error: (e, _) => Text(tr(context, 'profile.error_loots')),
                       ),
                       const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Activité', icon: Icons.history),
+                      EcoSectionTitle(title: tr(context, 'profile.activity'), icon: Icons.history),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 13),
                         child: GestureDetector(
@@ -109,12 +110,12 @@ class ProfilePage extends ConsumerWidget {
                                     child: Icon(Icons.history, color: scheme.primary),
                                   ),
                                   const SizedBox(width: 16),
-                                  const Expanded(
+                                  Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Text('Historique des blocs', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                        Text('Voir vos contributions au réseau mesh', style: TextStyle(color: Colors.grey)),
+                                        Text(tr(context, 'profile.block_history_title'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                        Text(tr(context, 'profile.block_history_sub'), style: TextStyle(color: Colors.grey)),
                                       ],
                                     ),
                                   ),
@@ -129,7 +130,7 @@ class ProfilePage extends ConsumerWidget {
                     ],
                   ),
                   loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => const Center(child: Text('Erreur profil')),
+                  error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
                 ),
               ),
             ),

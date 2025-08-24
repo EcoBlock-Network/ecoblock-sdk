@@ -1,70 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
-import 'package:ecoblock_mobile/features/quests/data/services/quest_service.dart';
 import 'eco_quest_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../profile/presentation/providers/profile_provider.dart';
+import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/unique_quests_provider.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
-class EcoUniqueQuestsList extends ConsumerStatefulWidget {
+class EcoUniqueQuestsList extends ConsumerWidget {
   const EcoUniqueQuestsList({super.key});
 
-  @override
-  ConsumerState<EcoUniqueQuestsList> createState() => _EcoUniqueQuestsListState();
-}
-
-class _EcoUniqueQuestsListState extends ConsumerState<EcoUniqueQuestsList> {
-  Future<List<Quest>> _loadUniqueQuests() async {
-    final service = QuestService();
-    return await service.loadUniqueQuests();
-  }
-
-  void _handleCompletedQuestTap(Quest quest) async {
+  void _handleCompletedQuestTap(BuildContext context, WidgetRef ref, Quest quest) async {
     final profileNotifier = ref.read(profileProvider.notifier);
     final xpToAdd = 100;
     await Future.delayed(const Duration(milliseconds: 400));
-    await profileNotifier.completeUniqueQuestAndAddXP(quest.id, xpToAdd);
-    if (mounted) {
+    final success = await profileNotifier.completeUniqueQuestAndAddXP(quest.id, xpToAdd);
+    if (success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('+${xpToAdd} XP added to your profile!'),
+          content: Text(tr(context, 'xp_added', {'xp': xpToAdd.toString()})),
           backgroundColor: Colors.green,
+        ),
+      );
+    } else if (!success && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(tr(context, 'could_not_complete_quest')),
+          backgroundColor: Colors.red,
         ),
       );
     }
   }
 
   @override
-  Widget build(BuildContext context) {
-    final profileAsync = ref.watch(profileProvider);
-    return FutureBuilder<List<Quest>>(
-      future: _loadUniqueQuests(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasError) {
-          return Center(child: Text('Loading error'));
-        }
-        final quests = snapshot.data ?? [];
-        final completedIds = profileAsync.maybeWhen(
-          data: (profile) => profile.completedUniqueQuestIds,
-          orElse: () => <String>[],
-        );
-        final showQuests = quests.where((q) => !completedIds.contains(q.id)).take(3).toList();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final questsAsync = ref.watch(uniqueQuestsProvider);
+    return questsAsync.when(
+      data: (quests) {
+        final showQuests = quests.take(3).toList();
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ...showQuests.map((q) => AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  child: EcoQuestCard(
-                    key: ValueKey(q.id),
-                    quest: q,
-                    vibrant: true,
-                    onCompletedTap: q.isCompleted
-                        ? () => _handleCompletedQuestTap(q)
-                        : null,
-                  ),
-                )),
+            ...showQuests.map((q) {
+              return AnimatedSwitcher(
+                duration: const Duration(milliseconds: 400),
+                child: EcoQuestCard(
+                  key: ValueKey(q.id),
+                  quest: q,
+                  vibrant: true,
+                  onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
+                ),
+              );
+            }).toList(),
             if (quests.length > 3)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, left: 8.0),
@@ -82,17 +68,15 @@ class _EcoUniqueQuestsListState extends ConsumerState<EcoUniqueQuestsList> {
                           controller: controller,
                           padding: const EdgeInsets.all(16),
                           children: [
-                            Text('Toutes les quêtes uniques', style: Theme.of(context).textTheme.titleLarge),
+                            Text(tr(context, 'unique_quests_all'), style: Theme.of(context).textTheme.titleLarge),
                             const SizedBox(height: 16),
-                            ...quests.where((q) => !completedIds.contains(q.id)).map((q) => Padding(
+                            ...quests.map((q) => Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 6.0),
                                   child: EcoQuestCard(
                                     key: ValueKey(q.id),
                                     quest: q,
                                     vibrant: true,
-                                    onCompletedTap: q.isCompleted
-                                        ? () => _handleCompletedQuestTap(q)
-                                        : null,
+                                    onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
                                   ),
                                 )),
                           ],
@@ -100,12 +84,14 @@ class _EcoUniqueQuestsListState extends ConsumerState<EcoUniqueQuestsList> {
                       ),
                     );
                   },
-                  child: const Text('Voir plus'),
+                  child: Text(tr(context, 'see_more')),
                 ),
               ),
           ],
         );
       },
+      loading: () => const Center(child: CircularProgressIndicator()),
+  error: (_, __) => Center(child: Text(tr(context, 'loading_error'))),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/community_tree.dart';
 
 class CommunityTreeWidget extends StatelessWidget {
@@ -11,12 +12,12 @@ class CommunityTreeWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Arbre communautaire', style: Theme.of(context).textTheme.titleMedium),
+  Text(tr(context, 'community.tree_title'), style: Theme.of(context).textTheme.titleMedium),
         SizedBox(
           height: 180,
           child: CustomPaint(
             painter: _TreePainter(tree.growthScore),
-            child: Center(child: Text('Score: ${tree.growthScore}', style: const TextStyle(fontWeight: FontWeight.bold))),
+            child: Center(child: Text(tr(context, 'community.score', {'score': tree.growthScore.toString()}), style: const TextStyle(fontWeight: FontWeight.bold))),
           ),
         ),
       ],

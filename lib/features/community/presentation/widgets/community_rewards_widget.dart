@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/reward.dart';
 import 'reward_card.dart';
 
@@ -12,7 +13,7 @@ class CommunityRewardsWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Récompenses communautaires', style: Theme.of(context).textTheme.titleMedium),
+  Text(tr(context, 'community.rewards_title'), style: Theme.of(context).textTheme.titleMedium),
         SizedBox(
           height: 120,
           child: ListView(

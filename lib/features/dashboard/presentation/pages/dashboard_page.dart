@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../widgets/eco_dashboard_header.dart';
 import '../widgets/eco_section_title.dart';
@@ -53,13 +54,13 @@ class DashboardPage extends ConsumerWidget {
                       Center(child: EcoProgressCircle(xp: profile.xp)),
                       const SizedBox(height: 13),
                       const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Daily Quests', icon: Icons.eco),
+                      EcoSectionTitle(title: tr(context, 'daily_quests.title'), icon: Icons.eco),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 13),
                         child: EcoDailyQuestsList(),
                       ),
                       const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Unique Quests', icon: Icons.star),
+                      EcoSectionTitle(title: tr(context, 'unique_quests.title'), icon: Icons.star),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: EcoUniqueQuestsList(),
@@ -68,7 +69,7 @@ class DashboardPage extends ConsumerWidget {
                     ],
                   ),
                   loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Center(child: Text('Profile error')),
+                  error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
                 ),
               ),
             ),

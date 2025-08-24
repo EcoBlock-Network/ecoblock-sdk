@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/block_list_provider.dart';
 import '../widgets/profile_widgets.dart';
-import '../../domain/entities/block_data.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
+// ...existing code... (removed unused import)
 
 class BlockHistoryPage extends ConsumerStatefulWidget {
   const BlockHistoryPage({super.key});
@@ -20,7 +21,7 @@ class _BlockHistoryPageState extends ConsumerState<BlockHistoryPage> {
     final blocksAsync = ref.watch(blockListProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mes Blocs'),
+  title: Text(tr(context, 'my_blocks')),
       ),
       body: Column(
         children: [
@@ -44,7 +45,7 @@ class _BlockHistoryPageState extends ConsumerState<BlockHistoryPage> {
                   ? blocks
                   : blocks.where((b) => b.type == _selectedType).toList();
                 if (filtered.isEmpty) {
-                  return Center(child: Text('Aucun bloc disponible', style: TextStyle(color: Theme.of(context).colorScheme.secondary)));
+                  return Center(child: Text(tr(context, 'no_blocks'), style: TextStyle(color: Theme.of(context).colorScheme.secondary)));
                 }
                 return ListView.builder(
                   itemCount: filtered.length,
@@ -58,7 +59,7 @@ class _BlockHistoryPageState extends ConsumerState<BlockHistoryPage> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Erreur chargement blocs')),
+              error: (e, _) => Center(child: Text(tr(context, 'error_loading_blocks'))),
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/quest_provider.dart';
 import '../widgets/quest_card.dart';
@@ -12,7 +13,7 @@ class PersonalQuestsPage extends ConsumerWidget {
     final questsAsync = ref.watch(personalQuestsProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mes Quêtes'),
+        title: Text(tr(context, 'my_quests')),
         backgroundColor: scheme.primary,
       ),
       body: Padding(
@@ -21,7 +22,7 @@ class PersonalQuestsPage extends ConsumerWidget {
           data: (quests) {
             if (quests.isEmpty) {
               return Center(
-                child: Text('Aucune quête disponible', style: Theme.of(context).textTheme.bodyLarge),
+                child: Text(tr(context, 'no_quests_available'), style: Theme.of(context).textTheme.bodyLarge),
               );
             }
             return ListView.separated(
@@ -32,7 +33,7 @@ class PersonalQuestsPage extends ConsumerWidget {
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (e, _) => Center(
-            child: Text('Erreur de chargement des quêtes', style: TextStyle(color: scheme.error)),
+            child: Text(tr(context, 'error_loading_quests'), style: TextStyle(color: scheme.error)),
           ),
         ),
       ),

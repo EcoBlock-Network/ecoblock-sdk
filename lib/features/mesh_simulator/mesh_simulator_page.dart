@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'mesh_simulator_controller.dart';
 
@@ -9,7 +10,7 @@ class MeshSimulatorPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final topology = ref.watch(meshSimulatorProvider);
     return Scaffold(
-      appBar: AppBar(title: const Text('Simulateur Mesh BLE')),
+  appBar: AppBar(title: Text(tr(context, 'mesh_simulator_title'))),
       body: Center(
         child: SizedBox(
           width: 320,

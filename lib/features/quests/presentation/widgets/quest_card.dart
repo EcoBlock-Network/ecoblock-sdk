@@ -1,5 +1,6 @@
 import '../../domain/entities/quest.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
 /// Widget to display a quest card
 class QuestCard extends StatelessWidget {
@@ -25,8 +26,8 @@ class QuestCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Progression: ${quest.progress}/${quest.goal}', style: Theme.of(context).textTheme.bodySmall),
-                Text('Fin: ${_formatDate(quest.endDate)}', style: Theme.of(context).textTheme.bodySmall),
+                Text(tr(context, 'quest.progress', {'progress': quest.progress.toString(), 'goal': quest.goal.toString()}), style: Theme.of(context).textTheme.bodySmall),
+                Text(tr(context, 'quest.ends', {'date': _formatDate(quest.endDate)}), style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
           ],

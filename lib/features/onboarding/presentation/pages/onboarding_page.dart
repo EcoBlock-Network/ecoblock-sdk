@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dashboard_header.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_progress_circle.dart';
@@ -47,11 +48,11 @@ class OnboardingPage extends ConsumerWidget {
                       Center(child: EcoProgressCircle(xp: profile.xp)),
                       const SizedBox(height: 13),
                       const SizedBox(height: 28),
-                      EcoSectionTitle(title: 'Welcome to EcoBlock', icon: Icons.eco),
+                      EcoSectionTitle(title: tr(context, 'onboarding.welcome'), icon: Icons.eco),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18),
                         child: Text(
-                          "Let's get started! Complete your profile and discover your first quests.",
+                          tr(context, 'onboarding.hint'),
                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                 color: scheme.onSurface.withValues(alpha:0.7),
                                 fontWeight: FontWeight.w500,
@@ -63,7 +64,7 @@ class OnboardingPage extends ConsumerWidget {
                       Center(
                         child: ElevatedButton.icon(
                           icon: const Icon(Icons.arrow_forward_rounded),
-                          label: const Text('Start my adventure'),
+                          label: Text(tr(context, 'onboarding.start')),
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
@@ -77,7 +78,7 @@ class OnboardingPage extends ConsumerWidget {
                     ],
                   ),
                   loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Center(child: Text('Profile error')),
+                  error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
                 ),
               ),
             ),

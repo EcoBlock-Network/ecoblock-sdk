@@ -222,7 +222,9 @@ class _StoryViewerState extends ConsumerState<StoryViewer>
                     left: 16,
                     child: CircleAvatar(
                       radius: 22,
-                      backgroundImage: AssetImage(group.ownerAvatar),
+            backgroundImage:
+              group.ownerAvatar.isNotEmpty ? AssetImage(group.ownerAvatar) : null,
+            child: group.ownerAvatar.isEmpty ? Icon(Icons.person, color: Colors.white, size: 20) : null,
                     ),
                   ),
                   Positioned(

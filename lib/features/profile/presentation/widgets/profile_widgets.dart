@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/block_data.dart';
 import '../../domain/entities/stats.dart';
 import '../../domain/entities/badge.dart' as eco;
@@ -9,14 +10,14 @@ class BlockCard extends StatelessWidget {
   final VoidCallback? onDetail;
   const BlockCard({Key? key, required this.block, this.onDetail}) : super(key: key);
 
-  String get typeLabel {
+  String typeLabel(BuildContext context) {
     switch (block.type) {
-      case 'air': return 'Air';
-      case 'water': return 'Eau';
-      case 'earth': return 'Sol';
-      case 'température': return 'Température';
-      case 'CO2': return 'CO₂';
-      case 'PM2.5': return 'PM2.5';
+      case 'air': return tr(context, 'type.air');
+      case 'water': return tr(context, 'type.water');
+      case 'earth': return tr(context, 'type.earth');
+      case 'température': return tr(context, 'type.temperature');
+      case 'CO2': return tr(context, 'type.co2');
+      case 'PM2.5': return tr(context, 'type.pm25');
       default: return block.type;
     }
   }
@@ -33,11 +34,11 @@ class BlockCard extends StatelessWidget {
     }
   }
 
-  String get statusLabel {
+  String statusLabel(BuildContext context) {
     switch (block.statut) {
-      case 'collected': return 'Créé';
-      case 'pending': return 'Relayé';
-      case 'validated': return 'Validé';
+      case 'collected': return tr(context, 'status.collected');
+      case 'pending': return tr(context, 'status.pending');
+      case 'validated': return tr(context, 'status.validated');
       default: return block.statut;
     }
   }
@@ -63,14 +64,14 @@ class BlockCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 3,
         child: ListTile(
-          leading: Icon(typeIcon, color: color, size: 32),
-          title: Text('${typeLabel} : ${block.value}', style: TextStyle(fontWeight: FontWeight.bold)),
+      leading: Icon(typeIcon, color: color, size: 32),
+          title: Text(tr(context, 'profile.type_value', {'type': typeLabel(context), 'value': block.value.toString()}), style: TextStyle(fontWeight: FontWeight.bold)),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('ID: ${block.id.substring(0, 6)}...'),
-              Text('Reçu ${formattedTime}'),
-              Text('Statut: $statusLabel'),
+        Text(tr(context, 'profile.block_id', {'id': block.id.substring(0, 6)})),
+        Text(tr(context, 'profile.received', {'time': formattedTime})),
+        Text(tr(context, 'profile.status', {'status': statusLabel(context)})),
             ],
           ),
           trailing: onDetail != null ? IconButton(

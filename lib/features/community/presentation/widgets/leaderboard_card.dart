@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/leaderboard_entry.dart';
 
 class LeaderboardCard extends StatelessWidget {
@@ -19,7 +20,7 @@ class LeaderboardCard extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: Colors.white,
-              child: Text('${rank + 1}', style: const TextStyle(fontWeight: FontWeight.bold)),
+              child: Text(tr(context, 'leaderboard.rank', {'rank': (rank + 1).toString()}), style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -27,7 +28,7 @@ class LeaderboardCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(entry.pseudo, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text('Score: ${entry.score}', style: const TextStyle(fontSize: 12)),
+                  Text(tr(context, 'leaderboard.score', {'score': entry.score.toString()}), style: const TextStyle(fontSize: 12)),
                 ],
               ),
             ),

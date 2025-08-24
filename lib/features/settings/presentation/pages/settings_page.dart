@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
@@ -13,20 +14,20 @@ class SettingsPage extends ConsumerWidget {
     final dataSaverEnabled = ref.watch(dataSaverProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Réglages')),
+      appBar: AppBar(title: Text(tr(context, 'settings.title'))),
       body: ListView(
         children: [
-          const _SectionTitle('Affichage'),
+          _SectionTitle(tr(context, 'settings.display')),
           SettingsTile(
             icon: Icons.brightness_6,
-            title: 'Thème',
+            title: tr(context, 'settings.theme'),
             subtitle: _themeLabel(themeMode),
             trailing: DropdownButton<ThemeMode>(
               value: themeMode,
-              items: const [
-                DropdownMenuItem(value: ThemeMode.light, child: Text('Clair')),
-                DropdownMenuItem(value: ThemeMode.dark, child: Text('Sombre')),
-                DropdownMenuItem(value: ThemeMode.system, child: Text('Système')),
+                items: [
+                DropdownMenuItem(value: ThemeMode.light, child: Text(tr(context, 'theme.light'))),
+                DropdownMenuItem(value: ThemeMode.dark, child: Text(tr(context, 'theme.dark'))),
+                DropdownMenuItem(value: ThemeMode.system, child: Text(tr(context, 'theme.system'))),
               ],
               onChanged: (mode) {
                 if (mode != null) ref.read(themeProvider.notifier).setTheme(mode);
@@ -35,45 +36,45 @@ class SettingsPage extends ConsumerWidget {
           ),
           SettingsTile(
             icon: Icons.language,
-            title: 'Langue',
+            title: tr(context, 'settings.language'),
             subtitle: _languageLabel(selectedLanguage),
             trailing: DropdownButton<String>(
               value: selectedLanguage,
-              items: const [
-                DropdownMenuItem(value: 'fr', child: Text('Français')),
-                DropdownMenuItem(value: 'en', child: Text('Anglais')),
-                DropdownMenuItem(value: 'es', child: Text('Espagnol')),
+                items: [
+                DropdownMenuItem(value: 'fr', child: Text(tr(context, 'lang.fr'))),
+                DropdownMenuItem(value: 'en', child: Text(tr(context, 'lang.en'))),
+                DropdownMenuItem(value: 'es', child: Text(tr(context, 'lang.es'))),
               ],
               onChanged: (lang) {
                 if (lang != null) ref.read(languageProvider.notifier).setLanguage(lang);
               },
             ),
           ),
-          const _SectionTitle('Notifications'),
+          _SectionTitle(tr(context, 'settings.notifications')),
           SettingsTile(
             icon: Icons.notifications,
-            title: 'Notifications push',
-            subtitle: notificationsEnabled ? 'Activées' : 'Désactivées',
+            title: tr(context, 'settings.notifications'),
+            subtitle: notificationsEnabled ? tr(context, 'enabled') : tr(context, 'disabled'),
             trailing: Switch(
               value: notificationsEnabled,
               onChanged: (_) => ref.read(notificationsProvider.notifier).toggle(),
             ),
           ),
-          const _SectionTitle('Qualité des médias'),
+          _SectionTitle(tr(context, 'settings.data_saver')),
           SettingsTile(
             icon: Icons.data_saver_on,
-            title: 'Économie de données',
-            subtitle: dataSaverEnabled ? 'Activée' : 'Désactivée',
+            title: tr(context, 'settings.data_saver'),
+            subtitle: dataSaverEnabled ? tr(context, 'enabled') : tr(context, 'disabled'),
             trailing: Switch(
               value: dataSaverEnabled,
               onChanged: (_) => ref.read(dataSaverProvider.notifier).toggle(),
             ),
           ),
-          const _SectionTitle('Confidentialité'),
+          _SectionTitle(tr(context, 'settings.privacy')),
           SettingsTile(
             icon: Icons.delete_forever,
-            title: 'Effacer les données locales',
-            subtitle: 'Supprime toutes les données stockées sur l’appareil',
+            title: tr(context, 'settings.erase_local_data'),
+            subtitle: tr(context, 'settings.erase_local_data_sub'),
             trailing: IconButton(
               icon: const Icon(Icons.delete),
               onPressed: () => _confirmErase(context),
@@ -81,24 +82,24 @@ class SettingsPage extends ConsumerWidget {
           ),
           SettingsTile(
             icon: Icons.restart_alt,
-            title: 'Réinitialiser les réglages',
-            subtitle: 'Remettre tous les paramètres à zéro',
+            title: tr(context, 'settings.reset_settings'),
+            subtitle: tr(context, 'settings.reset_settings'),
             trailing: IconButton(
               icon: const Icon(Icons.refresh),
               onPressed: () => _confirmReset(context, ref),
             ),
           ),
-          const _SectionTitle('À propos'),
+          _SectionTitle(tr(context, 'settings.about')),
           SettingsTile(
             icon: Icons.info_outline,
-            title: 'Version de l’application',
+            title: tr(context, 'settings.about.version'),
             subtitle: '1.0.0',
             trailing: const SizedBox.shrink(),
           ),
           SettingsTile(
             icon: Icons.article,
-            title: 'Mentions légales / CGU',
-            subtitle: 'Consulter les conditions d’utilisation',
+            title: tr(context, 'settings.legal'),
+            subtitle: tr(context, 'settings.legal_action'),
             trailing: IconButton(
               icon: const Icon(Icons.open_in_new),
               onPressed: () {
@@ -139,15 +140,15 @@ class SettingsPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Effacer les données locales'),
-        content: const Text('Cette action est irréversible. Voulez-vous continuer ?'),
+        title: Text(tr(context, 'settings.erase_local_data')),
+        content: Text(tr(context, 'settings.erase_local_data_sub')),
         actions: [
           TextButton(
-            child: const Text('Annuler'),
+            child: Text(tr(context, 'confirm.cancel')),
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           TextButton(
-            child: const Text('Effacer'),
+            child: Text(tr(context, 'confirm.erase')),
             onPressed: () {
               // TODO: Effacer les données locales (mock)
               Navigator.of(ctx).pop();
@@ -162,15 +163,15 @@ class SettingsPage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Réinitialiser les réglages'),
-        content: const Text('Tous les paramètres seront remis à zéro. Voulez-vous continuer ?'),
+        title: Text(tr(context, 'settings.reset_settings')),
+        content: Text(tr(context, 'settings.reset_settings')),
         actions: [
           TextButton(
-            child: const Text('Annuler'),
+            child: Text(tr(context, 'confirm.cancel')),
             onPressed: () => Navigator.of(ctx).pop(),
           ),
           TextButton(
-            child: const Text('Réinitialiser'),
+            child: Text(tr(context, 'confirm.reset')),
             onPressed: () {
               // Reset using public methods
               final notif = ref.read(notificationsProvider.notifier);

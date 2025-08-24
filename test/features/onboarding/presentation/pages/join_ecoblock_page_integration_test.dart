@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/features/onboarding/presentation/pages/join_ecoblock_page.dart';
 import 'package:ecoblock_mobile/features/onboarding/application/controllers/onboarding_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   testWidgets('Association stocke l’état et navigation vers Dashboard', (WidgetTester tester) async {
-    await tester.pumpWidget(const ProviderScope(child: CupertinoApp(home: JoinEcoBlockPage())));
+  await tester.pumpWidget(ProviderScope(child: MaterialApp(home: JoinEcoBlockPage())));
     expect(find.text('Créer mon nœud'), findsOneWidget);
     await tester.tap(find.text('Créer mon nœud'));
     await tester.pumpAndSettle();

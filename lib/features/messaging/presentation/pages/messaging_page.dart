@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
 
 class MessagingPage extends ConsumerWidget {
@@ -8,8 +9,8 @@ class MessagingPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      body: const Center(
-        child: Text('Page de messagerie'),
+      body: Center(
+        child: Text(tr(context, 'messaging.title')),
       ),
     );
   }

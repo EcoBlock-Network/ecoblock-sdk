@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
 class EcoProgressCircle extends StatelessWidget {
   final int? xp;
@@ -105,7 +106,7 @@ class EcoProgressCircle extends StatelessWidget {
           children: [
             Icon(Icons.eco, size: size * 0.32, color: scheme.primary),
             const SizedBox(height: 8),
-            Text('Level $displayLevel',
+            Text(tr(context, 'level.display', {'level': displayLevel.toString()}),
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -114,7 +115,7 @@ class EcoProgressCircle extends StatelessWidget {
                 )),
             const SizedBox(height: 3),
             Text(
-              '$xpCurrent / $xpNeeded XP',
+              tr(context, 'xp.progress', {'current': xpCurrent.toString(), 'needed': xpNeeded.toString()}),
               style: TextStyle(
                 fontSize: 12.2,
                 color: scheme.primary.withValues(alpha:0.63),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/reward.dart';
 
 class RewardCard extends StatelessWidget {
@@ -25,7 +26,7 @@ class RewardCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(reward.name, style: TextStyle(fontWeight: FontWeight.bold, color: unlocked ? Colors.black : Colors.grey)),
-                    Text('Palier: ${reward.threshold}', style: const TextStyle(fontSize: 12)),
+                    Text(tr(context, 'reward.threshold', {'threshold': reward.threshold.toString()}), style: const TextStyle(fontSize: 12)),
                   ],
                 ),
               ),

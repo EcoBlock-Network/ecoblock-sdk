@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/mesh_map.dart';
 
 class MeshMapWidget extends StatelessWidget {
@@ -10,7 +11,7 @@ class MeshMapWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Carte du réseau local', style: Theme.of(context).textTheme.titleMedium),
+  Text(tr(context, 'community.map_title'), style: Theme.of(context).textTheme.titleMedium),
         SizedBox(
           height: 180,
           child: CustomPaint(
@@ -35,7 +36,6 @@ class _MeshPainter extends CustomPainter {
     final positions = <String, Offset>{};
     final count = meshMap.nodes.length;
     for (var i = 0; i < count; i++) {
-      final angle = (2 * 3.14159 * i) / count;
       final x = size.width/2 + 60 * (1.2 * (i%2+1)) * (i.isEven ? 1 : -1) * (0.5 + i/10) * (i%3==0 ? 1 : 0.8);
       final y = size.height/2 + 60 * (1.2 * (i%2+1)) * (i.isOdd ? 1 : -1) * (0.5 + i/10) * (i%3==0 ? 1 : 0.8);
       positions[meshMap.nodes[i].id] = Offset(x, y);
