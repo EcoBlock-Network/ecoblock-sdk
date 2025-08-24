@@ -29,7 +29,7 @@ class EcoDashboardHeader extends StatelessWidget {
                 ),
                 child: CircleAvatar(
                   backgroundColor: Colors.white.withValues(alpha:0.28),
-                  backgroundImage: AssetImage('assets/images/mock_avatar.png'),
+                  backgroundImage: AssetImage('assets/images/mock_story.png'),
                   radius: 22,
                 ),
               ),
