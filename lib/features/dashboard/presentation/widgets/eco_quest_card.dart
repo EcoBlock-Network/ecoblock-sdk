@@ -43,11 +43,13 @@ class EcoQuestCard extends StatelessWidget {
               ));
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: small ? 4 : 7, horizontal: small ? 4 : 0),
+      padding: EdgeInsets.symmetric(vertical: small ? 6 : 8, horizontal: small ? 6 : 4),
       child: Stack(
         children: [
-          GestureDetector(
-                onTap: isCompleted
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: isCompleted
             ? (onCompletedTap ?? () {
                 // Default completed quest tap: show a dialog
                 showDialog(
@@ -78,12 +80,12 @@ class EcoQuestCard extends StatelessWidget {
                   ),
                 );
               },
-        child: Opacity(
+              child: Opacity(
           opacity: isCompleted ? 0.7 : 1.0,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(small ? 15 : 20),
             child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
+              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
               child: Container(
                 width: small ? 168 : null,
                 padding: EdgeInsets.symmetric(horizontal: small ? 12 : 17, vertical: small ? 11 : 15),
@@ -178,9 +180,9 @@ class EcoQuestCard extends StatelessWidget {
                 ),
               ),
             ),
-            
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
   }
 }

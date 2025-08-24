@@ -100,7 +100,7 @@ class _EcoNavBarItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _EcoNavBarItem({required this.icon,
+  const _EcoNavBarItem({super.key, required this.icon,
     required this.label,
     required this.selected,
     required this.onTap,
@@ -109,14 +109,17 @@ class _EcoNavBarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.translucent,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOutCubic,
-        padding: EdgeInsets.symmetric(horizontal: 7, vertical: selected ? 6 : 10),
-        decoration: selected
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(14),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: selected ? 8 : 12),
+          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
+          decoration: selected
             ? BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
                 gradient: LinearGradient(
@@ -129,16 +132,16 @@ class _EcoNavBarItem extends StatelessWidget {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withValues(alpha:0.14),
-                    blurRadius: 14,
-                    offset: const Offset(0, 3),
+                    color: scheme.primary.withValues(alpha:0.10),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
                   )
                 ],
               )
             : null,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
             Icon(
               icon,
               size: selected ? 32 : 26,
@@ -166,8 +169,9 @@ class _EcoNavBarItem extends StatelessWidget {
               child: Text(label),
             ),
           ],
+            ),
+          ),
         ),
-      ),
     );
   }
 }

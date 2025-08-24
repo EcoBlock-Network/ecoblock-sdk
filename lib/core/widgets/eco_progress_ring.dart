@@ -32,7 +32,7 @@ class EcoProgressRing extends StatelessWidget {
               value: value,
               strokeWidth: 6,
               backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.green.shade700),
+              valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
             ),
           ),
           child,

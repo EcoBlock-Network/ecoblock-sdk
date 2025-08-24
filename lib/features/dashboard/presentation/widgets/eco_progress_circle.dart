@@ -57,7 +57,7 @@ class EcoProgressCircle extends StatelessWidget {
       children: [
         ClipOval(
           child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
             child: Container(
               width: size + 10,
               height: size + 10,
@@ -96,24 +96,16 @@ class EcoProgressCircle extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.eco, size: size * 0.32, color: scheme.primary),
-            const SizedBox(height: 8),
-            Text(tr(context, 'level.display', {'level': displayLevel.toString()}),
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: scheme.primary,
-                  letterSpacing: -0.3,
-                )),
-            const SizedBox(height: 3),
+            Icon(Icons.eco, size: size * 0.28, color: scheme.primary),
+            const SizedBox(height: 6),
+            Text(
+              tr(context, 'level.display', {'level': displayLevel.toString()}),
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: scheme.primary, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
             Text(
               tr(context, 'xp.progress', {'current': xpCurrent.toString(), 'needed': xpNeeded.toString()}),
-              style: TextStyle(
-                fontSize: 12.2,
-                color: scheme.primary.withValues(alpha: 0.63),
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.15,
-              ),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.primary.withValues(alpha: 0.68), fontWeight: FontWeight.w600),
             ),
           ],
         ),
