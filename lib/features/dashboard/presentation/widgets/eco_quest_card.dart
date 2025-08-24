@@ -173,7 +173,7 @@ class EcoQuestCard extends StatelessWidget {
                 ),
               ),
             ),
-            // ... badge de complétion retiré ...
+            
           ],
         ),
       );

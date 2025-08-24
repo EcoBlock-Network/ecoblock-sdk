@@ -1,6 +1,5 @@
 
 import 'package:ecoblock_mobile/features/profile/presentation/pages/block_history_page.dart';
-import 'package:ecoblock_mobile/services/rust_bridge_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
@@ -56,7 +55,6 @@ class ProfilePage extends ConsumerWidget {
                       const SizedBox(height: 22),
                       Center(child: EcoProgressCircle(xp: profile.xp)),
                       const SizedBox(height: 28),
-                      // Section Statistiques
                       EcoSectionTitle(title: 'Statistiques', icon: Icons.bar_chart),
                       statsAsync.when(
                         data: (stats) => Padding(
@@ -67,7 +65,6 @@ class ProfilePage extends ConsumerWidget {
                         error: (e, _) => const Text('Erreur stats'),
                       ),
                       const SizedBox(height: 22),
-                      // Section Badges
                       EcoSectionTitle(title: 'Badges', icon: Icons.emoji_events),
                       badgesAsync.when(
                         data: (badges) => Padding(

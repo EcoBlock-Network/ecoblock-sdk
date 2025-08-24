@@ -23,9 +23,10 @@ class ProfileNotifier extends AsyncNotifier<Profile> {
     return defaultProfile;
   }
 
-  /// Add XP to the current profile in memory and update state
   Future<void> addXP(int xpToAdd) async {
-    if (state case AsyncData(:final value)) {
+    final current = state;
+    if (current is AsyncData<Profile>) {
+      final value = current.value;
       final updated = value.copyWith(xp: value.xp + xpToAdd);
       state = AsyncData(updated);
       await _persistence.save(updated);
