@@ -1,7 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 class EcoHeroAvatar extends StatelessWidget {
   final String image;
-  const EcoHeroAvatar({required this.image});
+  const EcoHeroAvatar({super.key, required this.image});
+
   @override
   Widget build(BuildContext context) {
     return ClipOval(

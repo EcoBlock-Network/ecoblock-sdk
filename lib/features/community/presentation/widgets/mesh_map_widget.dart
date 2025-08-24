@@ -4,7 +4,7 @@ import '../../domain/entities/mesh_map.dart';
 
 class MeshMapWidget extends StatelessWidget {
   final MeshMap meshMap;
-  const MeshMapWidget({Key? key, required this.meshMap}) : super(key: key);
+  const MeshMapWidget({super.key, required this.meshMap});
 
   @override
   Widget build(BuildContext context) {

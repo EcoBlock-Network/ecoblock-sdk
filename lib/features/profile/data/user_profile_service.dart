@@ -18,7 +18,8 @@ class UserProfileService {
         badges: [],
         blocks: [],
         loot: [],
-        stats: /* TODO: provide default Stats */ throw UnimplementedError(),
+        stats: throw UnimplementedError(),
+        // ignore: dead_code
         nodeId: 'node1',
         completedUniqueQuestIds: [],
       );

@@ -12,7 +12,7 @@ import 'package:ecoblock_mobile/l10n/translation.dart';
 
 
 class CommunityPage extends ConsumerWidget {
-  const CommunityPage({Key? key}) : super(key: key);
+  const CommunityPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

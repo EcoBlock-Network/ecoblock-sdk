@@ -4,19 +4,11 @@ import 'package:ecoblock_mobile/l10n/translation.dart';
 
 class EcoProgressCircle extends StatelessWidget {
   final int? xp;
-  final int? xpBase;
   final int? level;
   final double? progress;
   final double size;
 
-  const EcoProgressCircle({
-    this.xp,
-    this.xpBase,
-    this.level,
-    this.progress,
-    this.size = 140,
-    Key? key,
-  }) : super(key: key);
+  const EcoProgressCircle({super.key, this.xp, this.level, this.progress, this.size = 140});
 
   int xpForLevel(int lvl) => 120 + 60 * (lvl - 1);
 
@@ -42,21 +34,21 @@ class EcoProgressCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    // Détermination du niveau/progression
-    int displayLevel;
-    double displayProgress;
+    // Determine display level/progress
+    late final int displayLevel;
+    late final double displayProgress;
     int xpCurrent = 0, xpNeeded = 0;
 
     if (xp != null) {
       final info = levelAndProgressFromXP(xp!);
-      displayLevel = info['level'];
-      displayProgress = info['progress'];
-      xpCurrent = info['xpCurrent'];
-      xpNeeded = info['xpNeeded'];
+      displayLevel = info['level'] as int;
+      displayProgress = info['progress'] as double;
+      xpCurrent = info['xpCurrent'] as int;
+      xpNeeded = info['xpNeeded'] as int;
     } else {
       displayLevel = level ?? 1;
       displayProgress = progress ?? 0.0;
-      xpCurrent = ((displayProgress) * xpForLevel(displayLevel)).round();
+      xpCurrent = (displayProgress * xpForLevel(displayLevel)).round();
       xpNeeded = xpForLevel(displayLevel);
     }
 
@@ -70,11 +62,11 @@ class EcoProgressCircle extends StatelessWidget {
               width: size + 10,
               height: size + 10,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha:0.11),
+                color: Colors.white.withValues(alpha: 0.11),
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withValues(alpha:0.12),
+                    color: scheme.primary.withValues(alpha: 0.12),
                     blurRadius: 20,
                     offset: const Offset(0, 7),
                   ),
@@ -87,20 +79,20 @@ class EcoProgressCircle extends StatelessWidget {
           width: size,
           height: size,
           child: TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0, end: displayProgress),
+            tween: Tween(begin: 0.0, end: displayProgress),
             duration: const Duration(milliseconds: 1400),
             curve: Curves.easeOutCubic,
             builder: (context, val, _) {
               return CircularProgressIndicator(
                 value: val,
                 strokeWidth: 14,
-                backgroundColor: scheme.surface.withValues(alpha:0.14),
+                backgroundColor: scheme.surface.withValues(alpha: 0.14),
                 valueColor: AlwaysStoppedAnimation(scheme.primary),
               );
             },
           ),
         ),
-        // Icone, niveau et XP progress
+        // Icon, level and XP progress
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -118,7 +110,7 @@ class EcoProgressCircle extends StatelessWidget {
               tr(context, 'xp.progress', {'current': xpCurrent.toString(), 'needed': xpNeeded.toString()}),
               style: TextStyle(
                 fontSize: 12.2,
-                color: scheme.primary.withValues(alpha:0.63),
+                color: scheme.primary.withValues(alpha: 0.63),
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.15,
               ),

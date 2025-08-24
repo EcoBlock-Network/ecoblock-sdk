@@ -1,12 +1,10 @@
 import 'package:ecoblock_mobile/app_shell.dart';
-import 'package:ecoblock_mobile/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../application/controllers/onboarding_controller.dart';
 
 class JoinEcoBlockPage extends ConsumerWidget {
-  const JoinEcoBlockPage({Key? key}) : super(key: key);
+  const JoinEcoBlockPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class JoinEcoBlockIntroText extends StatelessWidget {
-  const JoinEcoBlockIntroText({Key? key}) : super(key: key);
+  const JoinEcoBlockIntroText({super.key});
 
   @override
   Widget build(BuildContext context) {

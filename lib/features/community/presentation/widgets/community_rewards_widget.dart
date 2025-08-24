@@ -6,7 +6,7 @@ import 'reward_card.dart';
 class CommunityRewardsWidget extends StatelessWidget {
   final List<Reward> rewards;
   final int currentScore;
-  const CommunityRewardsWidget({Key? key, required this.rewards, required this.currentScore}) : super(key: key);
+  const CommunityRewardsWidget({super.key, required this.rewards, required this.currentScore});
 
   @override
   Widget build(BuildContext context) {

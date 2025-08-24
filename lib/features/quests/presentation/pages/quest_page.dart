@@ -5,7 +5,7 @@ import '../providers/quest_provider.dart';
 import '../widgets/quest_list.dart';
 
 class QuestPage extends ConsumerWidget {
-  const QuestPage({Key? key}) : super(key: key);
+  const QuestPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

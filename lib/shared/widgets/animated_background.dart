@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class AnimatedEcoBackground extends StatefulWidget {
   final Widget child;
-  const AnimatedEcoBackground({required this.child, Key? key}) : super(key: key);
+  const AnimatedEcoBackground({required this.child, super.key});
 
   @override
   State<AnimatedEcoBackground> createState() => _AnimatedEcoBackgroundState();

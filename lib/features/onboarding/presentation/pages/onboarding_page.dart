@@ -8,7 +8,7 @@ import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_prog
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_section_title.dart';
 
 class OnboardingPage extends ConsumerWidget {
-  const OnboardingPage({Key? key}) : super(key: key);
+  const OnboardingPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -16,7 +16,7 @@ class OnboardingPage extends ConsumerWidget {
     final profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
-      backgroundColor: scheme.background,
+      backgroundColor: scheme.surface,
       body: AnimatedEcoBackground(
         child: Stack(
           children: [
@@ -70,7 +70,6 @@ class OnboardingPage extends ConsumerWidget {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                           ),
                           onPressed: () {
-                            // TODO: Navigate to main dashboard or next onboarding step
                           },
                         ),
                       ),

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:ui';
 
@@ -41,8 +40,6 @@ class MeshSimulatorController extends StateNotifier<MeshTopology> {
   }
 
   void propagate(String fromId) {
-    // Simule la propagation d'un message
-    // TODO: Animation ou changement d'état
   }
 }
 

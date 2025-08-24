@@ -39,10 +39,10 @@ class StoryViewer extends ConsumerStatefulWidget {
   final VoidCallback? onClose;
 
   const StoryViewer({
-    Key? key,
+    super.key,
     required this.storyGroup,
     this.onClose,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<StoryViewer> createState() => _StoryViewerState();
@@ -174,9 +174,7 @@ class _StoryViewerState extends ConsumerState<StoryViewer>
         return Center(
           child: Icon(Icons.videocam, color: Colors.white, size: 64),
         );
-      default:
-        return Container(color: Colors.black);
-    }
+      }
   }
 
   void _onTapDown(TapDownDetails details, BoxConstraints constraints) {

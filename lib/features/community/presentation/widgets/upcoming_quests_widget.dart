@@ -4,7 +4,7 @@ import '../../domain/entities/upcoming_quest.dart';
 
 class UpcomingQuestsWidget extends StatelessWidget {
   final List<UpcomingQuest> quests;
-  const UpcomingQuestsWidget({Key? key, required this.quests}) : super(key: key);
+  const UpcomingQuestsWidget({super.key, required this.quests});
 
   @override
   Widget build(BuildContext context) {

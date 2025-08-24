@@ -1,4 +1,4 @@
-import 'dart:ui';
+// removed unused dart:ui import
 import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
@@ -15,6 +15,7 @@ final dashboardProgressProvider = StateProvider<double>((ref) => 0.0);
 
 
 class DashboardPage extends ConsumerWidget {
+  const DashboardPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +23,7 @@ class DashboardPage extends ConsumerWidget {
     final profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
-      backgroundColor: scheme.background,
+      backgroundColor: scheme.surface,
       body: AnimatedEcoBackground(
         child: Stack(
           children: [
@@ -30,9 +31,9 @@ class DashboardPage extends ConsumerWidget {
               top: -70,
               left: -80,
               child: _DashboardCircle(
-                diameter: 220,
-                color: scheme.primary.withValues(alpha:0.13),
-              ),
+                  diameter: 220,
+                  color: scheme.primary.withValues(alpha:0.13),
+                ),
             ),
             Positioned(
               bottom: -50,

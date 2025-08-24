@@ -5,7 +5,7 @@ import 'package:ecoblock_mobile/l10n/translation.dart';
 /// Widget to display a quest card
 class QuestCard extends StatelessWidget {
   final Quest quest;
-  const QuestCard({Key? key, required this.quest}) : super(key: key);
+  const QuestCard({super.key, required this.quest});
 
   @override
   Widget build(BuildContext context) {

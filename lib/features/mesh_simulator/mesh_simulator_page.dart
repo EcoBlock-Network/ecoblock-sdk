@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'mesh_simulator_controller.dart';
 
 class MeshSimulatorPage extends ConsumerWidget {
-  const MeshSimulatorPage({Key? key}) : super(key: key);
+  const MeshSimulatorPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

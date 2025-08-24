@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/features/onboarding/presentation/pages/join_ecoblock_page.dart';
-import 'package:ecoblock_mobile/features/onboarding/application/controllers/onboarding_controller.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {

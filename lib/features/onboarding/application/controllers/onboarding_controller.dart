@@ -1,7 +1,7 @@
 import 'package:ecoblock_mobile/services/rust_bridge_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/foundation.dart';
 import '../../data/datasources/onboarding_local_data_source.dart';
-import '../../../../src/rust/api/simple.dart';
 
 final onboardingControllerProvider =
     StateNotifierProvider<OnboardingController, bool>((ref) {
@@ -24,19 +24,19 @@ class OnboardingController extends StateNotifier<bool> {
       final isInit = await rustApi.nodeIsInitialized();
       String nodeId;
       if (!isInit) {
-        nodeId = await rustApi.createLocalNode();
-        print('[EcoBlock] Nouveau node créé ! NodeId : $nodeId');
+  nodeId = await rustApi.createLocalNode();
+  debugPrint('[EcoBlock] Nouveau node créé ! NodeId : $nodeId');
         // Optionnel : tu peux le stocker/localiser ici si besoin
       } else {
-        nodeId = await rustApi.getNodeId();
-        print('[EcoBlock] Node déjà initialisé. NodeId : $nodeId');
+  nodeId = await rustApi.getNodeId();
+  debugPrint('[EcoBlock] Node déjà initialisé. NodeId : $nodeId');
       }
       await localDataSource.setNodeAssociated(true);
       state = true;
     } catch (e, stack) {
-      print('[EcoBlock] Erreur lors de la création du node : $e');
-      print('Details: ${e.toString()}');
-      print('Stack: $stack');
+  debugPrint('[EcoBlock] Erreur lors de la création du node : $e');
+  debugPrint('Details: ${e.toString()}');
+  debugPrint('Stack: $stack');
     }
   }
 }

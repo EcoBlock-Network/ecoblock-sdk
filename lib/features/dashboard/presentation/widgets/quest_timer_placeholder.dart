@@ -3,7 +3,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 
 class QuestTimerPlaceholder extends StatefulWidget {
   final DateTime deletedAt;
-  const QuestTimerPlaceholder({required this.deletedAt, Key? key}) : super(key: key);
+  const QuestTimerPlaceholder({required this.deletedAt, super.key});
 
   @override
   State<QuestTimerPlaceholder> createState() => QuestTimerPlaceholderState();
@@ -11,6 +11,7 @@ class QuestTimerPlaceholder extends StatefulWidget {
 
 class QuestTimerPlaceholderState extends State<QuestTimerPlaceholder> {
   late Duration timeLeft;
+  // ignore: prefer_typing_uninitialized_variables
   late final ticker;
 
   @override

@@ -13,7 +13,7 @@ class ScanNotifier extends StateNotifier<bool> {
 }
 
 class ScanPage extends ConsumerWidget {
-  const ScanPage({Key? key}) : super(key: key);
+  const ScanPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

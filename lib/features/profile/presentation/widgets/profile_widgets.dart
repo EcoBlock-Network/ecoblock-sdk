@@ -8,7 +8,7 @@ import '../../domain/entities/loot_item.dart';
 class BlockCard extends StatelessWidget {
   final BlockData block;
   final VoidCallback? onDetail;
-  const BlockCard({Key? key, required this.block, this.onDetail}) : super(key: key);
+  const BlockCard({super.key, required this.block, this.onDetail});
 
   String typeLabel(BuildContext context) {
     switch (block.type) {
@@ -131,7 +131,7 @@ class _StatItem extends StatelessWidget {
 
 class BadgeList extends StatelessWidget {
   final List<eco.Badge> badges;
-  const BadgeList({Key? key, required this.badges}) : super(key: key);
+  const BadgeList({super.key, required this.badges});
 
   @override
   Widget build(BuildContext context) {

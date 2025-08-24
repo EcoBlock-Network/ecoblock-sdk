@@ -74,7 +74,7 @@ class EcoQuestCard extends StatelessWidget {
                     })),
                     backgroundColor: scheme.primary.withValues(alpha:0.88),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    duration: Duration(milliseconds: 900),
+                    duration: const Duration(milliseconds: 900),
                   ),
                 );
               },
@@ -155,7 +155,7 @@ class EcoQuestCard extends StatelessWidget {
                           LinearProgressIndicator(
                             value: quest.goal == 0 ? 0 : quest.progress / quest.goal,
                             minHeight: small ? 3.0 : 4.2,
-                            backgroundColor: scheme.surfaceVariant.withValues(alpha:0.17),
+                            backgroundColor: scheme.surfaceContainerHighest.withValues(alpha:0.17),
                             color: isCompleted ? Colors.green : scheme.primary,
                             borderRadius: BorderRadius.circular(4),
                           ),

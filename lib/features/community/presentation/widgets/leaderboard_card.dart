@@ -5,7 +5,7 @@ import '../../domain/entities/leaderboard_entry.dart';
 class LeaderboardCard extends StatelessWidget {
   final LeaderboardEntry entry;
   final int rank;
-  const LeaderboardCard({Key? key, required this.entry, required this.rank}) : super(key: key);
+  const LeaderboardCard({super.key, required this.entry, required this.rank});
 
   @override
   Widget build(BuildContext context) {

@@ -1,16 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 class EcoProgressRing extends StatelessWidget {
   final double progress;
   final Gradient gradient;
   final double size;
   final Widget child;
-  const EcoProgressRing({required this.progress, required this.gradient, required this.size, required this.child});
+
+  const EcoProgressRing({super.key, required this.progress, required this.gradient, required this.size, required this.child});
+
   @override
   Widget build(BuildContext context) {
     return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: progress),
-      duration: Duration(milliseconds: 800),
+      tween: Tween(begin: 0.0, end: progress),
+      duration: const Duration(milliseconds: 800),
       builder: (context, value, _) => Stack(
         alignment: Alignment.center,
         children: [
@@ -20,7 +22,7 @@ class EcoProgressRing extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: gradient,
-              boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)],
+              boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
             ),
           ),
           SizedBox(

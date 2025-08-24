@@ -6,7 +6,7 @@ import 'quest_card.dart';
 /// Widget to display a list of quests
 class QuestList extends StatelessWidget {
   final List<Quest> quests;
-  const QuestList({Key? key, required this.quests}) : super(key: key);
+  const QuestList({super.key, required this.quests});
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import 'features/community/presentation/pages/community_page.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
 
 class AppShell extends StatefulWidget {
-  const AppShell({Key? key}) : super(key: key);
+  const AppShell({super.key});
 
   @override
   State<AppShell> createState() => _AppShellState();
@@ -100,8 +100,7 @@ class _EcoNavBarItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _EcoNavBarItem({
-    required this.icon,
+  const _EcoNavBarItem({required this.icon,
     required this.label,
     required this.selected,
     required this.onTap,

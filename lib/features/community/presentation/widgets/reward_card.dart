@@ -5,7 +5,7 @@ import '../../domain/entities/reward.dart';
 class RewardCard extends StatelessWidget {
   final Reward reward;
   final bool unlocked;
-  const RewardCard({Key? key, required this.reward, required this.unlocked}) : super(key: key);
+  const RewardCard({super.key, required this.reward, required this.unlocked});
 
   @override
   Widget build(BuildContext context) {

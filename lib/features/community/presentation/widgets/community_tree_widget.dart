@@ -4,7 +4,7 @@ import '../../domain/entities/community_tree.dart';
 
 class CommunityTreeWidget extends StatelessWidget {
   final CommunityTree tree;
-  const CommunityTreeWidget({Key? key, required this.tree}) : super(key: key);
+  const CommunityTreeWidget({super.key, required this.tree});
 
   @override
   Widget build(BuildContext context) {

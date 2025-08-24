@@ -40,8 +40,8 @@ class EcoUniqueQuestsList extends ConsumerWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ...showQuests.map((q) {
-              return AnimatedSwitcher(
+            for (final q in showQuests)
+              AnimatedSwitcher(
                 duration: const Duration(milliseconds: 400),
                 child: EcoQuestCard(
                   key: ValueKey(q.id),
@@ -49,8 +49,7 @@ class EcoUniqueQuestsList extends ConsumerWidget {
                   vibrant: true,
                   onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
                 ),
-              );
-            }).toList(),
+              ),
             if (quests.length > 3)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0, left: 8.0),
@@ -64,22 +63,24 @@ class EcoUniqueQuestsList extends ConsumerWidget {
                         initialChildSize: 0.7,
                         minChildSize: 0.4,
                         maxChildSize: 0.95,
-                        builder: (_, controller) => ListView(
+                        builder: (_, controller) => ListView.builder(
                           controller: controller,
                           padding: const EdgeInsets.all(16),
-                          children: [
-                            Text(tr(context, 'unique_quests_all'), style: Theme.of(context).textTheme.titleLarge),
-                            const SizedBox(height: 16),
-                            ...quests.map((q) => Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                  child: EcoQuestCard(
-                                    key: ValueKey(q.id),
-                                    quest: q,
-                                    vibrant: true,
-                                    onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
-                                  ),
-                                )),
-                          ],
+                          itemCount: quests.length + 2,
+                          itemBuilder: (ctx, idx) {
+                            if (idx == 0) return Text(tr(context, 'unique_quests_all'), style: Theme.of(context).textTheme.titleLarge);
+                            if (idx == 1) return const SizedBox(height: 16);
+                            final q = quests[idx - 2];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 6.0),
+                              child: EcoQuestCard(
+                                key: ValueKey(q.id),
+                                quest: q,
+                                vibrant: true,
+                                onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
+                              ),
+                            );
+                          },
                         ),
                       ),
                     );

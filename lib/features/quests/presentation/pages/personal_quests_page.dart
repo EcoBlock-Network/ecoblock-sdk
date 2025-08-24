@@ -5,7 +5,7 @@ import '../providers/quest_provider.dart';
 import '../widgets/quest_card.dart';
 
 class PersonalQuestsPage extends ConsumerWidget {
-  const PersonalQuestsPage({Key? key}) : super(key: key);
+  const PersonalQuestsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

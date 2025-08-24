@@ -1,9 +1,8 @@
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class JoinEcoBlockInfoCard extends StatelessWidget {
-  const JoinEcoBlockInfoCard({Key? key}) : super(key: key);
+  const JoinEcoBlockInfoCard({super.key});
 
   @override
   Widget build(BuildContext context) {

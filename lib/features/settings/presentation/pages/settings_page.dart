@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
 class SettingsPage extends ConsumerWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -103,7 +103,7 @@ class SettingsPage extends ConsumerWidget {
             trailing: IconButton(
               icon: const Icon(Icons.open_in_new),
               onPressed: () {
-                // TODO: Ouvrir la page CGU
+
               },
             ),
           ),
@@ -150,7 +150,7 @@ class SettingsPage extends ConsumerWidget {
           TextButton(
             child: Text(tr(context, 'confirm.erase')),
             onPressed: () {
-              // TODO: Effacer les données locales (mock)
+
               Navigator.of(ctx).pop();
             },
           ),
@@ -235,12 +235,12 @@ class SettingsTile extends StatelessWidget {
   final String subtitle;
   final Widget trailing;
   const SettingsTile({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
     required this.trailing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

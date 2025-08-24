@@ -4,7 +4,7 @@ import '../../domain/entities/daily_quest.dart';
 
 class DailyQuestsWidget extends StatelessWidget {
   final List<DailyQuest> quests;
-  const DailyQuestsWidget({Key? key, required this.quests}) : super(key: key);
+  const DailyQuestsWidget({super.key, required this.quests});
 
   @override
   Widget build(BuildContext context) {

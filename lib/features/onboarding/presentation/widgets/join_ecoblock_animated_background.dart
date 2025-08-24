@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-// TODO: Intégrer Rive ou Lottie si disponible
 
 class JoinEcoBlockAnimatedBackground extends StatelessWidget {
-  const JoinEcoBlockAnimatedBackground({Key? key}) : super(key: key);
+  const JoinEcoBlockAnimatedBackground({super.key});
 
   @override
   Widget build(BuildContext context) {

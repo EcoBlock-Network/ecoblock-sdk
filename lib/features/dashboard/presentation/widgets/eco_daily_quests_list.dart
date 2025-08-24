@@ -17,7 +17,7 @@ class EcoDailyQuestsList extends ConsumerStatefulWidget {
 }
 
 class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
-  List<Quest?> _visibleQuests = [null, null, null];
+  final List<Quest?> _visibleQuests = [null, null, null];
 
   @override
   void initState() {
@@ -144,9 +144,9 @@ class AnimatedQuestCard extends StatefulWidget {
   final Quest quest;
   final Duration delay;
   const AnimatedQuestCard({
+    super.key,
     required this.quest,
     this.delay = Duration.zero,
-    super.key,
   });
   @override
   State<AnimatedQuestCard> createState() => _AnimatedQuestCardState();

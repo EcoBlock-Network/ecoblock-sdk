@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AnalyticsService {
   void logStoryViewed(String storyId) {
-  // TODO: Envoyer à un backend ou stocker localement
   debugPrint('[Analytics] Story viewed: $storyId');
   }
 

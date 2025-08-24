@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 
 class NodeDetailPage extends StatelessWidget {
-  const NodeDetailPage({Key? key}) : super(key: key);
+  const NodeDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {

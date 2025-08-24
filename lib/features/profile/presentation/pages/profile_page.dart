@@ -25,7 +25,7 @@ class ProfilePage extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: scheme.background,
+      backgroundColor: scheme.surface,
       body: AnimatedEcoBackground(
         child: Stack(
           children: [
