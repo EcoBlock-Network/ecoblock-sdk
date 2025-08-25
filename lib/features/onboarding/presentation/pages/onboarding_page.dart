@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
+import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dashboard_header.dart';
@@ -17,93 +17,54 @@ class OnboardingPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: scheme.surface,
-      body: AnimatedEcoBackground(
-        child: Stack(
-          children: [
-            Positioned(
-              top: -70,
-              left: -80,
-              child: _OnboardingCircle(
-                diameter: 220,
-                color: scheme.primary.withValues(alpha:0.13),
-              ),
-            ),
-            Positioned(
-              bottom: -50,
-              right: -40,
-              child: _OnboardingCircle(
-                diameter: 140,
-                color: scheme.tertiaryContainer.withValues(alpha:0.12),
-              ),
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 16, bottom: 12),
-                child: profileAsync.when(
-                  data: (profile) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      EcoDashboardHeader(currentLevel: profile.niveau),
-                      const SizedBox(height: 22),
-                      Center(child: EcoProgressCircle(xp: profile.xp)),
-                      const SizedBox(height: 13),
-                      const SizedBox(height: 28),
-                      EcoSectionTitle(title: tr(context, 'onboarding.welcome'), icon: Icons.eco),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          tr(context, 'onboarding.hint'),
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: scheme.onSurface.withValues(alpha:0.7),
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      // Add onboarding steps or actions here
-                      Center(
-                        child: ElevatedButton.icon(
-                          icon: const Icon(Icons.arrow_forward_rounded),
-                          label: Text(tr(context, 'onboarding.start')),
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      body: EcoPageBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 16, bottom: 12),
+            child: profileAsync.when(
+              data: (profile) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  EcoDashboardHeader(currentLevel: profile.niveau),
+                  const SizedBox(height: 22),
+                  Center(child: EcoProgressCircle(xp: profile.xp)),
+                  const SizedBox(height: 13),
+                  const SizedBox(height: 28),
+                  EcoSectionTitle(title: tr(context, 'onboarding.welcome'), icon: Icons.eco),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18),
+                    child: Text(
+                      tr(context, 'onboarding.hint'),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                            color: scheme.onSurface.withValues(alpha:0.7),
+                            fontWeight: FontWeight.w500,
                           ),
-                          onPressed: () {
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 36),
-                    ],
+                    ),
                   ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
-                ),
+                  const SizedBox(height: 32),
+                  // Add onboarding steps or actions here
+                  Center(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.arrow_forward_rounded),
+                      label: Text(tr(context, 'onboarding.start')),
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                      ),
+                      onPressed: () {},
+                    ),
+                  ),
+                  const SizedBox(height: 36),
+                ],
               ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _OnboardingCircle extends StatelessWidget {
-  final double diameter;
-  final Color color;
-  const _OnboardingCircle({required this.diameter, required this.color});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: diameter,
-      height: diameter,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, Colors.transparent],
-          radius: 0.9,
-        ),
-      ),
-    );
-  }
-}
+// Background circles are now provided by `EcoPageBackground`.

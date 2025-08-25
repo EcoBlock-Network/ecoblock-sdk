@@ -1,5 +1,5 @@
 // removed unused dart:ui import
-import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
+import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,80 +24,42 @@ class DashboardPage extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: scheme.surface,
-      body: AnimatedEcoBackground(
-        child: Stack(
-          children: [
-            Positioned(
-              top: -70,
-              left: -80,
-              child: _DashboardCircle(
-                  diameter: 220,
-                  color: scheme.primary.withValues(alpha:0.13),
-                ),
-            ),
-            Positioned(
-              bottom: -50,
-              right: -40,
-              child: _DashboardCircle(
-                diameter: 140,
-                color: scheme.tertiaryContainer.withValues(alpha:0.12),
-              ),
-            ),
-            SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.only(top: 16, bottom: 12),
-                child: profileAsync.when(
-                  data: (profile) => Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      EcoDashboardHeader(currentLevel: profile.niveau),
-                      const SizedBox(height: 22),
-                      Center(child: EcoProgressCircle(xp: profile.xp)),
-                      const SizedBox(height: 13),
-                      const SizedBox(height: 28),
-                      EcoSectionTitle(title: tr(context, 'daily_quests.title'), icon: Icons.eco),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 13),
-                        child: EcoDailyQuestsList(),
-                      ),
-                      const SizedBox(height: 28),
-                      EcoSectionTitle(title: tr(context, 'unique_quests.title'), icon: Icons.star),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: EcoUniqueQuestsList(),
-                      ),
-                      const SizedBox(height: 36),
-                    ],
+      body: EcoPageBackground(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.only(top: 16, bottom: 12),
+            child: profileAsync.when(
+              data: (profile) => Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  EcoDashboardHeader(currentLevel: profile.niveau),
+                  const SizedBox(height: 22),
+                  Center(child: EcoProgressCircle(xp: profile.xp)),
+                  const SizedBox(height: 13),
+                  const SizedBox(height: 28),
+                  EcoSectionTitle(title: tr(context, 'daily_quests.title'), icon: Icons.eco),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 13),
+                    child: EcoDailyQuestsList(),
                   ),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
-                ),
+                  const SizedBox(height: 28),
+                  EcoSectionTitle(title: tr(context, 'unique_quests.title'), icon: Icons.star),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: EcoUniqueQuestsList(),
+                  ),
+                  const SizedBox(height: 36),
+                ],
               ),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
             ),
-          ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _DashboardCircle extends StatelessWidget {
-  final double diameter;
-  final Color color;
-  const _DashboardCircle({required this.diameter, required this.color});
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: diameter,
-      height: diameter,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [color, Colors.transparent],
-          radius: 0.9,
-        ),
-      ),
-    );
-  }
-}
+// Background circles are now provided by `EcoPageBackground`.
 

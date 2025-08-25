@@ -78,11 +78,14 @@ class _AppShellState extends State<AppShell> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: List.generate(_navBarIcons.length, (i) {
                   final selected = i == _selectedIndex;
-                  return _EcoNavBarItem(
-                    icon: _navBarIcons[i],
-                    label: _navLabels[i],
-                    selected: selected,
-                    onTap: () => _onItemTapped(i),
+                  return Flexible(
+                    fit: FlexFit.tight,
+                    child: _EcoNavBarItem(
+                      icon: _navBarIcons[i],
+                      label: _navLabels[i],
+                      selected: selected,
+                      onTap: () => _onItemTapped(i),
+                    ),
                   );
                 }),
               ),
@@ -100,7 +103,8 @@ class _EcoNavBarItem extends StatelessWidget {
   final bool selected;
   final VoidCallback onTap;
 
-  const _EcoNavBarItem({super.key, required this.icon,
+  const _EcoNavBarItem({
+    required this.icon,
     required this.label,
     required this.selected,
     required this.onTap,
