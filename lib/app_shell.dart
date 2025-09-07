@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
-import 'features/scan/presentation/pages/scan_page.dart';
 import 'features/messaging/presentation/pages/messaging_page.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/community/presentation/pages/community_page.dart';
@@ -19,7 +18,6 @@ class _AppShellState extends State<AppShell> {
 
   static final List<Widget> _pages = [
     DashboardPage(),
-    ScanPage(),
     ProfilePage(),
     CommunityPage(),
     MessagingPage(),
@@ -28,7 +26,6 @@ class _AppShellState extends State<AppShell> {
 
   static const _navBarIcons = [
     Icons.dashboard_rounded,
-    Icons.radar_rounded,
     Icons.account_circle_rounded,
     Icons.groups_rounded,
     Icons.message_rounded,
