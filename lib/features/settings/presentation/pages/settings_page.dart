@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 
 
 class SettingsPage extends ConsumerWidget {
@@ -14,10 +15,18 @@ class SettingsPage extends ConsumerWidget {
     final dataSaverEnabled = ref.watch(dataSaverProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr(context, 'settings.title'))),
-      body: ListView(
-        children: [
-          _SectionTitle(tr(context, 'settings.display')),
+      body: EcoPageBackground(
+        child: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.only(bottom: 24),
+            children: [
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(tr(context, 'settings.title'), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+              ),
+              const SizedBox(height: 8),
+              _SectionTitle(tr(context, 'settings.display')),
           SettingsTile(
             icon: Icons.brightness_6,
             title: tr(context, 'settings.theme'),
@@ -108,6 +117,8 @@ class SettingsPage extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    ),
       ),
     );
   }

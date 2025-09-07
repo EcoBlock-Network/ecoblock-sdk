@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
 import 'features/messaging/presentation/pages/messaging_page.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
-import 'features/community/presentation/pages/community_page.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
 
 class AppShell extends StatefulWidget {
@@ -14,12 +13,11 @@ class AppShell extends StatefulWidget {
 }
 
 class _AppShellState extends State<AppShell> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   static final List<Widget> _pages = [
     DashboardPage(),
     ProfilePage(),
-    CommunityPage(),
     MessagingPage(),
     SettingsPage(),
   ];
@@ -27,16 +25,13 @@ class _AppShellState extends State<AppShell> {
   static const _navBarIcons = [
     Icons.dashboard_rounded,
     Icons.account_circle_rounded,
-    Icons.groups_rounded,
     Icons.message_rounded,
     Icons.settings_rounded,
   ];
   static const _navLabels = [
     'Home',
-    'Scan',
     'Profile',
-    'Community',
-    'Messages',
+    'News',
     'Settings',
   ];
 
