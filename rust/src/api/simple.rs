@@ -93,23 +93,28 @@ mod tests {
     use std::env;
     use std::fs;
 
-    fn test_env(name: &str) {
-        let path = format!("/tmp/frb_simple_test_{}.bin", name);
+    fn test_env(name: &str) -> String {
+        let path = format!("/tmp/frb_simple_test_{}", name);
+        let _ = fs::remove_dir_all(&path);
+        let _ = fs::create_dir_all(&path);
         env::set_var("ECOBLOCK_TEST_KEYPAIR", &path);
-        let _ = fs::remove_file(&path);
+        path
     }
 
     fn cleanup_env() {
+        if let Ok(p) = env::var("ECOBLOCK_TEST_KEYPAIR") {
+            let _ = fs::remove_dir_all(&p);
+        }
         env::remove_var("ECOBLOCK_TEST_KEYPAIR");
     }
 
     #[test]
     #[serial]
     fn test_frb_generate_keypair_and_get_public_key() {
-        test_env("frb_generate_keypair");
-        let pubkey = frb_generate_keypair().expect("FRB: Should generate keypair");
-        assert!(!pubkey.is_empty());
-        let pubkey2 = frb_get_public_key().expect("FRB: Should get public key");
+    let path = test_env("frb_generate_keypair");
+    let pubkey = frb_generate_keypair(path.clone()).expect("FRB: Should generate keypair");
+    assert!(!pubkey.is_empty());
+    let pubkey2 = frb_get_public_key(path.clone()).expect("FRB: Should get public key");
         assert_eq!(pubkey, pubkey2);
         cleanup_env();
     }
@@ -117,9 +122,9 @@ mod tests {
     #[test]
     #[serial]
     fn test_frb_get_node_id() {
-        test_env("frb_get_node_id");
-        let _ = frb_generate_keypair();
-        let node_id = frb_get_node_id().expect("FRB: Should get node id");
+    let path = test_env("frb_get_node_id");
+    let _ = frb_generate_keypair(path.clone());
+    let node_id = frb_get_node_id(path.clone()).expect("FRB: Should get node id");
         assert!(!node_id.is_empty());
         cleanup_env();
     }
@@ -127,31 +132,31 @@ mod tests {
     #[test]
     #[serial]
     fn test_frb_node_is_initialized() {
-        test_env("frb_node_is_initialized");
-        assert_eq!(frb_node_is_initialized().unwrap(), false);
-        let _ = frb_generate_keypair();
-        assert_eq!(frb_node_is_initialized().unwrap(), true);
+    let path = test_env("frb_node_is_initialized");
+    assert_eq!(frb_node_is_initialized(path.clone()).unwrap(), false);
+    let _ = frb_generate_keypair(path.clone());
+    assert_eq!(frb_node_is_initialized(path.clone()).unwrap(), true);
         cleanup_env();
     }
 
     #[test]
     #[serial]
     fn test_frb_reset_node() {
-        test_env("frb_reset_node");
-        let _ = frb_generate_keypair();
-        assert_eq!(frb_node_is_initialized().unwrap(), true);
-        frb_reset_node().unwrap();
-        assert_eq!(frb_node_is_initialized().unwrap(), false);
+    let path = test_env("frb_reset_node");
+    let _ = frb_generate_keypair(path.clone());
+    assert_eq!(frb_node_is_initialized(path.clone()).unwrap(), true);
+    frb_reset_node(path.clone()).unwrap();
+    assert_eq!(frb_node_is_initialized(path.clone()).unwrap(), false);
         cleanup_env();
     }
 
     #[test]
     #[serial]
     fn test_frb_create_local_node() {
-        test_env("frb_create_local_node");
-        let node_id = frb_create_local_node().expect("FRB: Should create local node");
-        assert!(!node_id.is_empty());
-        let result = frb_create_local_node();
+    let path = test_env("frb_create_local_node");
+    let node_id = frb_create_local_node(path.clone()).expect("FRB: Should create local node");
+    assert!(!node_id.is_empty());
+    let result = frb_create_local_node(path.clone());
         assert!(result.is_err());
         cleanup_env();
     }
@@ -159,18 +164,18 @@ mod tests {
     #[test]
     #[serial]
     fn test_frb_initialize_tangle_and_mesh() {
-        test_env("frb_initialize_tangle_mesh");
-        let _ = frb_generate_keypair();
-        assert!(frb_initialize_tangle().is_ok());
-        assert!(frb_initialize_mesh().is_ok());
+    let path = test_env("frb_initialize_tangle_mesh");
+    let _ = frb_generate_keypair(path.clone());
+    assert!(frb_initialize_tangle().is_ok());
+    assert!(frb_initialize_mesh(path.clone()).is_ok());
         cleanup_env();
     }
 
     #[test]
     #[serial]
     fn test_frb_create_block_and_get_tangle_size() {
-        test_env("frb_create_block");
-        let _ = frb_create_local_node();
+    let path = test_env("frb_create_block");
+    let _ = frb_create_local_node(path.clone());
         // Génère un SensorData JSON minimal
         let data = serde_json::to_vec(&serde_json::json!({
             "pm25": 5.0, "co2": 400.0, "temperature": 21.0, "humidity": 45.0, "timestamp": 12345678
@@ -185,9 +190,9 @@ mod tests {
     #[test]
     #[serial]
     fn test_frb_add_peer_connection_and_list_peers() {
-        test_env("frb_peers");
-        let _ = frb_create_local_node();
-        let node_id = frb_get_node_id().unwrap();
+    let path = test_env("frb_peers");
+    let _ = frb_create_local_node(path.clone());
+    let node_id = frb_get_node_id(path.clone()).unwrap();
         let peer_id = "test_peer_1".to_string();
         frb_add_peer_connection(node_id.clone(), peer_id.clone(), 1.0);
         let neighbors = frb_list_peers(node_id.clone());
