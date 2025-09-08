@@ -92,7 +92,6 @@ class EcoProgressCircle extends StatelessWidget {
             },
           ),
         ),
-        // Icon, level and XP progress
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

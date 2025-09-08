@@ -10,7 +10,6 @@ class AnalyticsService {
   debugPrint('[Analytics] Quest completed: $questId');
   }
 
-  // Ajoute d'autres méthodes d'analytics ici
 }
 
 final analyticsServiceProvider = Provider<AnalyticsService>((ref) {

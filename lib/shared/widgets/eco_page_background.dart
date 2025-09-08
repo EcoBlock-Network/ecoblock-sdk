@@ -3,7 +3,6 @@ import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 
 /// Reusable page background used across the app.
 /// It composes the existing [AnimatedEcoBackground] and places
-/// two decorative radial circles (top-left and bottom-right).
 class EcoPageBackground extends StatelessWidget {
   final Widget child;
   final double topLeftDiameter;
