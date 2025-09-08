@@ -1,13 +1,15 @@
 import 'dart:ui';
-import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 
-class EcoQuestCard extends StatelessWidget {
+/// Modern EcoQuestCard — glass card, gradient icon badge, animated pill progress with percentage
+class EcoQuestCard extends StatefulWidget {
   final Quest quest;
   final bool small;
   final bool vibrant;
   final VoidCallback? onCompletedTap;
+
   const EcoQuestCard({
     required this.quest,
     this.small = false,
@@ -17,52 +19,59 @@ class EcoQuestCard extends StatelessWidget {
   });
 
   @override
+  State<EcoQuestCard> createState() => _EcoQuestCardState();
+}
+
+class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderStateMixin {
+  late final AnimationController _pulseController;
+  late final Animation<double> _pulseAnim;
+  late double _lastProgress;
+
+  @override
+  void initState() {
+    super.initState();
+    _lastProgress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
+    _pulseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 260));
+    _pulseAnim = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.08).chain(CurveTween(curve: Curves.easeOut)), weight: 60),
+      TweenSequenceItem(tween: Tween(begin: 1.08, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 40),
+    ]).animate(_pulseController);
+  }
+
+  @override
+  void didUpdateWidget(covariant EcoQuestCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newProgress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
+    if ((newProgress - _lastProgress).abs() > 0.0001) {
+      _pulseController.forward(from: 0.0);
+      _lastProgress = newProgress;
+    }
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final isCompleted = quest.isCompleted;
-    final pastelGradient = isCompleted
-        ? LinearGradient(
-            colors: [
-              Colors.greenAccent.shade100,
-              scheme.primary.withValues(alpha:0.18),
-              Colors.white.withValues(alpha:0.85)
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-        : (vibrant
-            ? LinearGradient(
-                colors: [Colors.yellow.shade50, scheme.primaryContainer, scheme.tertiaryContainer],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : LinearGradient(
-                colors: [scheme.surface, Colors.white.withValues(alpha:0.93)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ));
+    final isCompleted = widget.quest.isCompleted;
+    final badgeColor = widget.vibrant ? scheme.secondary : scheme.primary;
+    final progress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: small ? 6 : 8, horizontal: small ? 6 : 4),
-      child: Stack(
-        children: [
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: isCompleted
-            ? (onCompletedTap ?? () {
-                // Default completed quest tap: show a dialog
+      padding: EdgeInsets.symmetric(vertical: widget.small ? 6 : 8, horizontal: widget.small ? 6 : 8),
+      child: GestureDetector(
+        onTap: isCompleted
+            ? (widget.onCompletedTap ?? () {
                 showDialog(
                   context: context,
                   builder: (ctx) => AlertDialog(
                     title: Text(tr(context, 'quest_completed_title')),
-                    content: Text(tr(context, 'quest_completed_content', {'title': quest.title})),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(ctx).pop(),
-                        child: Text(tr(context, 'ok')),
-                      ),
-                    ],
+                    content: Text(tr(context, 'quest_completed_content', {'title': widget.quest.title})),
+                    actions: [TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text(tr(context, 'ok')))],
                   ),
                 );
               })
@@ -70,118 +79,151 @@ class EcoQuestCard extends StatelessWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(tr(context, 'quest_progress', {
-                      'title': quest.title,
-                      'progress': quest.progress.toString(),
-                      'goal': quest.goal.toString()
+                      'title': widget.quest.title,
+                      'progress': widget.quest.progress.toString(),
+                      'goal': widget.quest.goal.toString()
                     })),
-                    backgroundColor: scheme.primary.withValues(alpha:0.88),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                    backgroundColor: scheme.primary.withOpacity(0.95),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     duration: const Duration(milliseconds: 900),
                   ),
                 );
               },
-              child: Opacity(
-          opacity: isCompleted ? 0.7 : 1.0,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(small ? 15 : 20),
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-              child: Container(
-                width: small ? 168 : null,
-                padding: EdgeInsets.symmetric(horizontal: small ? 12 : 17, vertical: small ? 11 : 15),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOutCubic,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(widget.small ? 12 : 16),
+            color: scheme.surface.withOpacity(0.06),
+            border: Border.all(color: scheme.surfaceVariant.withOpacity(0.10)),
+            boxShadow: [
+              BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 18, offset: const Offset(0, 8)),
+            ],
+          ),
+          padding: EdgeInsets.all(widget.small ? 10 : 12),
+          child: Row(
+            children: [
+              // Gradient circular badge
+              Container(
+                width: widget.small ? 44 : 56,
+                height: widget.small ? 44 : 56,
                 decoration: BoxDecoration(
-                  gradient: pastelGradient,
-                  borderRadius: BorderRadius.circular(small ? 15 : 20),
-                  border: Border.all(
-                    color: isCompleted
-                        ? Colors.green.withValues(alpha:0.35)
-                        : scheme.primary.withValues(alpha:vibrant ? 0.19 : 0.08),
-                    width: 1.5,
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(
+                    colors: [badgeColor.withOpacity(0.98), badgeColor.withOpacity(0.68)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                        color: isCompleted
-                            ? Colors.green.withValues(alpha:0.13)
-                            : scheme.primary.withValues(alpha:0.07),
-                        blurRadius: 17,
-                        offset: const Offset(0, 5)),
-                  ],
+                  boxShadow: [BoxShadow(color: badgeColor.withOpacity(0.12), blurRadius: 8, offset: const Offset(0, 4))],
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: small ? 24 : 33,
-                      height: small ? 24 : 33,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: isCompleted
-                            ? LinearGradient(
-                                colors: [Colors.green, Colors.greenAccent.shade100],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              )
-                            : LinearGradient(
-                                colors: [
-                                  Colors.greenAccent.shade100,
-                                  scheme.primary.withValues(alpha:0.84),
-                                  if (vibrant) Colors.yellowAccent.withValues(alpha:0.56),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                      ),
-                      child: Icon(
-                        isCompleted ? Icons.check_circle_rounded : Icons.spa_rounded,
-                        color: isCompleted ? Colors.green : scheme.primary,
-                        size: small ? 16 : 21,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            quest.title,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: small ? 12.5 : 15,
-                              color: isCompleted ? Colors.green : scheme.primary,
-                              letterSpacing: -0.07,
-                              decoration: isCompleted ? TextDecoration.lineThrough : null,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          const SizedBox(height: 4),
-                          LinearProgressIndicator(
-                            value: quest.goal == 0 ? 0 : quest.progress / quest.goal,
-                            minHeight: small ? 3.0 : 4.2,
-                            backgroundColor: scheme.surfaceContainerHighest.withValues(alpha:0.17),
-                            color: isCompleted ? Colors.green : scheme.primary,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ],
-                      ),
-                    ),
-                          const SizedBox(width: 8),
-                          Text(
-                            '${quest.progress}/${quest.goal}',
-                            style: TextStyle(
-                              color: isCompleted ? Colors.green : scheme.primary,
-                              fontWeight: FontWeight.w600,
-                              fontSize: small ? 10.5 : 13.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                child: Center(
+                  child: Icon(
+                    isCompleted ? Icons.emoji_events_rounded : Icons.eco_rounded,
+                    color: Colors.white,
+                    size: widget.small ? 20 : 24,
                   ),
                 ),
               ),
-            ),
+              const SizedBox(width: 14),
+              // Content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.quest.title,
+                      style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w800, fontSize: widget.small ? 14 : 16),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    // Modern pill progress with percentage
+                    LayoutBuilder(builder: (context, constraints) {
+                      final barHeight = widget.small ? 28.0 : 34.0;
+                      return Stack(
+                        alignment: Alignment.centerLeft,
+                        children: [
+                          // Background pill
+                          Container(
+                            width: double.infinity,
+                            height: barHeight,
+                            decoration: BoxDecoration(
+                              color: scheme.surface.withOpacity(0.04),
+                              borderRadius: BorderRadius.circular(barHeight / 2),
+                            ),
+                          ),
+                          // Filled gradient
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.0, end: progress),
+                            duration: const Duration(milliseconds: 700),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, child) {
+                              return Container(
+                                width: constraints.maxWidth * value,
+                                height: barHeight,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(colors: [badgeColor, badgeColor.withOpacity(0.7)]),
+                                  borderRadius: BorderRadius.circular(barHeight / 2),
+                                  boxShadow: [BoxShadow(color: badgeColor.withOpacity(0.12), blurRadius: 12, offset: const Offset(0, 6))],
+                                ),
+                              );
+                            },
+                          ),
+                          // Percentage badge at left with pulse
+                          Positioned(
+                            left: 8,
+                            child: ScaleTransition(
+                              scale: _pulseAnim,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withOpacity(0.06),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(color: Colors.white.withOpacity(0.03)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '${(progress * 100).round()}%',
+                                      style: TextStyle(color: scheme.onSurface, fontWeight: FontWeight.w800, fontSize: widget.small ? 12 : 14),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Icon(isCompleted ? Icons.check_circle : Icons.arrow_upward, size: widget.small ? 12 : 14, color: scheme.onSurface.withOpacity(0.85)),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Right status chip
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: widget.small ? 8 : 10, vertical: widget.small ? 6 : 8),
+                decoration: BoxDecoration(
+                  color: isCompleted ? Colors.white.withOpacity(0.06) : badgeColor.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  children: [
+                    if (isCompleted) ...[
+                      Icon(Icons.check, size: widget.small ? 14 : 16, color: scheme.onSurface.withOpacity(0.85)),
+                      const SizedBox(width: 8),
+                    ],
+                    Text(
+                      isCompleted ? tr(context, 'done') : '${widget.quest.progress}/${widget.quest.goal}',
+                      style: TextStyle(color: isCompleted ? scheme.onSurface : badgeColor, fontWeight: FontWeight.w700, fontSize: widget.small ? 12 : 13),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

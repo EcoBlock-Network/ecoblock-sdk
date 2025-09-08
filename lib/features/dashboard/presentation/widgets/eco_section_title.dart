@@ -9,18 +9,17 @@ class EcoSectionTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Padding(
-      padding: const EdgeInsets.fromLTRB(17, 8, 0, 7),
+      padding: const EdgeInsets.fromLTRB(16, 6, 0, 6),
       child: Row(
         children: [
-          Icon(icon, color: scheme.primary, size: 22),
-          const SizedBox(width: 7),
+          Icon(icon, color: scheme.primary.withValues(alpha: 0.92), size: 20),
+          const SizedBox(width: 8),
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                  color: scheme.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  letterSpacing: -0.2,
+                  color: scheme.onSurface,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 18,
                 ),
           ),
         ],

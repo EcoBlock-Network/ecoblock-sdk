@@ -118,20 +118,28 @@ class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
             return QuestTimerPlaceholder(deletedAt: deletedAt);
           } else {
             return Container(
-              margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 0),
-              padding: const EdgeInsets.all(18),
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey.withValues(alpha:0.18),
-                  style: BorderStyle.solid,
-                  width: 2,
+              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+              child: Card(
+                  elevation: 2,
+                  color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.08),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.10),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+                    child: Center(
+                      child: Text(
+                        tr(context, 'no_quest'),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.72),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(18),
-                color: Colors.transparent,
-              ),
-              child: Center(
-                child: Text(tr(context, 'no_quest'), style: TextStyle(color: Colors.grey)),
-              ),
             );
           }
         }),
@@ -169,7 +177,7 @@ class _AnimatedQuestCardState extends State<AnimatedQuestCard>
       begin: Offset(0, 0.09),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutBack));
-    Future.delayed(widget.delay, () => mounted ? _anim.forward() : null);
+  Future.delayed(widget.delay + const Duration(milliseconds: 60), () => mounted ? _anim.forward() : null);
   }
 
   @override
@@ -184,7 +192,10 @@ class _AnimatedQuestCardState extends State<AnimatedQuestCard>
       opacity: _fade,
       child: SlideTransition(
         position: _slide,
-        child: EcoQuestCard(quest: widget.quest),
+        child: ScaleTransition(
+          scale: Tween<double>(begin: 0.985, end: 1.0).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutBack)),
+          child: EcoQuestCard(quest: widget.quest),
+        ),
       ),
     );
   }
@@ -231,38 +242,29 @@ class _DailyQuestTimerState extends State<_DailyQuestTimer> {
     final scheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha:0.44),
+        color: Theme.of(context).colorScheme.surfaceVariant.withValues(alpha: 0.06),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: scheme.primary.withValues(alpha:0.10)),
-        boxShadow: [
-          BoxShadow(
-            color: scheme.primary.withValues(alpha:0.05),
-            blurRadius: 7,
-            offset: const Offset(0, 1),
-          ),
-        ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.timer_rounded, color: scheme.primary, size: 17),
-          const SizedBox(width: 5),
+          Icon(Icons.timer_rounded, color: scheme.primary.withValues(alpha: 0.92), size: 16),
+          const SizedBox(width: 6),
           Text(
             '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}',
             style: TextStyle(
               color: scheme.primary,
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              letterSpacing: 0.3,
             ),
           ),
-          const SizedBox(width: 4),
+          const SizedBox(width: 8),
           Text(
             tr(context, 'until_refresh'),
             style: TextStyle(
-              color: scheme.onSurface.withValues(alpha:0.45),
-              fontSize: 11,
+              color: scheme.onSurface.withValues(alpha: 0.62),
+              fontSize: 12,
               fontWeight: FontWeight.w400,
             ),
           ),

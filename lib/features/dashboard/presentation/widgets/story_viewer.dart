@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import '../../data/stories_service.dart';
+import '../providers/stories_provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Fullscreen story viewer similar to Instagram stories.
 /// - Accepts a list of [Story] and an [initialIndex].
 /// - Auto advances every [autoAdvanceDuration].
-class StoryViewer extends StatefulWidget {
+class StoryViewer extends ConsumerStatefulWidget {
   final List<Story> stories;
   final int initialIndex;
   final Duration autoAdvanceDuration;
@@ -14,10 +16,10 @@ class StoryViewer extends StatefulWidget {
   const StoryViewer({super.key, required this.stories, this.initialIndex = 0, this.autoAdvanceDuration = const Duration(seconds: 5)});
 
   @override
-  State<StoryViewer> createState() => _StoryViewerState();
+  ConsumerState<StoryViewer> createState() => _StoryViewerState();
 }
 
-class _StoryViewerState extends State<StoryViewer> {
+class _StoryViewerState extends ConsumerState<StoryViewer> {
   late PageController _pageController;
   Timer? _tickTimer;
   late List<double> _progress;
@@ -42,7 +44,10 @@ class _StoryViewerState extends State<StoryViewer> {
         _progress[_currentIndex] = (_progress[_currentIndex] + inc).clamp(0.0, 1.0);
       });
       if (_progress[_currentIndex] >= 1.0) {
-        _goNext();
+  // when story completes mark it seen
+  final sid = widget.stories[_currentIndex].id;
+  if (sid.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(sid);
+  _goNext();
       }
     });
   }
@@ -109,6 +114,9 @@ class _StoryViewerState extends State<StoryViewer> {
                   if (_progress[index] >= 1.0) _progress[index] = 0.0;
                 });
                 _startProgress();
+                // mark as seen when swiped into view
+                final sid = widget.stories[index].id;
+                if (sid.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(sid);
               },
               itemBuilder: (context, index) {
                 final s = stories[index];
@@ -118,7 +126,7 @@ class _StoryViewerState extends State<StoryViewer> {
                   onVerticalDragUpdate: (d) {
                     if (d.delta.dy > 10) Navigator.of(context).maybePop();
                   },
-                  child: SizedBox.expand(
+                    child: SizedBox.expand(
                     child: s.imageUrl != null
                         ? Image.network(
                             s.imageUrl!,

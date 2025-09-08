@@ -25,3 +25,23 @@ final storiesProvider = FutureProvider<List<Story>>((ref) async {
     return _fallbackStories;
   }
 });
+
+/// Keeps track of which stories have been seen locally (in-memory).
+/// This is lightweight and non-persistent; it can later be replaced with
+/// a persisted implementation (SharedPreferences, secure storage, etc.).
+class SeenStoriesNotifier extends StateNotifier<Set<String>> {
+  SeenStoriesNotifier() : super(<String>{});
+
+  void markSeen(String id) {
+    if (id.isEmpty) return;
+    state = {...state, id};
+  }
+
+  void markAllSeen(Iterable<Story> stories) {
+    state = {...state, for (final s in stories) s.id};
+  }
+
+  bool isSeen(String id) => state.contains(id);
+}
+
+final seenStoriesProvider = StateNotifierProvider<SeenStoriesNotifier, Set<String>>((ref) => SeenStoriesNotifier());

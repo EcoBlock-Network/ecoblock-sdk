@@ -62,13 +62,13 @@ class EcoProgressCircle extends StatelessWidget {
               width: size + 10,
               height: size + 10,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.11),
+                color: Colors.white.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withValues(alpha: 0.12),
-                    blurRadius: 20,
-                    offset: const Offset(0, 7),
+                    color: scheme.primary.withValues(alpha: 0.06),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -85,9 +85,9 @@ class EcoProgressCircle extends StatelessWidget {
             builder: (context, val, _) {
               return CircularProgressIndicator(
                 value: val,
-                strokeWidth: 14,
-                backgroundColor: scheme.surface.withValues(alpha: 0.14),
-                valueColor: AlwaysStoppedAnimation(scheme.primary),
+                strokeWidth: 10,
+                backgroundColor: scheme.surface.withValues(alpha: 0.10),
+                valueColor: AlwaysStoppedAnimation(scheme.primary.withValues(alpha: 0.98)),
               );
             },
           ),
@@ -95,7 +95,7 @@ class EcoProgressCircle extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.eco, size: size * 0.28, color: scheme.primary),
+            Icon(Icons.eco, size: size * 0.24, color: scheme.primary.withValues(alpha: 0.96)),
             const SizedBox(height: 6),
             Text(
               tr(context, 'level.display', {'level': displayLevel.toString()}),
@@ -104,7 +104,7 @@ class EcoProgressCircle extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               tr(context, 'xp.progress', {'current': xpCurrent.toString(), 'needed': xpNeeded.toString()}),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.primary.withValues(alpha: 0.68), fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.primary.withValues(alpha: 0.64), fontWeight: FontWeight.w600),
             ),
           ],
         ),

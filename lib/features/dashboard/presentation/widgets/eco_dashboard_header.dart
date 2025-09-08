@@ -14,7 +14,7 @@ class EcoDashboardHeader extends ConsumerWidget {
     final storiesAsync = ref.watch(storiesProvider);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
       child: Row(
         children: [
           Expanded(
@@ -22,7 +22,7 @@ class EcoDashboardHeader extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 94,
+                  height: 86,
                   child: storiesAsync.when(
                     data: (stories) {
                       if (stories.isEmpty) return const SizedBox.shrink();
@@ -32,40 +32,66 @@ class EcoDashboardHeader extends ConsumerWidget {
                         separatorBuilder: (_, __) => const SizedBox(width: 12),
                         itemBuilder: (context, i) {
                           final s = stories[i];
-                          return GestureDetector(
+                          return Consumer(
+                            builder: (context, ref, _) {
+                              final seen = ref.watch(seenStoriesProvider);
+                              final isSeen = s.id.isNotEmpty && seen.contains(s.id);
+                              return GestureDetector(
                             onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryViewer(stories: stories, initialIndex: i)));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryViewer(stories: stories, initialIndex: i)));
+                                // mark this story as seen immediately for header state
+                                if (s.id.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(s.id);
                             },
                             child: Column(
                               children: [
-                                Container(
-                                  width: 68,
-                                  height: 68,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      colors: [scheme.primary.withValues(alpha: 0.12), scheme.tertiaryContainer.withValues(alpha: 0.06)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(color: scheme.primary.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 3)),
-                                    ],
-                                  ),
-                                  child: Center(
-                                    child: CircleAvatar(
-                                      radius: 40,
-                                      backgroundColor: Colors.white.withValues(alpha: 0.18),
-                                      child: s.imageUrl != null
-                                          ? ClipOval(
-                                              child: Image.network(s.imageUrl!, width: 40, height: 40, fit: BoxFit.cover),
-                                            )
-                                          : Icon(Icons.eco, color: scheme.primary, size: 26),
-                                    ),
-                                  ),
-                                ),
+                                      Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Container(
+                                            width: 64,
+                                            height: 64,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              gradient: isSeen
+                                                  ? null
+                                                  : LinearGradient(
+                                                      colors: [scheme.primary.withValues(alpha: 0.14), scheme.tertiaryContainer.withValues(alpha: 0.06)],
+                                                      begin: Alignment.topLeft,
+                                                      end: Alignment.bottomRight,
+                                                    ),
+                                              border: Border.all(color: scheme.surfaceVariant.withValues(alpha: isSeen ? 0.5 : 0.85)),
+                                              color: isSeen ? scheme.surface : scheme.surfaceVariant,
+                                            ),
+                                          ),
+                                          CircleAvatar(
+                                            radius: 28,
+                                            backgroundColor: Colors.transparent,
+                                            child: s.imageUrl != null
+                                                ? ClipOval(
+                                                    child: Image.network(s.imageUrl!, width: 36, height: 36, fit: BoxFit.cover),
+                                                  )
+                                                : Icon(Icons.eco, color: scheme.primary, size: 20),
+                                          ),
+                                          if (!isSeen)
+                                            Positioned(
+                                              right: 6,
+                                              bottom: 10,
+                                              child: Container(
+                                                width: 10,
+                                                height: 10,
+                                                decoration: BoxDecoration(
+                                                  color: scheme.secondary,
+                                                  shape: BoxShape.circle,
+                                                  boxShadow: [BoxShadow(color: scheme.secondary.withValues(alpha: 0.22), blurRadius: 6, offset: const Offset(0, 2))],
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
                               ],
                             ),
+                              );
+                            },
                           );
                         },
                       );
@@ -75,30 +101,29 @@ class EcoDashboardHeader extends ConsumerWidget {
                       itemCount: 4,
                       separatorBuilder: (_, __) => const SizedBox(width: 12),
                       itemBuilder: (_, __) => Container(
-                        width: 68,
-                        height: 68,
+                        width: 64,
+                        height: 64,
                         decoration: BoxDecoration(color: scheme.surfaceVariant, shape: BoxShape.circle),
                       ),
                     ),
                     error: (e, _) => Center(child: Text(tr(context, 'loading_error'))),
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   tr(context, 'dashboard.title'),
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: scheme.primary,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: -0.2,
+                        color: scheme.onSurface,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
                       ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   tr(context, 'dashboard.subtitle'),
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                        color: scheme.onSurface.withValues(alpha: 0.53),
+                        color: scheme.onSurface.withValues(alpha: 0.66),
                         fontWeight: FontWeight.w500,
-                        letterSpacing: 0.03,
                       ),
                 ),
               ],
