@@ -76,7 +76,6 @@ class BluetoothService {
   debugPrint('[BLE] Écriture terminée');
   }
 
-  // Exemple abonnement à une caractéristique
   Stream<List<int>> subscribeToCharacteristic({
     required String deviceId,
     required Uuid serviceUuid,
