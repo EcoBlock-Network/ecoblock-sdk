@@ -1,16 +1,15 @@
-// Replaced with clean Messaging/News page + Sliver-based article viewer
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
+import '../../providers/blog_providers.dart';
 
-// News-style page using dashboard visual language
 class MessagingPage extends ConsumerWidget {
   const MessagingPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
-    final articles = _sampleArticles;
+    final blogsAsync = ref.watch(blogsProvider);
 
     return Scaffold(
       body: EcoPageBackground(
@@ -26,36 +25,48 @@ class MessagingPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    itemCount: articles.length,
-                    separatorBuilder: (context, index) => Divider(color: scheme.onSurfaceVariant.withOpacity(0.1), height: 1),
-                    itemBuilder: (context, index) {
-                      final article = articles[index];
-                      return ListTile(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        tileColor: scheme.surface,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        leading: article.imageUrl != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: Image.network(
-                                  article.imageUrl!,
-                                  width: 72,
-                                  height: 72,
-                                  fit: BoxFit.cover,
-                                  loadingBuilder: (c, child, p) => p == null ? child : Container(width: 72, height: 72, color: Colors.grey.shade200, child: const Center(child: CircularProgressIndicator())),
-                                  errorBuilder: (c, _, __) => Container(width: 72, height: 72, color: Colors.grey.shade300, child: const Icon(Icons.broken_image)),
-                                ),
-                              )
-                            : Container(width: 72, height: 72, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.article, size: 36, color: Colors.white)),
-                        title: Text(article.title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
-                        subtitle: Text(article.excerpt, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => _ArticleViewer(article: article)));
-                        },
-                      );
-                    },
+                  child: blogsAsync.when(
+                    data: (articles) => ListView.separated(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      itemCount: articles.length,
+                      separatorBuilder: (context, index) => Divider(color: scheme.onSurfaceVariant.withOpacity(0.1), height: 1),
+                      itemBuilder: (context, index) {
+                        final article = articles[index];
+                        return ListTile(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          tileColor: scheme.surface,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          leading: article.imageUrl != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(
+                                    article.imageUrl!,
+                                    width: 72,
+                                    height: 72,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (c, child, p) => p == null ? child : Container(width: 72, height: 72, color: Colors.grey.shade200, child: const Center(child: CircularProgressIndicator())),
+                                    errorBuilder: (c, _, __) => Container(width: 72, height: 72, color: Colors.grey.shade300, child: const Icon(Icons.broken_image)),
+                                  ),
+                                )
+                              : Container(width: 72, height: 72, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(8)), child: const Icon(Icons.article, size: 36, color: Colors.white)),
+                          title: Text(article.title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                          subtitle: Text(article.excerpt, maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                          onTap: () {
+                            final viewed = _Article(
+                              id: article.id,
+                              title: article.title,
+                              excerpt: article.excerpt,
+                              content: article.content,
+                              imageUrl: article.imageUrl,
+                              publishedAt: article.createdAt,
+                            );
+                            Navigator.of(context).push(MaterialPageRoute(builder: (_) => _ArticleViewer(article: viewed)));
+                          },
+                        );
+                      },
+                    ),
+                    loading: () => const Center(child: CircularProgressIndicator()),
+                    error: (e, s) => Center(child: Text('Failed to load articles')),
                   ),
                 ),
               ],
@@ -93,7 +104,6 @@ class _ArticleViewer extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     final hasImage = article.imageUrl != null && article.imageUrl!.isNotEmpty;
-    final appBarIconColor = hasImage ? Colors.white : scheme.onSurface;
 
     return Scaffold(
       extendBodyBehindAppBar: true,

@@ -25,8 +25,6 @@ class EcoDashboardHeader extends ConsumerWidget {
                   child: storiesAsync.when(
                     data: (stories) {
                       if (stories.isEmpty) return const SizedBox.shrink();
-                      // Log fetched stories for debugging
-                      debugPrint('Stories fetched: ${stories.map((s) => s.title).toList()}');
                       return ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: stories.length,
@@ -35,7 +33,6 @@ class EcoDashboardHeader extends ConsumerWidget {
                           final s = stories[i];
                           return GestureDetector(
                             onTap: () {
-                              // Open fullscreen story viewer
                               Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryViewer(stories: stories, initialIndex: i)));
                             },
                             child: Column(
@@ -106,7 +103,6 @@ class EcoDashboardHeader extends ConsumerWidget {
               ],
             ),
           ),
-          // Level badge
         ],
       ),
     );

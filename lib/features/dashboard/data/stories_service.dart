@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer';
+import 'package:ecoblock_mobile/core/config.dart';
 
 class Story {
   final String id;
@@ -26,17 +28,29 @@ class StoriesService {
       final uri = Uri.parse('$baseUrl/api/communication/stories');
       final req = await client.getUrl(uri);
       req.headers.set(HttpHeaders.acceptHeader, 'application/json');
+      if (kApiKey.isNotEmpty) {
+        req.headers.set('x-api-key', kApiKey);
+        log('stories_service: using x-api-key length=${kApiKey.length}');
+      } else {
+        log('stories_service: no ECO_API_KEY provided');
+      }
       final resp = await req.close();
       if (resp.statusCode != 200) {
         throw HttpException('Bad status: \\${resp.statusCode}');
       }
       final body = await resp.transform(utf8.decoder).join();
       final decoded = json.decode(body);
+      // API may return a bare list or an object with `items` or `data`.
       if (decoded is List) {
         return decoded.map((e) => Story.fromJson(e as Map<String, dynamic>)).toList();
       }
-      if (decoded is Map && decoded['data'] is List) {
-        return (decoded['data'] as List).map((e) => Story.fromJson(e as Map<String, dynamic>)).toList();
+      if (decoded is Map) {
+        if (decoded['items'] is List) {
+          return (decoded['items'] as List).map((e) => Story.fromJson(e as Map<String, dynamic>)).toList();
+        }
+        if (decoded['data'] is List) {
+          return (decoded['data'] as List).map((e) => Story.fromJson(e as Map<String, dynamic>)).toList();
+        }
       }
       return [];
     } finally {
