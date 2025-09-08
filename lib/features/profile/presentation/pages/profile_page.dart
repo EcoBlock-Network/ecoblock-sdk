@@ -72,9 +72,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                          Text('My Tangle', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                          Text(tr(context, 'profile.my_tangle'), style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                           const SizedBox(height: 6),
-                          Text('Network visualization and collected data', style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
+                          Text(tr(context, 'profile.tangle_sub'), style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant)),
                         ]),
                       ),
                       SizedBox(
@@ -100,14 +100,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Recommended actions', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                      Text(tr(context, 'profile.recommended_actions'), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                       const SizedBox(height: 8),
                       _SurfaceCard(
                         child: Row(children: [
                           Icon(Icons.sync, color: scheme.primary),
                           const SizedBox(width: 12),
-                          Expanded(child: Text('Synchronize nodes and fetch latest data', style: Theme.of(context).textTheme.bodyMedium)),
-                          ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))), child: const Text('Synchronize'))
+                          Expanded(child: Text(tr(context, 'profile.sync_nodes'), style: Theme.of(context).textTheme.bodyMedium)),
+                          ElevatedButton(onPressed: () {}, style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))), child: Text(tr(context, 'profile.synchronize')))
                         ]),
                       ),
                     ]),
@@ -116,7 +116,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Connected nodes', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                      Text(tr(context, 'profile.connected_nodes'), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                       const SizedBox(height: 8),
                       _SurfaceCard(
                         child: Column(children: peers.map((p) => _peerTile(p)).toList()),
@@ -127,9 +127,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 13),
                     child: Row(children: [
-                      Expanded(child: OutlinedButton.icon(onPressed: () {}, icon: const Icon(Icons.upload_file), label: const Text('Export data'))),
+                      Expanded(child: OutlinedButton.icon(onPressed: () {}, icon: const Icon(Icons.upload_file), label: Text(tr(context, 'profile.export_data'))),),
                       const SizedBox(width: 12),
-                      Expanded(child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.settings), label: const Text('Settings'))),
+                      Expanded(child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.settings), label: Text(tr(context, 'profile.settings'))),),
                     ]),
                   ),
 

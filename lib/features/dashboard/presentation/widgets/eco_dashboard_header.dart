@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/providers/stories_provider.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/story_viewer.dart';
 
 class EcoDashboardHeader extends ConsumerWidget {
@@ -79,12 +80,12 @@ class EcoDashboardHeader extends ConsumerWidget {
                         decoration: BoxDecoration(color: scheme.surfaceVariant, shape: BoxShape.circle),
                       ),
                     ),
-                    error: (e, _) => Center(child: Text('')),
+                    error: (e, _) => Center(child: Text(tr(context, 'loading_error'))),
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  "My EcoNode",
+                  tr(context, 'dashboard.title'),
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: scheme.primary,
                         fontWeight: FontWeight.bold,
@@ -93,7 +94,7 @@ class EcoDashboardHeader extends ConsumerWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  "Welcome to the EcoBlock mesh",
+                  tr(context, 'dashboard.subtitle'),
                   style: Theme.of(context).textTheme.bodySmall!.copyWith(
                         color: scheme.onSurface.withValues(alpha: 0.53),
                         fontWeight: FontWeight.w500,

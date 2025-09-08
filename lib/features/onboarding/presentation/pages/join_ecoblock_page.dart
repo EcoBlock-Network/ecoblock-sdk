@@ -2,6 +2,7 @@ import 'package:ecoblock_mobile/app_shell.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../application/controllers/onboarding_controller.dart';
 
 class JoinEcoBlockPage extends ConsumerWidget {
@@ -42,7 +43,7 @@ class JoinEcoBlockPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      'Bienvenue sur EcoBlock',
+                      tr(context, 'onboarding.join.title'),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: scheme.onSurface,
@@ -51,7 +52,7 @@ class JoinEcoBlockPage extends ConsumerWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Crée ton nœud local et rejoins la communauté pour participer à la collecte collaborative de données environnementales.',
+                      tr(context, 'onboarding.join.subtitle'),
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: scheme.onSurface.withValues(alpha: 0.78)),
                       textAlign: TextAlign.center,
                     ),
@@ -76,7 +77,7 @@ class JoinEcoBlockPage extends ConsumerWidget {
                               Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AppShell()));
                             }
                           },
-                          child: Text('Créer mon nœud', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                          child: Text(tr(context, 'onboarding.join.cta'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                         ),
                       ),
                     ),
@@ -93,13 +94,13 @@ class JoinEcoBlockPage extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Comment ça marche ?', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                            Text(tr(context, 'onboarding.join.how_it_works'), style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                             const SizedBox(height: 12),
-                            _StepRow(label: 'Crée ton nœud local sécurisé', xp: 10, scheme: scheme),
+                            _StepRow(label: tr(context, 'onboarding.step.create_node'), xp: 10, scheme: scheme),
                             const SizedBox(height: 8),
-                            _StepRow(label: 'Découvre et associe des voisins', xp: 20, scheme: scheme),
+                            _StepRow(label: tr(context, 'onboarding.step.find_neighbors'), xp: 20, scheme: scheme),
                             const SizedBox(height: 8),
-                            _StepRow(label: 'Participe à la propagation des blocs et à la collecte de données', xp: 30, scheme: scheme),
+                            _StepRow(label: tr(context, 'onboarding.step.participate'), xp: 30, scheme: scheme),
                           ],
                         ),
                       ),
@@ -107,7 +108,7 @@ class JoinEcoBlockPage extends ConsumerWidget {
 
                     const SizedBox(height: 18),
                     Text(
-                      'EcoBlock respecte ta vie privée : toutes les clés sont générées et stockées localement sur ton appareil.',
+                      tr(context, 'onboarding.privacy'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurface.withValues(alpha: 0.72)),
                       textAlign: TextAlign.center,
                     ),
@@ -142,7 +143,7 @@ class _StepRow extends StatelessWidget {
             color: scheme.primary.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Text('+$xp XP', style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600)),
+    child: Text(tr(context, 'xp.short', {'xp': xp.toString()}), style: TextStyle(color: scheme.primary, fontWeight: FontWeight.w600)),
         ),
       ],
     );

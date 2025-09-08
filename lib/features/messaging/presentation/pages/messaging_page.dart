@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 import '../../providers/blog_providers.dart';
+import 'package:ecoblock_mobile/l10n/translation.dart';
 
 class MessagingPage extends ConsumerWidget {
   const MessagingPage({super.key});
@@ -21,7 +22,7 @@ class MessagingPage extends ConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('News', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                  child: Text(tr(context, 'messaging.news_title'), style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                 ),
                 const SizedBox(height: 12),
                 Expanded(
@@ -66,7 +67,7 @@ class MessagingPage extends ConsumerWidget {
                       },
                     ),
                     loading: () => const Center(child: CircularProgressIndicator()),
-                    error: (e, s) => Center(child: Text('Failed to load articles')),
+                    error: (e, s) => Center(child: Text(tr(context, 'messaging.load_failed'))),
                   ),
                 ),
               ],

@@ -73,6 +73,16 @@ const Map<String, Map<String, String>> _localizedValues = {
   'onboarding.welcome': 'Welcome to EcoBlock',
   'onboarding.hint': "Let's get started! Complete your profile and discover your first quests.",
   'onboarding.start': 'Start my adventure',
+  // additional onboarding keys
+  'onboarding.join.title': 'Welcome to EcoBlock',
+  'onboarding.join.subtitle': 'Create your local node and join the community to contribute environmental data.',
+  'onboarding.join.cta': 'Create my node',
+  'onboarding.join.how_it_works': 'How does it work?',
+  'onboarding.step.create_node': 'Create your secure local node',
+  'onboarding.step.find_neighbors': 'Discover and pair neighbors',
+  'onboarding.step.participate': 'Help propagate blocks and collect data',
+  'onboarding.privacy': 'EcoBlock respects your privacy: keys are generated and stored locally on your device.',
+  'xp.short': '+{xp} XP',
   // community
   'community.title': 'Community',
   'community.loading_challenges': 'Failed to load challenges',
@@ -117,6 +127,22 @@ const Map<String, Map<String, String>> _localizedValues = {
   'error.loading': 'Loading error',
   'leaderboard.rank': '{rank}',
   'profile.type_value': '{type} : {value}',
+  // dashboard
+  'dashboard.title': 'My EcoNode',
+  'dashboard.subtitle': 'Welcome to the EcoBlock mesh',
+  // messaging extras
+  'messaging.sample.launch_title': 'EcoBlock — Launch',
+  'messaging.sample.planting': 'Planting for tomorrow',
+  'messaging.sample.stability': 'Network stability',
+  // profile extras
+  'profile.my_tangle': 'My Tangle',
+  'profile.tangle_sub': 'Network visualization and collected data',
+  'profile.recommended_actions': 'Recommended actions',
+  'profile.sync_nodes': 'Synchronize nodes and fetch latest data',
+  'profile.synchronize': 'Synchronize',
+  'profile.connected_nodes': 'Connected nodes',
+  'profile.export_data': 'Export data',
+  'profile.settings': 'Settings',
   },
   'fr': {
     'xp_added': '+{xp} XP ajouté·e à votre profil !',
@@ -172,6 +198,16 @@ const Map<String, Map<String, String>> _localizedValues = {
   'onboarding.welcome': 'Bienvenue sur EcoBlock',
   'onboarding.hint': 'Comblez votre profil et découvrez vos premières quêtes.',
   'onboarding.start': 'Commencer l\'aventure',
+  // additional onboarding keys
+  'onboarding.join.title': 'Bienvenue sur EcoBlock',
+  'onboarding.join.subtitle': 'Crée ton nœud local et rejoins la communauté pour participer à la collecte collaborative de données environnementales.',
+  'onboarding.join.cta': 'Créer mon nœud',
+  'onboarding.join.how_it_works': 'Comment ça marche ?',
+  'onboarding.step.create_node': 'Crée ton nœud local sécurisé',
+  'onboarding.step.find_neighbors': 'Découvre et associe des voisins',
+  'onboarding.step.participate': 'Participe à la propagation des blocs et à la collecte de données',
+  'onboarding.privacy': 'EcoBlock respecte ta vie privée : toutes les clés sont générées et stockées localement sur ton appareil.',
+  'xp.short': '+{xp} XP',
   // community
   'community.title': 'Communauté',
   'community.loading_challenges': 'Impossible de charger les défis',
@@ -185,6 +221,15 @@ const Map<String, Map<String, String>> _localizedValues = {
   'community.error_history': 'Erreur historique',
   // messaging
   'messaging.title': 'Messagerie',
+  // profile extras
+  'profile.my_tangle': 'Mon Tangle',
+  'profile.tangle_sub': 'Visualisation du réseau et données collectées',
+  'profile.recommended_actions': 'Actions recommandées',
+  'profile.sync_nodes': 'Synchroniser les nœuds et récupérer les dernières données',
+  'profile.synchronize': 'Synchroniser',
+  'profile.connected_nodes': 'Nœuds connectés',
+  'profile.export_data': 'Exporter les données',
+  'profile.settings': 'Paramètres',
   // help / misc
   'help_title': 'FAQ, support, à propos',
   'mesh_simulator_title': 'Simulateur Mesh BLE',
@@ -215,5 +260,12 @@ const Map<String, Map<String, String>> _localizedValues = {
   'error.loading': 'Erreur de chargement',
   'leaderboard.rank': '{rank}',
   'profile.type_value': '{type} : {value}',
+  // dashboard
+  'dashboard.title': 'Mon EcoNode',
+  'dashboard.subtitle': 'Bienvenue sur le mesh EcoBlock',
+  // messaging extras
+  'messaging.sample.launch_title': 'EcoBlock — Lancement',
+  'messaging.sample.planting': 'Planter pour demain',
+  'messaging.sample.stability': 'Stabilité réseau',
   }
 };
