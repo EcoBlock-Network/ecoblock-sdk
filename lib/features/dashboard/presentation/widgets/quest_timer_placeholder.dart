@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:ecoblock_mobile/core/widgets/skeleton.dart';
 
 class QuestTimerPlaceholder extends StatefulWidget {
   final DateTime deletedAt;
@@ -36,30 +36,21 @@ class QuestTimerPlaceholderState extends State<QuestTimerPlaceholder> {
 
   @override
   Widget build(BuildContext context) {
+    // show skeleton while waiting (small visual improvement)
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 0),
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.grey.withValues(alpha:0.35),
-          style: BorderStyle.solid,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(18),
-        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(14),
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.06),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(FeatherIcons.clock, color: Colors.grey, size: 22),
+          SkeletonBox(width: 22, height: 22, borderRadius: BorderRadius.circular(6)),
           const SizedBox(width: 10),
-          Text(
-            'New quest in ${timeLeft.inHours.toString().padLeft(2, '0')}:${(timeLeft.inMinutes % 60).toString().padLeft(2, '0')}:${(timeLeft.inSeconds % 60).toString().padLeft(2, '0')}',
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-            ),
+          Expanded(
+            child: SkeletonBox(height: 16, borderRadius: BorderRadius.circular(6)),
           ),
         ],
       ),

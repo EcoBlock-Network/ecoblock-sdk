@@ -172,12 +172,19 @@ class _AnimatedQuestCardState extends State<AnimatedQuestCard>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
+    // Respect reduced motion preference
+    final reduceMotion = WidgetsBinding.instance.window.accessibilityFeatures.reduceMotion;
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic);
     _slide = Tween<Offset>(
       begin: Offset(0, 0.09),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutBack));
-  Future.delayed(widget.delay + const Duration(milliseconds: 60), () => mounted ? _anim.forward() : null);
+    final startDelay = widget.delay + const Duration(milliseconds: 60);
+    if (reduceMotion) {
+      Future.delayed(startDelay, () => mounted ? _anim.value = 1.0 : null);
+    } else {
+      Future.delayed(startDelay, () => mounted ? _anim.forward() : null);
+    }
   }
 
   @override
@@ -193,7 +200,10 @@ class _AnimatedQuestCardState extends State<AnimatedQuestCard>
       child: SlideTransition(
         position: _slide,
         child: ScaleTransition(
-          scale: Tween<double>(begin: 0.985, end: 1.0).animate(CurvedAnimation(parent: _anim, curve: Curves.easeOutBack)),
+          scale: TweenSequence<double>([
+            TweenSequenceItem(tween: Tween(begin: 0.96, end: 1.02).chain(CurveTween(curve: Curves.easeOut)), weight: 60),
+            TweenSequenceItem(tween: Tween(begin: 1.02, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 40),
+          ]).animate(_anim),
           child: EcoQuestCard(quest: widget.quest),
         ),
       ),
