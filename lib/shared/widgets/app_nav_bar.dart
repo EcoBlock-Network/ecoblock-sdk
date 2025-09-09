@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:ecoblock_mobile/theme/theme.dart';
@@ -25,39 +28,87 @@ class AppNavBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(25),
         child: Container(
           height: 64 + bottomInset,
-          decoration: BoxDecoration(
-            color: scheme.navBackgroundGlass,
-            borderRadius: BorderRadius.circular(25),
-            border: Border.all(color: scheme.primary.withAlpha((0.08 * 255).toInt()), width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: scheme.primary.withAlpha((0.10 * 255).toInt()),
-                blurRadius: 22,
-                offset: const Offset(0, 6),
+          child: LayoutBuilder(builder: (context, constraints) {
+            final itemCount = _navBarIcons.length;
+            final alignmentX = itemCount > 1 ? -1.0 + 2.0 * (selectedIndex / (itemCount - 1)) : 0.0;
+            final pillWidthFactor = (1 / itemCount) * 0.98;
+
+            final shouldBlur = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;
+
+            return Container(
+              decoration: BoxDecoration(
+                color: scheme.navBackgroundGlass,
+                borderRadius: BorderRadius.circular(25),
+                border: Border.all(color: scheme.primary.withAlpha((0.08 * 255).toInt()), width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: scheme.primary.withAlpha((0.10 * 255).toInt()),
+                    blurRadius: 22,
+                    offset: const Offset(0, 6),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(_navBarIcons.length, (i) {
-              final selected = i == selectedIndex;
-              return Flexible(
-                fit: FlexFit.tight,
-                child: _EcoNavBarItem(
-                  icon: _navBarIcons[i],
-                  label: i == 0
-                      ? tr(context, 'nav.home')
-                      : i == 1
-                          ? tr(context, 'nav.profile')
-                          : i == 2
-                              ? tr(context, 'nav.news')
-                              : tr(context, 'nav.settings'),
-                  selected: selected,
-                  onTap: () => onTap(i),
-                ),
-              );
-            }),
-          ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (shouldBlur)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(25),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                        child: Container(color: Colors.transparent),
+                      ),
+                    ),
+
+                  AnimatedAlign(
+                    alignment: Alignment(alignmentX, 0),
+                    duration: const Duration(milliseconds: 260),
+                    curve: Curves.easeOutCubic,
+                    child: FractionallySizedBox(
+                      widthFactor: pillWidthFactor,
+                      heightFactor: 0.78,
+                      child: Container(
+                        // reduce outer margin so the pill visually spans the item area
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          gradient: LinearGradient(
+                            colors: [scheme.primary.withOpacity(0.10), scheme.primaryContainer.withOpacity(0.18)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          boxShadow: [
+                            BoxShadow(color: scheme.primary.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 4)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: List.generate(itemCount, (i) {
+                      final selected = i == selectedIndex;
+                      return Flexible(
+                        fit: FlexFit.tight,
+                        child: _EcoNavBarItem(
+                          icon: _navBarIcons[i],
+                          label: i == 0
+                              ? tr(context, 'nav.home')
+                              : i == 1
+                                  ? tr(context, 'nav.profile')
+                                  : i == 2
+                                      ? tr(context, 'nav.news')
+                                      : tr(context, 'nav.settings'),
+                          selected: selected,
+                          onTap: () => onTap(i),
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+            );
+          }),
         ),
       ),
     );
@@ -81,45 +132,30 @@ class _EcoNavBarItem extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(14),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 280),
           curve: Curves.easeOutCubic,
           padding: EdgeInsets.symmetric(horizontal: 4, vertical: selected ? 8 : 12),
           constraints: const BoxConstraints(minWidth: 30, minHeight: 48),
-          decoration: selected
-              ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  gradient: LinearGradient(
-                    colors: [
-                      scheme.primary.withOpacity(0.12),
-                      scheme.primaryContainer.withOpacity(0.32),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: scheme.primary.withOpacity(0.10),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    )
-                  ],
-                )
-              : null,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(
-                icon,
-                size: selected ? 32 : 26,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.white
-                    : (selected ? scheme.primary : scheme.onSurface.withOpacity(0.5)),
-                shadows: selected ? [Shadow(color: scheme.primary.withOpacity(0.21), blurRadius: 8)] : [],
+              AnimatedScale(
+                scale: selected ? 1.12 : 1.0,
+                duration: const Duration(milliseconds: 180),
+                curve: Curves.easeOut,
+                child: Icon(
+                  icon,
+                  size: selected ? 32 : 26,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.white
+                      : (selected ? scheme.primary : scheme.onSurface.withOpacity(0.5)),
+                  shadows: selected ? [Shadow(color: scheme.primary.withOpacity(0.21), blurRadius: 8)] : [],
+                ),
               ),
               const SizedBox(height: 2),
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 250),
-                  style: TextStyle(
+                style: TextStyle(
                   fontSize: selected ? 13.7 : 11.7,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? AppColors.white
@@ -128,7 +164,11 @@ class _EcoNavBarItem extends StatelessWidget {
                   letterSpacing: selected ? 0.05 : 0.02,
                   shadows: selected ? [Shadow(color: scheme.primary.withOpacity(0.10), blurRadius: 5)] : [],
                 ),
-                child: Text(label),
+                child: AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: selected ? 1.0 : 0.0,
+                  child: Text(label),
+                ),
               ),
             ],
           ),
