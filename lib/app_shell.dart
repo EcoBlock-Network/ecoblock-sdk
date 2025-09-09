@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
 import 'features/messaging/presentation/pages/messaging_page.dart';
@@ -12,6 +13,180 @@ class AppShell extends StatefulWidget {
 
   @override
   State<AppShell> createState() => _AppShellState();
+}
+
+// Small helper: data model for an on-screen bubble
+class _Bubble {
+  _Bubble({required this.offset, required this.size, required this.delay, required this.duration, required this.curve});
+  final Offset offset; // relative (-1..1) in x/y around center
+  final double size; // diameter
+  final Duration delay;
+  final Duration duration;
+  final Curve curve;
+}
+
+// Layer that spawns decorative eco-logo bubbles around a center point.
+// Bubbles are lightweight widgets that scale/fade in and out. They are spawned
+// progressively based on the provided progress controller.
+class BubblesLayer extends StatefulWidget {
+  const BubblesLayer({
+    Key? key,
+    required this.progress,
+    required this.vsync,
+    this.maxBubbles = 8,
+  }) : super(key: key);
+
+  final AnimationController progress;
+  final TickerProvider vsync;
+  final int maxBubbles;
+
+  @override
+  State<BubblesLayer> createState() => _BubblesLayerState();
+}
+
+class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMixin {
+  final List<_Bubble> _bubbles = [];
+  final Random _rand = Random();
+  late final AnimationController _spawnCtrl;
+  final Duration _spawnInterval = const Duration(milliseconds: 220);
+  DateTime _lastSpawn = DateTime.fromMillisecondsSinceEpoch(0);
+
+  @override
+  void initState() {
+    super.initState();
+    _spawnCtrl = AnimationController(vsync: widget.vsync, duration: const Duration(milliseconds: 400));
+    // listen to progress and spawn bubbles as it advances
+    widget.progress.addListener(_onProgress);
+  }
+
+  void _onProgress() {
+    final t = widget.progress.value; // 0..1
+  // use ceil so bubbles appear slightly earlier as progress advances
+  final target = (t * widget.maxBubbles).ceil();
+    final now = DateTime.now();
+    if (_bubbles.length < target && now.difference(_lastSpawn) >= _spawnInterval) {
+      _lastSpawn = now;
+      _addBubble();
+    }
+  }
+
+  void _addBubble() {
+    if (!mounted) return;
+    final dx = (_rand.nextDouble() * 2) - 1; // -1..1
+    final dy = (_rand.nextDouble() * 2) - 1;
+    // smaller, friendlier bubbles
+    final size = 14 + _rand.nextDouble() * 36; // 14..50
+    final delay = Duration(milliseconds: (_rand.nextInt(350)));
+    final duration = Duration(milliseconds: 700 + _rand.nextInt(700));
+    final curve = Curves.easeOutBack;
+    final bubble = _Bubble(offset: Offset(dx, dy), size: size, delay: delay, duration: duration, curve: curve);
+    // spawn bubble and remove it after its animation completes; cap total to avoid overload
+  if (_bubbles.length >= widget.maxBubbles) return;
+  setState(() => _bubbles.add(bubble));
+  }
+
+  @override
+  void dispose() {
+    widget.progress.removeListener(_onProgress);
+    _spawnCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+  final media = MediaQuery.of(context);
+  // use accessibleNavigation (widely available) for reduced motion preference
+  final reduced = media.accessibleNavigation;
+    return IgnorePointer(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final cx = constraints.maxWidth / 2;
+          final cy = constraints.maxHeight / 2;
+          return SizedBox(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: List.generate(_bubbles.length, (i) {
+                final b = _bubbles[i];
+                // map relative offset (-1..1) to pixels around the center; keep them mostly around center
+                final radiusX = constraints.maxWidth * 0.48;
+                final radiusY = constraints.maxHeight * 0.42;
+                final x = b.offset.dx * radiusX;
+                final y = b.offset.dy * radiusY;
+                return Positioned(
+                  left: cx + x - b.size / 2,
+                  top: cy + y - b.size / 2,
+                  child: _BubbleWidget(
+                    key: ValueKey(b.hashCode),
+                    size: b.size,
+                    delay: b.delay,
+                    duration: reduced ? const Duration(milliseconds: 120) : b.duration,
+                    curve: b.curve,
+                  ),
+                );
+              }),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _BubbleWidget extends StatefulWidget {
+  const _BubbleWidget({Key? key, required this.size, required this.delay, required this.duration, required this.curve}) : super(key: key);
+  final double size;
+  final Duration delay;
+  final Duration duration;
+  final Curve curve;
+
+  @override
+  State<_BubbleWidget> createState() => _BubbleWidgetState();
+}
+
+class _BubbleWidgetState extends State<_BubbleWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController _ctrl = AnimationController(vsync: this, duration: widget.duration);
+  late final Animation<double> _scale = CurvedAnimation(parent: _ctrl, curve: widget.curve);
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(widget.delay, () {
+      if (mounted) _ctrl.forward();
+    });
+    _ctrl.addStatusListener((s) {
+      if (s == AnimationStatus.completed) _ctrl.reverse();
+    });
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.5, curve: Curves.easeOut))),
+      child: ScaleTransition(
+        scale: Tween<double>(begin: 0.6, end: 1.0).animate(_scale),
+        child: Container(
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white.withOpacity(0.9),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6, offset: const Offset(0, 2))],
+          ),
+          child: Center(
+            child: Icon(Icons.eco, size: widget.size * 0.5, color: Colors.green.shade700),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _AppShellState extends State<AppShell> {
@@ -223,53 +398,66 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: EcoPageBackground(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedBuilder(
-                animation: Listenable.merge([_pulseCtrl, _progressCtrl]),
-                builder: (context, child) {
-                  final scale = 0.95 + 0.12 * _pulseCtrl.value;
-                  // glass-morphism circle
-                  return Transform.scale(
-                    scale: scale,
-                    child: Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(999),
-                        gradient: LinearGradient(
-                          colors: [Colors.greenAccent.shade100.withOpacity(0.28), Colors.white.withOpacity(0.06)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        border: Border.all(color: Colors.greenAccent.shade100.withOpacity(0.26), width: 1.5),
-                        boxShadow: [BoxShadow(color: Colors.green.shade50.withOpacity(0.18), blurRadius: 24, offset: const Offset(0, 8))],
-                        // backdrop blur is handled by EcoPageBackground; we keep a soft glass effect
-                      ),
-                      child: Stack(alignment: Alignment.center, children: [
-                        // progress ring (single sweep)
-                        SizedBox(
-                          width: 110,
-                          height: 110,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 6,
-                            value: _progressCtrl.value,
-                            valueColor: AlwaysStoppedAnimation(Colors.greenAccent.shade200),
-                            backgroundColor: Colors.greenAccent.shade100.withOpacity(0.18),
+        // Use a Stack so the bubbles layer can fill the whole screen behind the centered logo
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // fullscreen bubble background
+            BubblesLayer(
+              progress: _progressCtrl,
+              vsync: this,
+              maxBubbles: 36,
+            ),
+            // centered content
+            Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedBuilder(
+                    animation: Listenable.merge([_pulseCtrl, _progressCtrl]),
+                    builder: (context, child) {
+                      final scale = 0.95 + 0.12 * _pulseCtrl.value;
+                      // glass-morphism circle
+                      return Transform.scale(
+                        scale: scale,
+                        child: Container(
+                          width: 140,
+                          height: 140,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(999),
+                            gradient: LinearGradient(
+                              colors: [Colors.greenAccent.shade100.withOpacity(0.28), Colors.white.withOpacity(0.06)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            border: Border.all(color: Colors.greenAccent.shade100.withOpacity(0.26), width: 1.5),
+                            boxShadow: [BoxShadow(color: Colors.green.shade50.withOpacity(0.18), blurRadius: 24, offset: const Offset(0, 8))],
+                            // backdrop blur is handled by EcoPageBackground; we keep a soft glass effect
                           ),
+                          child: Stack(alignment: Alignment.center, children: [
+                            // progress ring (single sweep)
+                            SizedBox(
+                              width: 110,
+                              height: 110,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 6,
+                                value: _progressCtrl.value,
+                                valueColor: AlwaysStoppedAnimation(Colors.greenAccent.shade200),
+                                backgroundColor: Colors.greenAccent.shade100.withOpacity(0.18),
+                              ),
+                            ),
+                            Icon(Icons.eco, size: 56, color: Colors.green.shade700),
+                          ]),
                         ),
-                        Icon(Icons.eco, size: 56, color: Colors.green.shade700),
-                      ]),
-                    ),
-                  );
-                },
+                      );
+                    },
+                  ),
+                  const SizedBox(height: 18),
+                  Text('EcoBlock', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                ],
               ),
-              const SizedBox(height: 18),
-              Text('EcoBlock', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
