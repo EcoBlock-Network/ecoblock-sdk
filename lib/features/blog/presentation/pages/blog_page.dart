@@ -33,6 +33,7 @@ class _MessagingPageState extends ConsumerState<MessagingPage> {
       body: EcoPageBackground(
         child: SafeArea(
           top: false,
+          bottom: false,
           child: Builder(builder: (context) {
             final topInset = MediaQuery.of(context).viewPadding.top;
             return Padding(

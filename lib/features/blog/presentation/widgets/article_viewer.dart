@@ -86,7 +86,7 @@ class _ArticleViewerState extends State<ArticleViewer> {
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification is ScrollStartNotification && notification.dragDetails != null) {
-                  _expandPanel(immediate: true).then((_) {
+                  _expandPanel().then((_) {
                     if (mounted) setState(() => _isPanelExpanded = true);
                   });
                 }

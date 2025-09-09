@@ -125,40 +125,43 @@ class _InstagramGridState extends State<InstagramGrid> {
         _dragging = false;
         setState(() => _highlightedIndex = null);
       },
-      child: GridView.builder(
-        padding: EdgeInsets.zero,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-          childAspectRatio: 0.68,
-        ),
-        itemCount: widget.articles.length,
-        itemBuilder: (context, index) {
-          final a = widget.articles[index];
+      child: Builder(builder: (context) {
+        final bottomInset = MediaQuery.of(context).viewPadding.bottom;
+        return GridView.builder(
+          padding: EdgeInsets.only(bottom: bottomInset + 80),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            mainAxisSpacing: 0,
+            crossAxisSpacing: 0,
+            childAspectRatio: 0.68,
+          ),
+          itemCount: widget.articles.length,
+          itemBuilder: (context, index) {
+            final a = widget.articles[index];
 
-          final article = ArticleModel(
-            id: (_get(a, 'id') ?? index).toString(),
-            title: (_get(a, 'title') ?? '').toString(),
-            excerpt: (_get(a, 'excerpt') ?? '').toString(),
-            content: (_get(a, 'content') ?? '').toString(),
-            imageUrl: (_get(a, 'imageUrl') as String?),
-            publishedAt: (_get(a, 'createdAt') is DateTime ? _get(a, 'createdAt') as DateTime : null),
-          );
+            final article = ArticleModel(
+              id: (_get(a, 'id') ?? index).toString(),
+              title: (_get(a, 'title') ?? '').toString(),
+              excerpt: (_get(a, 'excerpt') ?? '').toString(),
+              content: (_get(a, 'content') ?? '').toString(),
+              imageUrl: (_get(a, 'imageUrl') as String?),
+              publishedAt: (_get(a, 'createdAt') is DateTime ? _get(a, 'createdAt') as DateTime : null),
+            );
 
-          return ArticleTile(
-            key: _tileKeys[index],
-            article: article,
-            isHighlighted: _highlightedIndex == index,
-            isRead: _readIds.contains(article.id),
-            onOpened: () async {
-              // Called when tapped normally
-              await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArticleViewer(article: article)));
-              _markRead(article.id);
-            },
-          );
-        },
-      ),
+            return ArticleTile(
+              key: _tileKeys[index],
+              article: article,
+              isHighlighted: _highlightedIndex == index,
+              isRead: _readIds.contains(article.id),
+              onOpened: () async {
+                // Called when tapped normally
+                await Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArticleViewer(article: article)));
+                _markRead(article.id);
+              },
+            );
+          },
+        );
+      }),
     );
   }
 }

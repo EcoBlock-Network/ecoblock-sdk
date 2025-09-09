@@ -68,7 +68,6 @@ class _ArticleTileState extends State<ArticleTile> {
                 ),
               ),
 
-            // subtle animated dark gradient overlay (lighter than before)
             AnimatedContainer(
               duration: const Duration(milliseconds: 160),
               decoration: BoxDecoration(

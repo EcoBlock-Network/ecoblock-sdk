@@ -37,7 +37,9 @@ class AppNavBar extends StatelessWidget {
 
             return Container(
               decoration: BoxDecoration(
-                color: scheme.navBackgroundGlass,
+        color: Theme.of(context).brightness == Brightness.dark
+          ? scheme.surface.withOpacity(0.20)
+          : scheme.surface.withOpacity(0.38),
                 borderRadius: BorderRadius.circular(25),
                 border: Border.all(color: scheme.primary.withAlpha((0.08 * 255).toInt()), width: 1),
                 boxShadow: [
@@ -73,12 +75,13 @@ class AppNavBar extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
                           gradient: LinearGradient(
-                            colors: [scheme.primary.withOpacity(0.10), scheme.primaryContainer.withOpacity(0.18)],
+                            // stronger contrast so icon & label read well
+                            colors: [scheme.primary.withOpacity(0.14), scheme.primaryContainer.withOpacity(0.28)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
                           boxShadow: [
-                            BoxShadow(color: scheme.primary.withOpacity(0.08), blurRadius: 12, offset: const Offset(0, 4)),
+                            BoxShadow(color: scheme.primary.withOpacity(0.10), blurRadius: 14, offset: const Offset(0, 6)),
                           ],
                         ),
                       ),
@@ -134,8 +137,8 @@ class _EcoNavBarItem extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 280),
           curve: Curves.easeOutCubic,
-          padding: EdgeInsets.symmetric(horizontal: 4, vertical: selected ? 8 : 12),
-          constraints: const BoxConstraints(minWidth: 30, minHeight: 48),
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: selected ? 6 : 10),
+          constraints: const BoxConstraints(minWidth: 64, minHeight: 56),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -153,20 +156,20 @@ class _EcoNavBarItem extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 2),
+              // Always show label but dim it when not selected for clarity
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 250),
                 style: TextStyle(
-                  fontSize: selected ? 13.7 : 11.7,
+                  fontSize: selected ? 13.7 : 12.0,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? AppColors.white
-                      : (selected ? scheme.primary : scheme.onSurface.withOpacity(0.48)),
+                      : (selected ? scheme.primary : scheme.onSurface.withOpacity(0.65)),
                   fontWeight: selected ? FontWeight.bold : FontWeight.w500,
                   letterSpacing: selected ? 0.05 : 0.02,
                   shadows: selected ? [Shadow(color: scheme.primary.withOpacity(0.10), blurRadius: 5)] : [],
                 ),
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: selected ? 1.0 : 0.0,
+                child: Opacity(
+                  opacity: selected ? 1.0 : 0.7,
                   child: Text(label),
                 ),
               ),
