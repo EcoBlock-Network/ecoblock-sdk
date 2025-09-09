@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 
 class JoinEcoBlockIntroText extends StatelessWidget {
   const JoinEcoBlockIntroText({super.key});
@@ -14,7 +15,7 @@ class JoinEcoBlockIntroText extends StatelessWidget {
             fontFamily: 'SF Pro Display',
             fontSize: 32,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF2E7D32),
+            color: AppColors.greenStrong,
           ),
         ),
         const SizedBox(height: 12),
@@ -24,7 +25,7 @@ class JoinEcoBlockIntroText extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'SF Pro Display',
             fontSize: 18,
-            color: Color(0xFF2E7D32),
+            color: AppColors.greenStrong,
           ),
         ),
       ],

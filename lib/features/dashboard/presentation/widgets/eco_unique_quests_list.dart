@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'eco_quest_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/unique_quests_provider.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
@@ -18,14 +19,14 @@ class EcoUniqueQuestsList extends ConsumerWidget {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(tr(context, 'xp_added', {'xp': xpToAdd.toString()})),
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.green,
         ),
       );
     } else if (!success && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(tr(context, 'could_not_complete_quest')),
-          backgroundColor: Colors.red,
+          backgroundColor: AppColors.error,
         ),
       );
     }

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 
 class EcoProgressCircle extends StatelessWidget {
   final int? xp;
@@ -62,11 +63,11 @@ class EcoProgressCircle extends StatelessWidget {
               width: size + 10,
               height: size + 10,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.06),
+                color: AppColors.white.withAlpha((0.06 * 255).toInt()),
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
-                    color: scheme.primary.withValues(alpha: 0.06),
+                    color: scheme.primary.withAlpha((0.06 * 255).toInt()),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 
 class AnimatedEcoBackground extends StatefulWidget {
   final Widget child;
@@ -38,8 +39,8 @@ class _AnimatedEcoBackgroundState extends State<AnimatedEcoBackground> with Sing
             gradient: LinearGradient(
               colors: [
                 scheme.primaryContainer,
-                Colors.white,
-                Colors.white,
+                AppColors.white,
+                AppColors.white,
               ],
               stops: [0.0, stopMid.clamp(0.49, 0.59), 1.0],
               begin: Alignment.topLeft,

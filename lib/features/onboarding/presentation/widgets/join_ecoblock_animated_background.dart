@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 
 class JoinEcoBlockAnimatedBackground extends StatelessWidget {
   const JoinEcoBlockAnimatedBackground({super.key});
@@ -8,13 +9,13 @@ class JoinEcoBlockAnimatedBackground extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFA5D6A7), Color(0xFFB2EBF2)],
+          colors: [AppColors.onboardingGradientStart, AppColors.onboardingGradientEnd],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
       ),
       child: Center(
-        child: Icon(CupertinoIcons.tree, size: 180, color: Color(0xFF2E7D32).withValues(alpha:0.15)),
+  child: Icon(CupertinoIcons.tree, size: 180, color: AppColors.greenStrong.withAlpha((0.15 * 255).toInt())),
       ),
     );
   }

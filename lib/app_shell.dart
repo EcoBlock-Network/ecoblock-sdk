@@ -8,6 +8,7 @@ import 'features/blog/presentation/pages/blog_page.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 import 'features/onboarding/presentation/pages/join_ecoblock_page.dart';
 import 'package:ecoblock_mobile/services/locator.dart';
 
@@ -69,9 +70,9 @@ class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMix
 
   void _addBubble() {
     if (!mounted) return;
-    final dx = (_rand.nextDouble() * 2) - 1; // -1..1
+    final dx = (_rand.nextDouble() * 2) - 1;
     final dy = (_rand.nextDouble() * 2) - 1;
-    final size = 14 + _rand.nextDouble() * 36; // 14..50
+    final size = 14 + _rand.nextDouble() * 36;
     final delay = Duration(milliseconds: (_rand.nextInt(350)));
     final duration = Duration(milliseconds: 700 + _rand.nextInt(700));
     final curve = Curves.easeOutBack;
@@ -103,7 +104,6 @@ class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMix
               clipBehavior: Clip.none,
               children: List.generate(_bubbles.length, (i) {
                 final b = _bubbles[i];
-                // map relative offset (-1..1) to pixels around the center; keep them mostly around center
                 final radiusX = constraints.maxWidth * 0.48;
                 final radiusY = constraints.maxHeight * 0.42;
                 final x = b.offset.dx * radiusX;
@@ -166,18 +166,18 @@ class _BubbleWidgetState extends State<_BubbleWidget> with SingleTickerProviderS
       opacity: Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.5, curve: Curves.easeOut))),
       child: ScaleTransition(
         scale: Tween<double>(begin: 0.6, end: 1.0).animate(_scale),
-        child: Container(
-          width: widget.size,
-          height: widget.size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.9),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 6, offset: const Offset(0, 2))],
-          ),
-          child: Center(
-            child: Icon(Icons.eco, size: widget.size * 0.5, color: Colors.green.shade700),
-          ),
-        ),
+          child: Container(
+                      width: widget.size,
+                      height: widget.size,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.white.withAlpha((0.9 * 255).toInt()),
+                        boxShadow: [BoxShadow(color: AppColors.black.withAlpha((0.06 * 255).toInt()), blurRadius: 6, offset: const Offset(0, 2))],
+                      ),
+                      child: Center(
+                        child: Icon(Icons.eco, size: widget.size * 0.5, color: AppColors.greenStrong),
+                      ),
+                    ),
       ),
     );
   }
@@ -265,10 +265,10 @@ class _AppShellState extends ConsumerState<AppShell> {
                       decoration: BoxDecoration(
                         color: Colors.transparent,
                         borderRadius: BorderRadius.circular(25),
-                        border: Border.all(color: scheme.primary.withValues(alpha: 0.08), width: 1),
+                        border: Border.all(color: scheme.primary.withAlpha((0.08 * 255).toInt()), width: 1),
                         boxShadow: [
                           BoxShadow(
-                            color: scheme.primary.withValues(alpha: 0.10),
+                            color: scheme.primary.withAlpha((0.10 * 255).toInt()),
                             blurRadius: 22,
                             offset: const Offset(0, 6),
                           ),
@@ -439,12 +439,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(999),
                             gradient: LinearGradient(
-                              colors: [Colors.greenAccent.shade100.withOpacity(0.28), Colors.white.withOpacity(0.06)],
+                              colors: [AppColors.primary.withAlpha((0.28 * 255).toInt()), AppColors.white.withAlpha((0.06 * 255).toInt())],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
-                            border: Border.all(color: Colors.greenAccent.shade100.withOpacity(0.26), width: 1.5),
-                            boxShadow: [BoxShadow(color: Colors.green.shade50.withOpacity(0.18), blurRadius: 24, offset: const Offset(0, 8))],
+                            border: Border.all(color: AppColors.primary.withAlpha((0.26 * 255).toInt()), width: 1.5),
+                            boxShadow: [BoxShadow(color: AppColors.primary.withAlpha((0.18 * 255).toInt()), blurRadius: 24, offset: const Offset(0, 8))],
                             // backdrop blur is handled by EcoPageBackground; we keep a soft glass effect
                           ),
                           child: Stack(alignment: Alignment.center, children: [
@@ -455,11 +455,11 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                               child: CircularProgressIndicator(
                                 strokeWidth: 6,
                                 value: _progressCtrl.value,
-                                valueColor: AlwaysStoppedAnimation(Colors.greenAccent.shade200),
-                                backgroundColor: Colors.greenAccent.shade100.withOpacity(0.18),
+                                valueColor: AlwaysStoppedAnimation(AppColors.tertiary),
+                                backgroundColor: AppColors.tertiary.withAlpha((0.18 * 255).toInt()),
                               ),
                             ),
-                            Icon(Icons.eco, size: 56, color: Colors.green.shade700),
+                            Icon(Icons.eco, size: 56, color: AppColors.greenStrong),
                           ]),
                         ),
                       );

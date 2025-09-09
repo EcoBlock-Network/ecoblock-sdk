@@ -1,7 +1,7 @@
-import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/quest_timer_placeholder.dart';
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'dart:async';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_persistence_provider.dart';
@@ -14,6 +14,108 @@ class EcoDailyQuestsList extends ConsumerStatefulWidget {
   const EcoDailyQuestsList({super.key});
   @override
   ConsumerState<EcoDailyQuestsList> createState() => _EcoDailyQuestsListState();
+}
+
+class AnimatedTimerPlaceholder extends StatefulWidget {
+  final DateTime deletedAt;
+  const AnimatedTimerPlaceholder({required this.deletedAt, super.key});
+  @override
+  State<AnimatedTimerPlaceholder> createState() => _AnimatedTimerPlaceholderState();
+}
+
+class _AnimatedTimerPlaceholderState extends State<AnimatedTimerPlaceholder> {
+  late Duration timeLeft;
+  late final StreamSubscription ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateTime();
+    ticker = Stream.periodic(const Duration(seconds: 1), (_) => _updateTime()).listen((_) {});
+  }
+
+  void _updateTime() {
+    final elapsed = DateTime.now().difference(widget.deletedAt);
+    final remaining = Duration(hours: 3) - elapsed;
+    setState(() {
+      timeLeft = remaining.isNegative ? Duration.zero : remaining;
+    });
+  }
+
+  @override
+  void dispose() {
+    ticker.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final total = Duration(hours: 3).inSeconds;
+    final left = timeLeft.inSeconds;
+    final progress = (total - left) / total;
+    final bgColor = Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.06);
+    final fillColor = Theme.of(context).colorScheme.primary.withOpacity(0.12);
+
+    final h = timeLeft.inHours;
+    final m = timeLeft.inMinutes % 60;
+    final s = timeLeft.inSeconds % 60;
+
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 0),
+      padding: const EdgeInsets.all(12),
+      child: Stack(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              color: bgColor,
+            ),
+            height: 64,
+          ),
+          Positioned.fill(
+            child: FractionallySizedBox(
+              alignment: Alignment.centerLeft,
+              widthFactor: progress.clamp(0.0, 1.0),
+              child: Container(
+                margin: const EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(14),
+                  color: fillColor,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 64,
+            child: Row(
+              children: [
+                Container(width: 22, height: 22, decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(6))),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${h.toString().padLeft(2, '0')}:${m.toString().padLeft(2, '0')}:${s.toString().padLeft(2, '0')}',
+                        style: TextStyle(fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onSurface),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        tr(context, 'until_new_quest'),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.64), fontSize: 12),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
@@ -98,15 +200,16 @@ class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
           }
           if (quest != null && deletedAt == null) {
             return Dismissible(
-              key: ValueKey(quest.id),
+              // make key unique per slot to avoid duplicate key errors when the same quest is reused
+              key: ValueKey('${quest.id}-$i'),
               direction: DismissDirection.endToStart,
               onDismissed: (_) => _deleteQuest(i),
-              background: Container(
-                color: Colors.red.withValues(alpha:0.13),
+                background: Container(
+                color: AppColors.error.withAlpha((0.13 * 255).toInt()),
                 alignment: Alignment.centerRight,
                 child: Padding(
                   padding: const EdgeInsets.only(right: 24.0),
-                  child: Icon(FeatherIcons.trash2, color: Colors.red, size: 28),
+                  child: Icon(FeatherIcons.trash2, color: AppColors.error, size: 28),
                 ),
               ),
               child: AnimatedQuestCard(
@@ -115,7 +218,7 @@ class _EcoDailyQuestsListState extends ConsumerState<EcoDailyQuestsList> {
               ),
             );
           } else if (deletedAt != null) {
-            return QuestTimerPlaceholder(deletedAt: deletedAt);
+            return AnimatedTimerPlaceholder(key: ValueKey('deleted-timer-$i'), deletedAt: deletedAt);
           } else {
             return Container(
               margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),

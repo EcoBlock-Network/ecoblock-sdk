@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/models/story.dart';
 import '../providers/stories_provider.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class StoryViewer extends ConsumerStatefulWidget {
@@ -96,7 +97,7 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
   Widget build(BuildContext context) {
     final stories = widget.stories;
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.black,
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -159,8 +160,8 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
                                     borderRadius: BorderRadius.circular(6),
                                     child: LinearProgressIndicator(
                                       value: _progress[i].clamp(0.0, 1.0),
-                                      backgroundColor: Colors.white12,
-                                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                                      backgroundColor: AppColors.white.withAlpha((0.12 * 255).toInt()),
+                                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
                                       minHeight: 3,
                                     ),
                                   ),
@@ -179,7 +180,7 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
                             stories[_currentIndex].title,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                            style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -201,14 +202,14 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
 
   Widget _buildPlaceholder(Story s) {
     return Container(
-      color: Colors.black,
+      color: AppColors.black,
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(Icons.eco, color: Colors.white, size: 64),
             const SizedBox(height: 12),
-            Text(s.title, style: const TextStyle(color: Colors.white70)),
+            Text(s.title, style: TextStyle(color: AppColors.white.withAlpha((0.7 * 255).toInt()))),
           ],
         ),
       ),

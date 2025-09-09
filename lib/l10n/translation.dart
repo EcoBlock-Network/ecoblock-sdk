@@ -69,6 +69,7 @@ const Map<String, Map<String, String>> _localizedValues = {
   // daily quests
   'no_quest': 'No quest',
   'until_refresh': 'until refresh',
+  'until_new_quest': 'until a new quest appears',
   // onboarding
   'onboarding.welcome': 'Welcome to EcoBlock',
   'onboarding.hint': "Let's get started! Complete your profile and discover your first quests.",
@@ -194,6 +195,7 @@ const Map<String, Map<String, String>> _localizedValues = {
   // daily quests
   'no_quest': 'Aucune quête',
   'until_refresh': 'jusqu\'au rafraîchissement',
+  'until_new_quest': 'jusqu\'à l\'apparition d\'une nouvelle quête',
   // onboarding
   'onboarding.welcome': 'Bienvenue sur EcoBlock',
   'onboarding.hint': 'Comblez votre profil et découvrez vos premières quêtes.',

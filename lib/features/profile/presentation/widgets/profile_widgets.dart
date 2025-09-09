@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../../domain/entities/block_data.dart';
 import '../../domain/entities/stats.dart';
@@ -151,13 +152,13 @@ class BadgeList extends StatelessWidget {
               child: Opacity(
                 opacity: badge.unlocked ? 1.0 : 0.4,
                 child: Card(
-                  color: badge.unlocked ? Colors.amber : Colors.grey[300],
+                  color: badge.unlocked ? AppColors.amber : AppColors.grey300,
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.emoji_events, color: badge.unlocked ? Colors.orange : Colors.grey, size: 28),
+                        Icon(Icons.emoji_events, color: badge.unlocked ? AppColors.orange : AppColors.grey300, size: 28),
                         Text(badge.nom, style: TextStyle(fontSize: 12)),
                       ],
                     ),
@@ -187,13 +188,13 @@ class LootList extends StatelessWidget {
         itemBuilder: (context, i) {
           final item = loot[i];
           return Card(
-            color: item.debloque ? Colors.green[200] : Colors.grey[300],
+            color: item.debloque ? AppColors.green200 : AppColors.grey300,
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.inventory, color: item.debloque ? Colors.green : Colors.grey, size: 28),
+                  Icon(Icons.inventory, color: item.debloque ? AppColors.green : AppColors.grey300, size: 28),
                   Text(item.nom, style: TextStyle(fontSize: 12)),
                 ],
               ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 
 class JoinEcoBlockInfoCard extends StatelessWidget {
   const JoinEcoBlockInfoCard({super.key});
@@ -17,21 +18,21 @@ class JoinEcoBlockInfoCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha:0.35),
+                color: AppColors.white.withAlpha((0.35 * 255).toInt()),
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha:0.08),
+                    color: AppColors.black.withAlpha((0.08 * 255).toInt()),
                     blurRadius: 12,
                   ),
                 ],
               ),
-              child: const Text(
+              child: Text(
                 'ℹ️ Un nœud est un appareil qui rejoint le réseau local BLE. Il collecte et relaye des données écologiques anonymement.',
                 style: TextStyle(
                   fontFamily: 'SF Pro Display',
                   fontSize: 15,
-                  color: Color(0xFF2E7D32),
+                  color: AppColors.greenStrong,
                 ),
                 textAlign: TextAlign.center,
               ),
