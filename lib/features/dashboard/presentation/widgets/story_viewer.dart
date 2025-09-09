@@ -1,13 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../../data/stories_service.dart';
+import 'package:ecoblock_mobile/models/story.dart';
 import '../providers/stories_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Fullscreen story viewer similar to Instagram stories.
-/// - Accepts a list of [Story] and an [initialIndex].
-/// - Auto advances every [autoAdvanceDuration].
 class StoryViewer extends ConsumerStatefulWidget {
   final List<Story> stories;
   final int initialIndex;

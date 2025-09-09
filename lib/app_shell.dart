@@ -2,32 +2,31 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
-import 'features/messaging/presentation/pages/messaging_page.dart';
+import 'features/blog/presentation/pages/messaging_page.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
+import 'features/onboarding/presentation/pages/join_ecoblock_page.dart';
+import 'package:ecoblock_mobile/services/locator.dart';
 
-class AppShell extends StatefulWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
   @override
-  State<AppShell> createState() => _AppShellState();
+  ConsumerState<AppShell> createState() => _AppShellState();
 }
 
-// Small helper: data model for an on-screen bubble
 class _Bubble {
   _Bubble({required this.offset, required this.size, required this.delay, required this.duration, required this.curve});
-  final Offset offset; // relative (-1..1) in x/y around center
-  final double size; // diameter
+  final Offset offset;
+  final double size;
   final Duration delay;
   final Duration duration;
   final Curve curve;
 }
 
-// Layer that spawns decorative eco-logo bubbles around a center point.
-// Bubbles are lightweight widgets that scale/fade in and out. They are spawned
-// progressively based on the provided progress controller.
 class BubblesLayer extends StatefulWidget {
   const BubblesLayer({
     Key? key,
@@ -55,13 +54,11 @@ class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMix
   void initState() {
     super.initState();
     _spawnCtrl = AnimationController(vsync: widget.vsync, duration: const Duration(milliseconds: 400));
-    // listen to progress and spawn bubbles as it advances
     widget.progress.addListener(_onProgress);
   }
 
   void _onProgress() {
     final t = widget.progress.value; // 0..1
-  // use ceil so bubbles appear slightly earlier as progress advances
   final target = (t * widget.maxBubbles).ceil();
     final now = DateTime.now();
     if (_bubbles.length < target && now.difference(_lastSpawn) >= _spawnInterval) {
@@ -74,13 +71,11 @@ class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMix
     if (!mounted) return;
     final dx = (_rand.nextDouble() * 2) - 1; // -1..1
     final dy = (_rand.nextDouble() * 2) - 1;
-    // smaller, friendlier bubbles
     final size = 14 + _rand.nextDouble() * 36; // 14..50
     final delay = Duration(milliseconds: (_rand.nextInt(350)));
     final duration = Duration(milliseconds: 700 + _rand.nextInt(700));
     final curve = Curves.easeOutBack;
     final bubble = _Bubble(offset: Offset(dx, dy), size: size, delay: delay, duration: duration, curve: curve);
-    // spawn bubble and remove it after its animation completes; cap total to avoid overload
   if (_bubbles.length >= widget.maxBubbles) return;
   setState(() => _bubbles.add(bubble));
   }
@@ -95,7 +90,6 @@ class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
   final media = MediaQuery.of(context);
-  // use accessibleNavigation (widely available) for reduced motion preference
   final reduced = media.accessibleNavigation;
     return IgnorePointer(
       child: LayoutBuilder(
@@ -189,9 +183,10 @@ class _BubbleWidgetState extends State<_BubbleWidget> with SingleTickerProviderS
   }
 }
 
-class _AppShellState extends State<AppShell> {
+class _AppShellState extends ConsumerState<AppShell> {
   int _selectedIndex = 1;
   bool _showSplash = true;
+  bool _needsJoin = false;
 
   static final List<Widget> _pages = [
     DashboardPage(),
@@ -220,10 +215,26 @@ class _AppShellState extends State<AppShell> {
   @override
   void initState() {
     super.initState();
+    // check if local node exists (async). If not, we'll show JoinEcoBlockPage after splash.
+    _checkNodeInit();
+
     // show splash for 3 seconds
     Timer(const Duration(seconds: 3), () {
       if (mounted) setState(() => _showSplash = false);
     });
+  }
+
+  Future<void> _checkNodeInit() async {
+    try {
+      final rustSvc = ref.read(rustBridgeServiceProvider);
+      final initialized = await rustSvc.nodeIsInitialized();
+      if (mounted && !initialized) {
+        setState(() => _needsJoin = true);
+      }
+    } catch (_) {
+      // On error, default to requiring join to be safe.
+      if (mounted) setState(() => _needsJoin = true);
+    }
   }
 
   @override
@@ -237,10 +248,12 @@ class _AppShellState extends State<AppShell> {
       switchOutCurve: Curves.easeIn,
       child: _showSplash
           ? const SplashScreen(key: ValueKey('splash'))
+        : _needsJoin
+          ? const JoinEcoBlockPage()
           : Scaffold(
-              key: const ValueKey('main'),
-              extendBody: true,
-              body: _pages[_selectedIndex],
+            key: const ValueKey('main'),
+            extendBody: true,
+            body: _pages[_selectedIndex],
               bottomNavigationBar: Padding(
                 padding: EdgeInsets.only(left: 13, right: 13, bottom: 12 + bottomInset),
                 child: ClipRRect(

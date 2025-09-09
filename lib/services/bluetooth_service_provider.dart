@@ -1,7 +1,2 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'ibluetooth_service.dart';
-import 'bluetooth_service.dart';
+export 'locator.dart' show bluetoothServiceProvider;
 
-final bluetoothServiceProvider = Provider<IBluetoothService>((ref) {
-  return BluetoothService() as IBluetoothService;
-});

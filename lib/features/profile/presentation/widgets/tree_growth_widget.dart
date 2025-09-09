@@ -6,7 +6,6 @@ class TreeGrowthWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Placeholder CustomPaint, replace with Rive for real animation
     return AnimatedOpacity(
       opacity: 1.0,
       duration: const Duration(milliseconds: 800),
@@ -29,9 +28,7 @@ class _TreePainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.green.withValues(alpha:0.7)
       ..style = PaintingStyle.fill;
-    // Draw trunk
     canvas.drawRect(Rect.fromLTWH(size.width/2-10, size.height-60, 20, 60), paint..color = Colors.brown);
-    // Draw foliage based on progression
     final foliageRadius = 40 + 60 * progression;
     canvas.drawCircle(Offset(size.width/2, size.height-60), foliageRadius, paint..color = Colors.green.withValues(alpha:0.7));
   }

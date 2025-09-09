@@ -184,15 +184,14 @@ class SettingsPage extends ConsumerWidget {
           TextButton(
             child: Text(tr(context, 'confirm.reset')),
             onPressed: () {
-              // Reset using public methods
               final notif = ref.read(notificationsProvider.notifier);
               final lang = ref.read(languageProvider.notifier);
               final theme = ref.read(themeProvider.notifier);
               final dataSaver = ref.read(dataSaverProvider.notifier);
-              if (!ref.read(notificationsProvider)) notif.toggle(); // set to true
+              if (!ref.read(notificationsProvider)) notif.toggle();
               lang.setLanguage('fr');
               theme.setTheme(ThemeMode.system);
-              if (ref.read(dataSaverProvider)) dataSaver.toggle(); // set to false
+              if (ref.read(dataSaverProvider)) dataSaver.toggle();
               Navigator.of(ctx).pop();
             },
           ),

@@ -11,6 +11,7 @@ class MessagingPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     final blogsAsync = ref.watch(blogsProvider);
+    print(  'blogsAsync state: $blogsAsync'); // Debug print
 
     return Scaffold(
       body: EcoPageBackground(
