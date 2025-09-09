@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ArticleHeader extends StatelessWidget {
   final String title;
@@ -6,7 +7,8 @@ class ArticleHeader extends StatelessWidget {
   final String? imageUrl;
   final bool hasImage;
   final bool showBack;
-  const ArticleHeader({required this.title, required this.publishedAt, this.imageUrl, required this.hasImage, this.showBack = true, super.key});
+  final String? heroTag;
+  const ArticleHeader({required this.title, required this.publishedAt, this.imageUrl, required this.hasImage, this.showBack = true, this.heroTag, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +37,23 @@ class ArticleHeader extends StatelessWidget {
             ? Stack(
                 fit: StackFit.expand,
                 children: [
-                  Image.network(
-                    imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(color: Colors.black),
-                  ),
+                  if (heroTag != null)
+                    Hero(
+                      tag: heroTag!,
+                      child: CachedNetworkImage(
+                        imageUrl: imageUrl!,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => Container(color: Colors.black),
+                        placeholder: (context, url) => Container(color: Colors.black12),
+                      ),
+                    )
+                  else
+                    CachedNetworkImage(
+                      imageUrl: imageUrl!,
+                      fit: BoxFit.cover,
+                      errorWidget: (context, url, error) => Container(color: Colors.black),
+                      placeholder: (context, url) => Container(color: Colors.black12),
+                    ),
                   Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(

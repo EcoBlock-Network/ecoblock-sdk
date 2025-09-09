@@ -100,6 +100,7 @@ class _ArticleViewerState extends State<ArticleViewer> {
                     publishedAt: article.publishedAt,
                     imageUrl: article.imageUrl,
                     hasImage: hasImage,
+                    heroTag: article.id,
                     showBack: !_isPanelExpanded,
                   ),
 

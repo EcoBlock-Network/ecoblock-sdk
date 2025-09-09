@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'article_model.dart';
 import 'article_viewer.dart';
 
@@ -14,8 +15,6 @@ class ArticleTile extends StatefulWidget {
 }
 
 class _ArticleTileState extends State<ArticleTile> {
-  bool _pressed = false;
-
   void _open() async {
     if (widget.onOpened != null) {
       await widget.onOpened!();
@@ -33,84 +32,102 @@ class _ArticleTileState extends State<ArticleTile> {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: _open,
-      onTapDown: (_) => setState(() => _pressed = true),
-      onTapUp: (_) => setState(() => _pressed = false),
-      onTapCancel: () => setState(() => _pressed = false),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          imageUrl != null && imageUrl.isNotEmpty
-              ? Image.network(
-                  imageUrl,
+      child: AnimatedOpacity(
+        duration: const Duration(milliseconds: 200),
+        opacity: widget.isRead ? 0.82 : 1.0,
+        child: AnimatedScale(
+          scale: widget.isHighlighted ? 0.985 : 1.0,
+          duration: const Duration(milliseconds: 160),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+            if (imageUrl != null && imageUrl.isNotEmpty)
+              Hero(
+                tag: widget.article.id,
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Image.asset(
-                    'assets/images/mock_story.png',
-                    fit: BoxFit.cover,
-                  ),
-                )
-              : Container(
-                  color: scheme.surfaceVariant,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        'assets/images/mock_story.png',
-                        fit: BoxFit.contain,
-                        color: Colors.white.withOpacity(0.9),
-                        width: 56,
-                        height: 56,
-                      ),
+                  errorWidget: (context, url, error) => Image.asset('assets/images/mock_story.png', fit: BoxFit.cover),
+                  placeholder: (context, url) => Container(color: Colors.black12),
+                ),
+              )
+            else
+              Container(
+                color: scheme.surfaceVariant,
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Image.asset(
+                      'assets/images/mock_story.png',
+                      fit: BoxFit.contain,
+                      color: Colors.white.withOpacity(0.9),
+                      width: 56,
+                      height: 56,
                     ),
                   ),
                 ),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 160),
-            // Remove the dark overlay when this tile is highlighted during long-press drag
-            color: widget.isHighlighted ? Colors.transparent : (_pressed ? Colors.transparent : Colors.black54),
-          ),
-          Positioned(
-            left: 6,
-            right: 6,
-            bottom: 6,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-              decoration: const BoxDecoration(
+              ),
+
+            // subtle animated dark gradient overlay (lighter than before)
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 160),
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.transparent, Colors.black45],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(widget.isHighlighted ? 0.04 : 0.12),
+                    Colors.black.withOpacity(widget.isHighlighted ? 0.06 : 0.32),
+                  ],
                 ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      widget.article.title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, shadows: [Shadow(blurRadius: 4, color: Colors.black45)]),
-                    ),
+            ),
+
+            // title area (bottom)
+            Positioned(
+              left: 6,
+              right: 6,
+              bottom: 6,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.transparent, Colors.black45],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
-                  if (widget.isRead)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 6.0),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.black54,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Text(
-                          'vu',
-                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    ),
-                ],
+                ),
+                child: Text(
+                  widget.article.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, shadows: [Shadow(blurRadius: 4, color: Colors.black45)]),
+                ),
               ),
             ),
+
+            // small read dot top-right
+            Positioned(
+              top: 8,
+              right: 8,
+              child: AnimatedScale(
+                duration: const Duration(milliseconds: 200),
+                scale: widget.isRead ? 1.0 : 0.0,
+                child: Container(
+                  width: 10,
+                  height: 10,
+                  decoration: BoxDecoration(
+                    color: Colors.greenAccent.shade400,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white.withOpacity(0.9), width: 1.5),
+                    boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 1))],
+                  ),
+                ),
+              ),
+            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
