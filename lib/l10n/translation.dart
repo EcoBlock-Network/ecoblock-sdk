@@ -144,6 +144,11 @@ const Map<String, Map<String, String>> _localizedValues = {
   'profile.connected_nodes': 'Connected nodes',
   'profile.export_data': 'Export data',
   'profile.settings': 'Settings',
+  // navigation
+  'nav.home': 'Home',
+  'nav.profile': 'Profile',
+  'nav.news': 'News',
+  'nav.settings': 'Settings',
   },
   'fr': {
     'xp_added': '+{xp} XP ajouté·e à votre profil !',
@@ -232,6 +237,11 @@ const Map<String, Map<String, String>> _localizedValues = {
   'profile.connected_nodes': 'Nœuds connectés',
   'profile.export_data': 'Exporter les données',
   'profile.settings': 'Paramètres',
+  // navigation
+  'nav.home': 'Accueil',
+  'nav.profile': 'Profil',
+  'nav.news': 'Actualités',
+  'nav.settings': 'Paramètres',
   // help / misc
   'help_title': 'FAQ, support, à propos',
   'mesh_simulator_title': 'Simulateur Mesh BLE',

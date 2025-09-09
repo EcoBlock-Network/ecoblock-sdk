@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,11 +23,13 @@ class ProfilePage extends ConsumerWidget {
             padding: const EdgeInsets.only(top: 16, bottom: 12),
             child: profileAsync.when(
               data: (profile) {
-                // Polished profile layout: header, KPIs, missions, and Tangle summary
-                final samplePeers = [
-                  {'id': 'p1', 'addr': 'node-1.eco', 'latency': '42ms', 'connected': true},
-                  {'id': 'p2', 'addr': 'node-24.eco', 'latency': '118ms', 'connected': true},
-                  {'id': 'p3', 'addr': 'node-7.eco', 'latency': '73ms', 'connected': true},
+                // Polished profile layout: header, KPIs, missions, and Achievements summary
+                final sampleBadges = [
+                  {'id': 'b1', 'title': 'Network Starter', 'unlocked': true},
+                  {'id': 'b2', 'title': 'Data Relayer', 'unlocked': true},
+                  {'id': 'b3', 'title': 'Community Helper', 'unlocked': false},
+                  {'id': 'b4', 'title': 'Tree Planter', 'unlocked': false},
+                  {'id': 'b5', 'title': 'Marathoner', 'unlocked': true},
                 ];
 
                 return Column(
@@ -40,12 +43,29 @@ class ProfilePage extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         children: [
-                          // Avatar placeholder
-                          Container(
-                            width: 84,
-                            height: 84,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(16), color: scheme.primary.withOpacity(0.12)),
-                            child: const Icon(Icons.person, size: 44, color: Colors.green),
+                          // Avatar placeholder (glass)
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(18),
+                            child: BackdropFilter(
+                              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                                child: Container(
+                                width: 96,
+                                height: 96,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [scheme.primary.withOpacity(0.14), scheme.primary.withOpacity(0.06)],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(18),
+                                  // subtle green-tinted border for the glass effect
+                                  border: Border.all(color: scheme.primary.withOpacity(0.12)),
+                                  // faint green glow shadow
+                                  boxShadow: [BoxShadow(color: scheme.primary.withOpacity(0.06), blurRadius: 14, offset: const Offset(0, 6))],
+                                ),
+                                child: Icon(Icons.person, size: 48, color: scheme.primary),
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -113,28 +133,35 @@ class ProfilePage extends ConsumerWidget {
 
                     const SizedBox(height: 14),
 
-                    // Tangle peers list (interactive)
+                    // Achievements / Badges carousel
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 13),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text('Nœuds connectés', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                        Text('Badges', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                         const SizedBox(height: 8),
-                        _TangleNodeList(initialPeers: samplePeers),
+                        SizedBox(
+                          height: 120,
+                          child: ListView.separated(
+                            scrollDirection: Axis.horizontal,
+                            padding: const EdgeInsets.symmetric(horizontal: 2),
+                            itemBuilder: (context, index) {
+                              final b = sampleBadges[index];
+                              return _BadgeTile(
+                                id: b['id'] as String,
+                                title: b['title'] as String,
+                                unlocked: b['unlocked'] as bool,
+                              );
+                            },
+                            separatorBuilder: (_, __) => const SizedBox(width: 12),
+                            itemCount: sampleBadges.length,
+                          ),
+                        ),
                       ]),
                     ),
 
                     const SizedBox(height: 22),
 
-                    // Actions row
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 13),
-                      child: Row(children: [
-                        Expanded(child: OutlinedButton.icon(onPressed: () {}, icon: const Icon(Icons.upload_file), label: const Text('Exporter données'))),
-                        const SizedBox(width: 12),
-                        Expanded(child: ElevatedButton.icon(onPressed: () {}, icon: const Icon(Icons.settings), label: const Text('Paramètres'))),
-                      ]),
-                    ),
-
+                    // Actions row removed (export/settings buttons)
                     const SizedBox(height: 32),
                   ],
                 );
@@ -143,6 +170,32 @@ class ProfilePage extends ConsumerWidget {
               error: (e, _) => Center(child: Text(tr(context, 'profile.error'))),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SurfaceCard extends StatelessWidget {
+  final Widget child;
+  const _SurfaceCard({Key? key, required this.child}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(colors: [scheme.surfaceVariant.withOpacity(0.05), scheme.primary.withOpacity(0.05)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: scheme.primary.withOpacity(0.10)),
+            boxShadow: [BoxShadow(color: scheme.primary.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 6))],
+          ),
+          child: child,
         ),
       ),
     );
@@ -164,30 +217,38 @@ class _KpiCard extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Expanded(
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: backgroundColors != null
-                ? LinearGradient(colors: backgroundColors!, begin: Alignment.topLeft, end: Alignment.bottomRight)
-                : null,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Padding(
+    child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+          child: Container(
             padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: backgroundColors != null
+                  ? LinearGradient(colors: backgroundColors!, begin: Alignment.topLeft, end: Alignment.bottomRight)
+                  // when no explicit backgroundColors are provided, add a faint green-tinted wash
+                  : LinearGradient(colors: [scheme.surfaceVariant.withOpacity(0.06), scheme.primary.withOpacity(0.06)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              borderRadius: BorderRadius.circular(12),
+              // gentle green border to emphasize the tint
+              border: Border.all(color: scheme.primary.withOpacity(0.10)),
+              // slightly green-tinged shadow
+              boxShadow: [BoxShadow(color: scheme.primary.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 8))],
+            ),
             child: Row(
               children: [
                 Container(
+                  width: 44,
+                  height: 44,
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(shape: BoxShape.circle, color: scheme.primary.withOpacity(0.12)),
-                  child: Icon(icon, color: scheme.primary),
+                  child: Icon(icon, color: scheme.primary, size: 20),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                     Text(label, style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
-                    const SizedBox(height: 4),
-                    Text(value, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 6),
+                    Text(value, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, fontSize: 18)),
                   ]),
                 ),
               ],
@@ -199,23 +260,86 @@ class _KpiCard extends StatelessWidget {
   }
 }
 
-class _SurfaceCard extends StatelessWidget {
-  final Widget child;
-  const _SurfaceCard({Key? key, required this.child}) : super(key: key);
+class _BadgeTile extends StatelessWidget {
+  final String id;
+  final String title;
+  final bool unlocked;
+  const _BadgeTile({Key? key, required this.id, required this.title, required this.unlocked}) : super(key: key);
+
+  void _showAchievementDetails(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      builder: (ctx) {
+        final scheme = Theme.of(ctx).colorScheme;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(children: [
+                CircleAvatar(
+                  radius: 28,
+                  backgroundColor: unlocked ? scheme.primary : scheme.onSurface.withOpacity(0.06),
+                  child: Icon(unlocked ? Icons.emoji_events : Icons.lock_outline, color: unlocked ? scheme.onPrimary : scheme.onSurfaceVariant, size: 30),
+                ),
+                const SizedBox(width: 12),
+                Expanded(child: Text(title, style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold))),
+              ]),
+              const SizedBox(height: 12),
+              Text(
+                unlocked ? 'This achievement is unlocked.' : 'This achievement is locked. Complete the required actions to unlock it.',
+                style: Theme.of(ctx).textTheme.bodyMedium?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+              const SizedBox(height: 18),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Close')),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Card(
-      color: scheme.surfaceVariant, // surfaceVariant provided by ColorScheme
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: Padding(padding: const EdgeInsets.all(12), child: child),
+    return GestureDetector(
+      onLongPress: () => _showAchievementDetails(context),
+      child: SizedBox(
+        width: 120,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: 32,
+              backgroundColor: unlocked ? scheme.primary : scheme.onSurface.withOpacity(0.06),
+              child: Icon(unlocked ? Icons.emoji_events : Icons.lock_outline, color: unlocked ? scheme.onPrimary : scheme.onSurfaceVariant, size: 30),
+            ),
+            const SizedBox(height: 8),
+            Text(title, style: Theme.of(context).textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+          ],
+        ),
+      ),
     );
   }
 }
 
-// New interactive Tangle node list implementation
+class _TangleNodeItem extends StatefulWidget {
+  final Map<String, Object?> peer;
+  const _TangleNodeItem({Key? key, required this.peer}) : super(key: key);
+
+  @override
+  State<_TangleNodeItem> createState() => _TangleNodeItemState();
+}
+
+// Tangle node list: interactive connect/disconnect simulation
 class _TangleNodeList extends StatefulWidget {
   final List<Map<String, Object?>> initialPeers;
 
@@ -279,14 +403,6 @@ class _TangleNodeListState extends State<_TangleNodeList> with TickerProviderSta
   }
 }
 
-class _TangleNodeItem extends StatefulWidget {
-  final Map<String, Object?> peer;
-  const _TangleNodeItem({Key? key, required this.peer}) : super(key: key);
-
-  @override
-  State<_TangleNodeItem> createState() => _TangleNodeItemState();
-}
-
 class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProviderStateMixin {
   late AnimationController _transferCtrl;
   bool _connected = true;
@@ -344,7 +460,11 @@ class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProvi
                   child: Container(
                     width: 12,
                     height: 12,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: connected ? Colors.greenAccent.shade400 : Colors.grey, border: Border.all(color: scheme.surface, width: 2)),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: connected ? scheme.primary : Colors.grey,
+                      border: Border.all(color: scheme.surface, width: 2),
+                    ),
                   ),
                 ),
               ],

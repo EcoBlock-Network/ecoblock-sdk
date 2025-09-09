@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/shared/widgets/animated_background.dart';
 import 'package:ecoblock_mobile/theme/theme.dart';
 
-/// Reusable page background used across the app.
-/// It composes the existing [AnimatedEcoBackground] and places
 class EcoPageBackground extends StatelessWidget {
   final Widget child;
   final double topLeftDiameter;
@@ -24,11 +22,12 @@ class EcoPageBackground extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final tlColor = topLeftColor ?? scheme.primary.withValues(alpha: 0.13);
-    final brColor = bottomRightColor ?? scheme.tertiaryContainer.withValues(alpha: 0.12);
+    final brColor =
+        bottomRightColor ?? scheme.tertiaryContainer.withValues(alpha: 0.12);
 
     return AnimatedEcoBackground(
       child: Stack(
-  children: [
+        children: [
           Positioned(
             top: -70,
             left: -80,
@@ -37,7 +36,10 @@ class EcoPageBackground extends StatelessWidget {
           Positioned(
             bottom: -50,
             right: -40,
-            child: _BackgroundCircle(diameter: bottomRightDiameter, color: brColor),
+            child: _BackgroundCircle(
+              diameter: bottomRightDiameter,
+              color: brColor,
+            ),
           ),
           child,
         ],
@@ -58,7 +60,7 @@ class _BackgroundCircle extends StatelessWidget {
       height: diameter,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-          gradient: RadialGradient(
+        gradient: RadialGradient(
           colors: [color, AppColors.transparent],
           radius: 0.9,
         ),
