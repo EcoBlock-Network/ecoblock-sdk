@@ -35,7 +35,6 @@ class EcoProgressCircle extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
 
-    // Determine display level/progress
     late final int displayLevel;
     late final double displayProgress;
     int xpCurrent = 0, xpNeeded = 0;
@@ -62,8 +61,10 @@ class EcoProgressCircle extends StatelessWidget {
             child: Container(
               width: size + 10,
               height: size + 10,
-              decoration: BoxDecoration(
-                color: AppColors.white.withAlpha((0.06 * 255).toInt()),
+        decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.darkSurface.withAlpha((0.06 * 255).toInt())
+          : Theme.of(context).colorScheme.background.withValues(alpha: 0.06),
                 borderRadius: BorderRadius.circular(100),
                 boxShadow: [
                   BoxShadow(
@@ -88,7 +89,9 @@ class EcoProgressCircle extends StatelessWidget {
                 value: val,
                 strokeWidth: 10,
                 backgroundColor: scheme.surface.withValues(alpha: 0.10),
-                valueColor: AlwaysStoppedAnimation(scheme.primary.withValues(alpha: 0.98)),
+                    valueColor: AlwaysStoppedAnimation(Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.white.withValues(alpha: 0.98)
+                        : scheme.primary.withValues(alpha: 0.98)),
               );
             },
           ),
@@ -96,17 +99,29 @@ class EcoProgressCircle extends StatelessWidget {
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.eco, size: size * 0.24, color: scheme.primary.withValues(alpha: 0.96)),
+                Icon(
+                  Icons.eco,
+                  size: size * 0.24,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.white.withValues(alpha: 0.96)
+                      : scheme.primary.withValues(alpha: 0.96),
+                ),
             const SizedBox(height: 6),
-            Text(
-              tr(context, 'level.display', {'level': displayLevel.toString()}),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: scheme.primary, fontWeight: FontWeight.bold),
-            ),
+                Text(
+                  tr(context, 'level.display', {'level': displayLevel.toString()}),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).brightness == Brightness.dark ? AppColors.white : scheme.primary,
+                      fontWeight: FontWeight.bold),
+                ),
             const SizedBox(height: 4),
-            Text(
-              tr(context, 'xp.progress', {'current': xpCurrent.toString(), 'needed': xpNeeded.toString()}),
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.primary.withValues(alpha: 0.64), fontWeight: FontWeight.w600),
-            ),
+                Text(
+                  tr(context, 'xp.progress', {'current': xpCurrent.toString(), 'needed': xpNeeded.toString()}),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? AppColors.white.withValues(alpha: 0.64)
+                          : scheme.primary.withValues(alpha: 0.64),
+                      fontWeight: FontWeight.w600),
+                ),
           ],
         ),
       ],

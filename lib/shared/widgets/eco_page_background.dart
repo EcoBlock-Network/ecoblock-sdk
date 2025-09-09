@@ -21,9 +21,16 @@ class EcoPageBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final tlColor = topLeftColor ?? scheme.primary.withValues(alpha: 0.13);
-    final brColor =
-        bottomRightColor ?? scheme.tertiaryContainer.withValues(alpha: 0.12);
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final tlFallback = isDark
+    ? AppColors.darkGlass.withValues(alpha: 0.12)
+    : scheme.primary.withValues(alpha: 0.13);
+  final brFallback = isDark
+    ? AppColors.darkSurface.withValues(alpha: 0.10)
+    : scheme.tertiaryContainer.withValues(alpha: 0.12);
+
+  final tlColor = topLeftColor ?? tlFallback;
+  final brColor = bottomRightColor ?? brFallback;
 
     return AnimatedEcoBackground(
       child: Stack(

@@ -16,14 +16,13 @@ class ProfilePage extends ConsumerWidget {
     final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: scheme.surface,
+      backgroundColor: scheme.background,
       body: EcoPageBackground(
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.only(top: 16, bottom: 12),
             child: profileAsync.when(
               data: (profile) {
-                // Polished profile layout: header, KPIs, missions, and Achievements summary
                 final sampleBadges = [
                   {'id': 'b1', 'title': 'Network Starter', 'unlocked': true},
                   {'id': 'b2', 'title': 'Data Relayer', 'unlocked': true},
@@ -160,9 +159,6 @@ class ProfilePage extends ConsumerWidget {
                     ),
 
                     const SizedBox(height: 22),
-
-                    // Actions row removed (export/settings buttons)
-                    const SizedBox(height: 32),
                   ],
                 );
               },

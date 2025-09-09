@@ -17,12 +17,16 @@ class JoinEcoBlockInfoCard extends StatelessWidget {
             filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: AppColors.white.withAlpha((0.35 * 255).toInt()),
+        decoration: BoxDecoration(
+        color: Theme.of(context).brightness == Brightness.dark
+          ? AppColors.darkSurface.withAlpha((0.32 * 255).toInt())
+          : Theme.of(context).colorScheme.background.withValues(alpha: 0.35),
                 borderRadius: BorderRadius.circular(18),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.black.withAlpha((0.08 * 255).toInt()),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? AppColors.black.withAlpha((0.18 * 255).toInt())
+                        : AppColors.black.withAlpha((0.08 * 255).toInt()),
                     blurRadius: 12,
                   ),
                 ],

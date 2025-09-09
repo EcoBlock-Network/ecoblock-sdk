@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ecoblock_mobile/theme/theme.dart';
+// theme tokens not required here; gradient uses Theme.of(context)
 
 class AnimatedEcoBackground extends StatefulWidget {
   final Widget child;
@@ -34,13 +34,21 @@ class _AnimatedEcoBackgroundState extends State<AnimatedEcoBackground> with Sing
       animation: _controller,
       builder: (context, _) {
         final stopMid = 0.53 + 0.06 * (_controller.value - 0.5);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final midColorA = isDark
+      ? Theme.of(context).colorScheme.background.withValues(alpha: 0.06)
+      : Theme.of(context).colorScheme.background.withValues(alpha: 0.06);
+    final midColorB = isDark
+      ? Theme.of(context).colorScheme.background.withValues(alpha: 0.02)
+      : Theme.of(context).colorScheme.background.withValues(alpha: 0.02);
+
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
                 scheme.primaryContainer,
-                AppColors.white,
-                AppColors.white,
+                midColorA,
+                midColorB,
               ],
               stops: [0.0, stopMid.clamp(0.49, 0.59), 1.0],
               begin: Alignment.topLeft,

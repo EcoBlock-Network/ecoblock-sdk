@@ -98,6 +98,7 @@ flutter:
     - assets/community/rewards.json
     - assets/community/upcoming_quests.json
     - assets/rive/tree.riv
+    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

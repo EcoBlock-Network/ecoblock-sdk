@@ -23,7 +23,7 @@ class DashboardPage extends ConsumerWidget {
     final profileAsync = ref.watch(profileProvider);
 
     return Scaffold(
-      backgroundColor: scheme.surface,
+      backgroundColor: scheme.background,
       body: EcoPageBackground(
         child: SafeArea(
           child: SingleChildScrollView(

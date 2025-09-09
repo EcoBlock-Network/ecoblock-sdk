@@ -42,7 +42,6 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
         _progress[_currentIndex] = (_progress[_currentIndex] + inc).clamp(0.0, 1.0);
       });
       if (_progress[_currentIndex] >= 1.0) {
-  // when story completes mark it seen
   final sid = widget.stories[_currentIndex].id;
   if (sid.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(sid);
   _goNext();
@@ -54,7 +53,6 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
     if (_currentIndex < widget.stories.length - 1) {
       _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     } else {
-      // last story -> close
       Navigator.of(context).maybePop();
     }
   }
@@ -63,7 +61,6 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
     if (_currentIndex > 0) {
       _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
     } else {
-      // already first, reset progress
       setState(() {
         _progress[_currentIndex] = 0;
       });
@@ -84,7 +81,6 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
     } else if (dx > box.maxWidth * 0.65) {
       _goNext();
     } else {
-      // center tap: pause / resume
       if (_tickTimer?.isActive ?? false) {
         _tickTimer?.cancel();
       } else {
@@ -140,7 +136,6 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
                 );
               },
             ),
-            // Top progress bars and controls
             Positioned(
               top: 12,
               left: 8,
@@ -156,12 +151,15 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
                               Expanded(
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                  child: ClipRRect(
+                  child: ClipRRect(
                                     borderRadius: BorderRadius.circular(6),
                                     child: LinearProgressIndicator(
-                                      value: _progress[i].clamp(0.0, 1.0),
-                                      backgroundColor: AppColors.white.withAlpha((0.12 * 255).toInt()),
-                                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
+                    value: _progress[i].clamp(0.0, 1.0),
+                    backgroundColor: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.darkBackground.withAlpha((0.12 * 255).toInt())
+                      : Theme.of(context).colorScheme.background.withValues(alpha: 0.12),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                                          Theme.of(context).brightness == Brightness.dark ? AppColors.darkOnBackground : Theme.of(context).colorScheme.onBackground),
                                       minHeight: 3,
                                     ),
                                   ),
@@ -180,14 +178,14 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
                           padding: const EdgeInsets.only(left: 8.0),
                           child: Text(
                             stories[_currentIndex].title,
-                            style: TextStyle(color: AppColors.white, fontWeight: FontWeight.w600),
+                            style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkOnBackground : AppColors.white, fontWeight: FontWeight.w600),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(context).maybePop(),
-                        icon: const Icon(Icons.close, color: Colors.white),
+                        icon: Icon(Icons.close, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkOnBackground : Colors.white),
                       ),
                     ],
                   ),
@@ -202,14 +200,14 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
 
   Widget _buildPlaceholder(Story s) {
     return Container(
-      color: AppColors.black,
+      color: Theme.of(context).brightness == Brightness.dark ? AppColors.black : AppColors.white,
       child: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.eco, color: Colors.white, size: 64),
+            Icon(Icons.eco, color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkOnBackground : Colors.white, size: 64),
             const SizedBox(height: 12),
-            Text(s.title, style: TextStyle(color: AppColors.white.withAlpha((0.7 * 255).toInt()))),
+            Text(s.title, style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? AppColors.darkOnBackground.withAlpha((0.7 * 255).toInt()) : Theme.of(context).colorScheme.onBackground.withOpacity(0.7))),
           ],
         ),
       ),

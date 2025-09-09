@@ -28,8 +28,11 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lang = ref.watch(languageProvider);
+    final themeMode = ref.watch(themeProvider);
     return MaterialApp(
-      theme: buildAppTheme(),
+      theme: buildAppTheme(brightness: Brightness.light),
+      darkTheme: buildAppTheme(brightness: Brightness.dark),
+      themeMode: themeMode,
       supportedLocales: const [Locale('en', ''), Locale('fr', '')],
       locale: Locale(lang),
       localizationsDelegates: const [
@@ -37,7 +40,7 @@ class MyApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      home: AppShell()
+      home: AppShell(),
     );
   }
 }

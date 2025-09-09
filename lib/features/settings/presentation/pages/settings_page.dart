@@ -1,3 +1,4 @@
+import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -201,7 +202,6 @@ class SettingsPage extends ConsumerWidget {
   }
 }
 
-// Providers for each setting
 final notificationsProvider = StateNotifierProvider<NotificationsNotifier, bool>((ref) => NotificationsNotifier());
 final languageProvider = StateNotifierProvider<LanguageNotifier, String>((ref) => LanguageNotifier());
 final themeProvider = StateNotifierProvider<ThemeNotifier, ThemeMode>((ref) => ThemeNotifier());

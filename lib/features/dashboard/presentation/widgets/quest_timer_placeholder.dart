@@ -11,7 +11,6 @@ class QuestTimerPlaceholder extends StatefulWidget {
 
 class QuestTimerPlaceholderState extends State<QuestTimerPlaceholder> {
   late Duration timeLeft;
-  // ignore: prefer_typing_uninitialized_variables
   late final ticker;
 
   @override
@@ -36,7 +35,6 @@ class QuestTimerPlaceholderState extends State<QuestTimerPlaceholder> {
 
   @override
   Widget build(BuildContext context) {
-    // show skeleton while waiting (small visual improvement)
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 7, horizontal: 0),
       padding: const EdgeInsets.all(12),

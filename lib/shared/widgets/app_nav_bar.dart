@@ -1,6 +1,6 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
+import 'package:ecoblock_mobile/theme/theme.dart';
 
 class AppNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -14,7 +14,6 @@ class AppNavBar extends StatelessWidget {
     Icons.message_rounded,
     Icons.settings_rounded,
   ];
-  // labels are localized via l10n
 
   @override
   Widget build(BuildContext context) {
@@ -24,43 +23,40 @@ class AppNavBar extends StatelessWidget {
       padding: EdgeInsets.only(left: 13, right: 13, bottom: 12 + bottomInset),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(25),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            height: 64 + bottomInset,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(25),
-              border: Border.all(color: scheme.primary.withAlpha((0.08 * 255).toInt()), width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: scheme.primary.withAlpha((0.10 * 255).toInt()),
-                  blurRadius: 22,
-                  offset: const Offset(0, 6),
+        child: Container(
+          height: 64 + bottomInset,
+          decoration: BoxDecoration(
+            color: scheme.navBackgroundGlass,
+            borderRadius: BorderRadius.circular(25),
+            border: Border.all(color: scheme.primary.withAlpha((0.08 * 255).toInt()), width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: scheme.primary.withAlpha((0.10 * 255).toInt()),
+                blurRadius: 22,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(_navBarIcons.length, (i) {
+              final selected = i == selectedIndex;
+              return Flexible(
+                fit: FlexFit.tight,
+                child: _EcoNavBarItem(
+                  icon: _navBarIcons[i],
+                  label: i == 0
+                      ? tr(context, 'nav.home')
+                      : i == 1
+                          ? tr(context, 'nav.profile')
+                          : i == 2
+                              ? tr(context, 'nav.news')
+                              : tr(context, 'nav.settings'),
+                  selected: selected,
+                  onTap: () => onTap(i),
                 ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(_navBarIcons.length, (i) {
-                final selected = i == selectedIndex;
-                return Flexible(
-                  fit: FlexFit.tight,
-                  child: _EcoNavBarItem(
-                    icon: _navBarIcons[i],
-                    label: i == 0
-                        ? tr(context, 'nav.home')
-                        : i == 1
-                            ? tr(context, 'nav.profile')
-                            : i == 2
-                                ? tr(context, 'nav.news')
-                                : tr(context, 'nav.settings'),
-                    selected: selected,
-                    onTap: () => onTap(i),
-                  ),
-                );
-              }),
-            ),
+              );
+            }),
           ),
         ),
       ),
@@ -115,15 +111,19 @@ class _EcoNavBarItem extends StatelessWidget {
               Icon(
                 icon,
                 size: selected ? 32 : 26,
-                color: selected ? scheme.primary : scheme.onSurface.withOpacity(0.5),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.white
+                    : (selected ? scheme.primary : scheme.onSurface.withOpacity(0.5)),
                 shadows: selected ? [Shadow(color: scheme.primary.withOpacity(0.21), blurRadius: 8)] : [],
               ),
               const SizedBox(height: 2),
               AnimatedDefaultTextStyle(
                 duration: const Duration(milliseconds: 250),
-                style: TextStyle(
+                  style: TextStyle(
                   fontSize: selected ? 13.7 : 11.7,
-                  color: selected ? scheme.primary : scheme.onSurface.withOpacity(0.48),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? AppColors.white
+                      : (selected ? scheme.primary : scheme.onSurface.withOpacity(0.48)),
                   fontWeight: selected ? FontWeight.bold : FontWeight.w500,
                   letterSpacing: selected ? 0.05 : 0.02,
                   shadows: selected ? [Shadow(color: scheme.primary.withOpacity(0.10), blurRadius: 5)] : [],

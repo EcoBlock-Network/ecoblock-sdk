@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.onPrimary,
       body: EcoPageBackground(
         child: Stack(
           alignment: Alignment.center,
@@ -60,7 +60,12 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(999),
                             gradient: LinearGradient(
-                              colors: [AppColors.primary.withAlpha((0.28 * 255).toInt()), AppColors.white.withAlpha((0.06 * 255).toInt())],
+                              colors: [
+                                AppColors.primary.withAlpha((0.28 * 255).toInt()),
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? AppColors.darkBackground.withAlpha((0.06 * 255).toInt())
+                                    : AppColors.white.withAlpha((0.06 * 255).toInt())
+                              ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
@@ -74,8 +79,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                               child: CircularProgressIndicator(
                                 strokeWidth: 6,
                                 value: _progressCtrl.value,
-                                valueColor: AlwaysStoppedAnimation(AppColors.tertiary),
-                                backgroundColor: AppColors.tertiary.withAlpha((0.18 * 255).toInt()),
+                valueColor: AlwaysStoppedAnimation(AppColors.tertiary),
+                backgroundColor: Theme.of(context).brightness == Brightness.dark
+                  ? AppColors.tertiary.withAlpha((0.10 * 255).toInt())
+                  : AppColors.tertiary.withAlpha((0.18 * 255).toInt()),
                               ),
                             ),
                             Icon(Icons.eco, size: 56, color: AppColors.greenStrong),
@@ -235,17 +242,19 @@ class _BubbleWidgetState extends State<_BubbleWidget> with SingleTickerProviderS
   Widget build(BuildContext context) {
     return FadeTransition(
       opacity: Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _ctrl, curve: const Interval(0.0, 0.5, curve: Curves.easeOut))),
-      child: ScaleTransition(
+          child: ScaleTransition(
         scale: Tween<double>(begin: 0.6, end: 1.0).animate(_scale),
         child: Container(
           width: widget.size,
           height: widget.size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: AppColors.white.withAlpha((0.9 * 255).toInt()),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? AppColors.darkOnBackground.withAlpha((0.9 * 255).toInt())
+                : AppColors.white.withAlpha((0.9 * 255).toInt()),
             boxShadow: [BoxShadow(color: AppColors.black.withAlpha((0.06 * 255).toInt()), blurRadius: 6, offset: const Offset(0, 2))],
           ),
-          child: Center(
+            child: Center(
             child: Icon(Icons.eco, size: widget.size * 0.5, color: AppColors.greenStrong),
           ),
         ),
