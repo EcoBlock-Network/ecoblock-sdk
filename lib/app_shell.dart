@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
-import 'features/blog/presentation/pages/messaging_page.dart';
+import 'features/blog/presentation/pages/blog_page.dart';
 import 'features/profile/presentation/pages/profile_page.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
