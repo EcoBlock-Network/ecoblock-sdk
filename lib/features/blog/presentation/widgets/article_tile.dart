@@ -4,7 +4,10 @@ import 'article_viewer.dart';
 
 class ArticleTile extends StatefulWidget {
   final ArticleModel article;
-  const ArticleTile({required this.article, super.key});
+  final bool isHighlighted;
+  final bool isRead;
+  final Future<void> Function()? onOpened;
+  const ArticleTile({required this.article, this.isHighlighted = false, this.isRead = false, this.onOpened, super.key});
 
   @override
   State<ArticleTile> createState() => _ArticleTileState();
@@ -13,7 +16,11 @@ class ArticleTile extends StatefulWidget {
 class _ArticleTileState extends State<ArticleTile> {
   bool _pressed = false;
 
-  void _open() {
+  void _open() async {
+    if (widget.onOpened != null) {
+      await widget.onOpened!();
+      return;
+    }
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => ArticleViewer(article: widget.article)));
   }
 
@@ -58,7 +65,8 @@ class _ArticleTileState extends State<ArticleTile> {
                 ),
           AnimatedContainer(
             duration: const Duration(milliseconds: 160),
-            color: _pressed ? Colors.transparent : Colors.black54,
+            // Remove the dark overlay when this tile is highlighted during long-press drag
+            color: widget.isHighlighted ? Colors.transparent : (_pressed ? Colors.transparent : Colors.black54),
           ),
           Positioned(
             left: 6,
@@ -73,11 +81,32 @@ class _ArticleTileState extends State<ArticleTile> {
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: Text(
-                widget.article.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, shadows: [Shadow(blurRadius: 4, color: Colors.black45)]),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      widget.article.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, shadows: [Shadow(blurRadius: 4, color: Colors.black45)]),
+                    ),
+                  ),
+                  if (widget.isRead)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6.0),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'vu',
+                          style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
