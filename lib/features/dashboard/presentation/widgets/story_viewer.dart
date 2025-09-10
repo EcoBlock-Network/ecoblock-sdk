@@ -37,19 +37,18 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
 
   void _startProgress() {
     _tickTimer?.cancel();
-    _tickTimer = Timer.periodic(_tick, (timer) {
+  _tickTimer = Timer.periodic(_tick, (timer) {
       final inc = _tick.inMilliseconds / widget.autoAdvanceDuration.inMilliseconds;
       setState(() {
         _progress[_currentIndex] = (_progress[_currentIndex] + inc).clamp(0.0, 1.0);
       });
-      if (_progress[_currentIndex] >= 1.0) {
+          if (_progress[_currentIndex] >= 1.0) {
         final sid = widget.stories[_currentIndex].id;
         if (sid.isNotEmpty) {
           ref.read(seenStoriesProvider.notifier).markSeen(sid);
-          // notify quest controller
-          try {
-            ref.read(questControllerProvider.notifier).onReadStory();
-          } catch (_) {}
+              try {
+                ref.read(questControllerProvider.notifier).onReadStory();
+              } catch (_) {}
         }
         _goNext();
       }
@@ -111,11 +110,9 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
               onPageChanged: (index) {
                 setState(() {
                   _currentIndex = index;
-                  // reset progress for new index if necessary
                   if (_progress[index] >= 1.0) _progress[index] = 0.0;
                 });
                 _startProgress();
-                // mark as seen when swiped into view and notify quests
                 final sid = widget.stories[index].id;
                 if (sid.isNotEmpty) {
                   ref.read(seenStoriesProvider.notifier).markSeen(sid);

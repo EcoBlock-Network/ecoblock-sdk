@@ -19,7 +19,7 @@ class _MessagingPageState extends ConsumerState<MessagingPage> {
   @override
   void initState() {
     super.initState();
-    // Notify quests that news page was opened
+    
     Future.microtask(() {
       try {
         ref.read(questControllerProvider.notifier).onOpenNews();

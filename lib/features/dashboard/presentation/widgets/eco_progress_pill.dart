@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/core/ux/motion.dart';
 
 class EcoProgressPill extends StatelessWidget {
-  final double progress; // 0..1
+  final double progress;
   final Color badgeColor;
   final bool showGlow;
   final bool small;

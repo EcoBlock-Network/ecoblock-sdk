@@ -267,8 +267,7 @@ class _AnimatedQuestCardState extends State<AnimatedQuestCard>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    // Respect reduced motion preference
-    final reduceMotion = WidgetsBinding.instance.window.accessibilityFeatures.reduceMotion;
+  final reduceMotion = WidgetsBinding.instance.window.accessibilityFeatures.reduceMotion;
     _fade = CurvedAnimation(parent: _anim, curve: Curves.easeOutCubic);
     _slide = Tween<Offset>(
       begin: Offset(0, 0.09),

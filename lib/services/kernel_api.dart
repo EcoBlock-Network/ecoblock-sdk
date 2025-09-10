@@ -2,9 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
-
-/// Simple kernel API client (scaffold)
-/// Configure `baseUrl` via dependency injection or environment.
 class KernelApi {
   final String baseUrl;
   KernelApi({required this.baseUrl});
@@ -26,13 +23,12 @@ class KernelApi {
     throw Exception('HTTP ${resp.statusCode}: ${resp.body}');
   }
 
-  // Example: post a Tangle block payload
+  
   Future<String> postBlock(Map<String, dynamic> blockPayload) async {
     final resp = await postJson('/blocks', blockPayload);
     return resp['id']?.toString() ?? '';
   }
-
-  // WebSocket: simple stream wrapper
+  
   WebSocketChannel connectWs({String path = '/ws'}) {
     final wsUrl = baseUrl.replaceFirst(RegExp(r'^http'), 'ws');
     final uri = Uri.parse('${wsUrl.trim().replaceAll(RegExp(r'\/$'), '')}/api$path');

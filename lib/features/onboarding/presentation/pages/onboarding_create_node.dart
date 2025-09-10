@@ -22,15 +22,15 @@ class _OnboardingCreateNodeState extends ConsumerState<OnboardingCreateNode> {
   Timer? _ticker;
   final _random = Random();
 
-  // Visual generator targets
+  
   String _target = 'ECONODE';
   List<String>? _chars;
-  int _locked = 0; // how many chars from left are locked
+  int _locked = 0;
   bool _created = false;
   int _progressVersion = 0;
 
   Future<void> _associate() async {
-    // start visual generator
+    
     _startGenerator();
     setState(() {
       _loading = true;

@@ -2,9 +2,6 @@ import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-/// Flip card showing a glassmorphism front (electric green accent) and a back with
-/// full node details. Tap the card to flip. Back includes a copy button.
 class NodeCard extends StatefulWidget {
   final String nodeId;
   final String addr;
@@ -58,10 +55,8 @@ class _NodeCardState extends State<NodeCard> with SingleTickerProviderStateMixin
             animation: _ctrl,
             builder: (context, child) {
               final t = _ctrl.value;
-              final angle = t * math.pi; // 0..pi
+              final angle = t * math.pi;
               final isFront = t <= 0.5;
-
-              // front/back container
               return Transform(
                 alignment: Alignment.center,
                 transform: Matrix4.identity()..setEntry(3, 2, 0.001)..rotateY(angle),
@@ -71,7 +66,6 @@ class _NodeCardState extends State<NodeCard> with SingleTickerProviderStateMixin
                     color: scheme.surface.withOpacity(0.06),
                     borderRadius: BorderRadius.circular(14),
                     border: Border.all(color: scheme.onSurface.withOpacity(0.06)),
-                    // subtle accent glow when front
                     boxShadow: isFront ? [BoxShadow(color: scheme.primary.withOpacity(0.10), blurRadius: 18, offset: const Offset(0, 8))] : null,
                   ),
                   child: isFront ? _buildFront(context, nodeId, addr, latency, connected, scheme) : Transform(
@@ -91,7 +85,7 @@ class _NodeCardState extends State<NodeCard> with SingleTickerProviderStateMixin
   Widget _buildFront(BuildContext context, String nodeId, String addr, String latency, bool connected, ColorScheme scheme) {
     final short = nodeId.isNotEmpty ? (nodeId.length > 10 ? '${nodeId.substring(0, 10)}…' : nodeId) : '—';
     return Row(children: [
-      // theme accent chip
+      
       Container(
         width: 8,
         height: 56,
@@ -107,7 +101,7 @@ class _NodeCardState extends State<NodeCard> with SingleTickerProviderStateMixin
           Row(children: [
             Expanded(child: Text('Latency: $latency', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant), overflow: TextOverflow.ellipsis)),
             const SizedBox(width: 12),
-            // masked nodeId preview
+            
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
               decoration: BoxDecoration(color: scheme.surfaceVariant.withOpacity(0.03), borderRadius: BorderRadius.circular(8)),

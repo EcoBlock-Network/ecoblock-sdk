@@ -137,7 +137,7 @@ class _BubblesLayerState extends State<BubblesLayer> with TickerProviderStateMix
   }
 
   void _onProgress() {
-    final t = widget.progress.value; // 0..1
+    final t = widget.progress.value;
     final target = (t * widget.maxBubbles).ceil();
     final now = DateTime.now();
     if (_bubbles.length < target && now.difference(_lastSpawn) >= _spawnInterval) {

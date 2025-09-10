@@ -41,8 +41,7 @@ class ProfilePage extends ConsumerWidget {
                   {'id': 'b5', 'title': 'Marathoner', 'unlocked': true},
                 ];
 
-    // determine if this is a fresh/new profile (no persisted userId)
-    final bool isNew = profile.userId.isEmpty;
+  final bool isNew = profile.userId.isEmpty;
     final String? memNodeId = memoryService.read<String>('nodeId');
 
     return Column(
@@ -206,7 +205,7 @@ class ProfilePage extends ConsumerWidget {
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                         Text('Impact', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
                         const SizedBox(height: 8),
-                        // derive simple fallbacks from profile.xp if detailed metrics aren't available
+                        
                         ImpactCard(dataBytes: (profile.xp * 120), points: profile.xp),
                         const SizedBox(height: 10),
                         Text('Usage des 7 derniers jours', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
@@ -459,7 +458,7 @@ class _TangleNodeListState extends State<_TangleNodeList> with TickerProviderSta
   void initState() {
     super.initState();
     peers = List.from(widget.initialPeers);
-    Future.delayed(const Duration(seconds: 3), _simulateChange);
+  Future.delayed(const Duration(seconds: 3), _simulateChange);
   }
 
   void _simulateChange() async {
@@ -467,26 +466,21 @@ class _TangleNodeListState extends State<_TangleNodeList> with TickerProviderSta
     setState(() {
       peers.add({'id': 'p${peers.length + 1}', 'addr': 'node-${peers.length + 1}.eco', 'latency': '${50 + peers.length * 10}ms', 'connected': 'true'});
     });
-    // Wait a bit while nodes transfer data
     await Future.delayed(Duration(seconds: 2 + _rand.nextInt(3)));
     if (!mounted) return;
-    // randomly pick a node to disconnect (simulate)
     if (peers.isNotEmpty) {
       final idx = _rand.nextInt(peers.length);
       final id = peers[idx]['id'];
-      // mark disconnecting
-      setState(() {
+  setState(() {
         peers[idx]['connected'] = 'false';
       });
-      // allow animation to play then remove
-      await Future.delayed(const Duration(milliseconds: 900));
+  await Future.delayed(const Duration(milliseconds: 900));
       if (!mounted) return;
       setState(() {
         peers.removeWhere((p) => p['id'] == id);
       });
     }
-    // schedule next change
-    Future.delayed(Duration(seconds: 2 + _rand.nextInt(5)), _simulateChange);
+  Future.delayed(Duration(seconds: 2 + _rand.nextInt(5)), _simulateChange);
   }
 
   @override
@@ -511,7 +505,7 @@ class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProvi
   void initState() {
     super.initState();
     _transferCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    // When transfer completes, reset to 0 then start again after a short pause
+    
     _transferCtrl.addStatusListener((s) async {
       if (s == AnimationStatus.completed) {
         await Future.delayed(const Duration(milliseconds: 300));
@@ -522,9 +516,9 @@ class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProvi
         }
       }
     });
-    // initial connected state
+    
     _connected = widget.peer['connected'] == 'true' || widget.peer['connected'] == 'True';
-    // staggered start
+    
     Future.delayed(Duration(milliseconds: (100 * (widget.peer['id']!.hashCode % 10))), () {
       if (mounted && _connected) _transferCtrl.forward();
     });
@@ -574,7 +568,7 @@ class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProvi
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Text(widget.peer['addr']?.toString() ?? '-', style: Theme.of(context).textTheme.bodyMedium),
                 const SizedBox(height: 6),
-                // animated transfer bar that fills to 100% then resets
+                
                 AnimatedBuilder(
                   animation: _transferCtrl,
                   builder: (context, child) {
@@ -610,6 +604,5 @@ class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProvi
 
 
 
-// Peer comparison removed (mini leaderboard)
-
-// Removed unused additional cards to keep file tidy. Re-add when needed.
+ 
+ 

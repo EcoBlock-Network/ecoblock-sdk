@@ -37,7 +37,7 @@ class OnboardingFeatures extends StatelessWidget {
               subtitle: tr(context, 'onboarding.privacy'),
             ),
             const SizedBox(height: 20),
-            // Primary CTA is provided by the parent flow as a sticky button.
+            
           ],
         ),
       ),

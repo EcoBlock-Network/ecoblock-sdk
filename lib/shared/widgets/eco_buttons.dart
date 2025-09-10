@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-
-/// Reusable, stylish buttons for the app.
 class EcoPrimaryButton extends StatefulWidget {
   final VoidCallback? onPressed;
   final Widget child;
@@ -49,9 +47,8 @@ class _EcoPrimaryButtonState extends State<EcoPrimaryButton> with SingleTickerPr
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
-        // very subtle gradient movement: small alignment offset around center
         final raw = Curves.easeInOut.transform(_controller.value);
-        final offset = (raw - 0.5) * 0.4; // range ~[-0.2, 0.2]
+  final offset = (raw - 0.5) * 0.4;
         final begin = Alignment(-0.3 + offset, -0.3);
         final end = Alignment(0.3 + offset, 0.3);
         return Material(

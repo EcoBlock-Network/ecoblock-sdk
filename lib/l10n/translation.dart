@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-
-/// Very small runtime translation helper used as a stop-gap before
-/// moving to Flutter's recommended gen_l10n / intl pipeline.
-///
-/// Usage: tr(context, 'key', {'xp': '100'})
+ 
 String tr(BuildContext context, String key, [Map<String, String>? params]) {
   final lang = Localizations.localeOf(context).languageCode;
   final map = _localizedValues[lang] ?? _localizedValues['en']!;
@@ -137,12 +133,10 @@ const Map<String, Map<String, String>> _localizedValues = {
   'messaging.sample.planting': 'Planting for tomorrow',
   'messaging.sample.stability': 'Network stability',
   // profile extras
-  'profile.my_tangle': 'My Tangle',
   'profile.tangle_sub': 'Network visualization and collected data',
   'profile.recommended_actions': 'Recommended actions',
   'profile.sync_nodes': 'Synchronize nodes and fetch latest data',
   'profile.synchronize': 'Synchronize',
-  'profile.connected_nodes': 'Connected nodes',
   'profile.export_data': 'Export data',
   'profile.settings': 'Settings',
   // navigation
@@ -168,7 +162,6 @@ const Map<String, Map<String, String>> _localizedValues = {
   'settings.theme': 'Thème',
   'theme.light': 'Clair',
   'theme.dark': 'Sombre',
-  'theme.system': 'Système',
   'settings.language': 'Langue',
   'lang.fr': 'Français',
   'lang.en': 'Anglais',
@@ -180,15 +173,12 @@ const Map<String, Map<String, String>> _localizedValues = {
   'settings.erase_local_data': 'Effacer les données locales',
   'settings.erase_local_data_sub': 'Supprime toutes les données stockées sur l’appareil',
   'settings.reset_settings': 'Réinitialiser les réglages',
-  'confirm.cancel': 'Annuler',
   'confirm.erase': 'Effacer',
   'confirm.reset': 'Réinitialiser',
   'settings.about.version': 'Version de l’application',
-  'settings.legal': 'Mentions légales / CGU',
   'settings.legal_action': 'Consulter les conditions d’utilisation',
   // profile
   'profile.stats': 'Statistiques',
-  'profile.badges': 'Badges',
   'profile.loots': 'Loots',
   'no_loot': 'Aucun loot débloqué',
   'profile.activity': 'Activité',
@@ -198,7 +188,6 @@ const Map<String, Map<String, String>> _localizedValues = {
   'profile.error_badges': 'Erreur badges',
   'profile.error_loots': 'Erreur loots',
   'profile.error': 'Erreur profil',
-  // daily quests
   'no_quest': 'Aucune quête',
   'until_refresh': 'jusqu\'au rafraîchissement',
   'until_new_quest': 'jusqu\'à l\'apparition d\'une nouvelle quête',
@@ -209,10 +198,8 @@ const Map<String, Map<String, String>> _localizedValues = {
   // additional onboarding keys
   'onboarding.join.title': 'Bienvenue sur EcoBlock',
   'onboarding.join.subtitle': 'Crée ton nœud local et rejoins la communauté pour participer à la collecte collaborative de données environnementales.',
-  'onboarding.join.cta': 'Créer mon nœud',
   'onboarding.join.how_it_works': 'Comment ça marche ?',
   'onboarding.step.create_node': 'Crée ton nœud local sécurisé',
-  'onboarding.step.find_neighbors': 'Découvre et associe des voisins',
   'onboarding.step.participate': 'Participe à la propagation des blocs et à la collecte de données',
   'onboarding.privacy': 'EcoBlock respecte ta vie privée : toutes les clés sont générées et stockées localement sur ton appareil.',
   'xp.short': '+{xp} XP',
@@ -222,7 +209,6 @@ const Map<String, Map<String, String>> _localizedValues = {
   'community.leaderboard.title': 'Classement communautaire',
   'community.rank': 'Votre rang : {rank} ({pseudo})',
   'community.not_in_top_10': 'Vous n\'êtes pas dans le top 10',
-  'community.error_leaderboard': 'Erreur leaderboard',
   'community.error_tree': 'Erreur arbre',
   'community.error_mesh_map': 'Erreur mesh map',
   'community.error_rewards': 'Erreur récompenses',
@@ -242,14 +228,11 @@ const Map<String, Map<String, String>> _localizedValues = {
   // navigation
   'nav.home': 'Accueil',
   'nav.profile': 'Profil',
-  'nav.news': 'Actualités',
   'nav.settings': 'Paramètres',
   // help / misc
-  'help_title': 'FAQ, support, à propos',
   'mesh_simulator_title': 'Simulateur Mesh BLE',
   'node_detail_info': 'Infos détaillées sur le nœud',
   'my_blocks': 'Mes Blocs',
-  'no_blocks': 'Aucun bloc disponible',
   'error_loading_blocks': 'Erreur chargement blocs',
   'my_quests': 'Mes Quêtes',
   'no_quests_available': 'Aucune quête disponible',
@@ -258,7 +241,6 @@ const Map<String, Map<String, String>> _localizedValues = {
   'reward.threshold': 'Palier : {threshold}',
   'leaderboard.score': 'Score : {score}',
   'daily.progress': '{progress}/{goal}',
-  'community.upcoming_title': 'Historique & défis à venir',
   'profile.block_id': 'ID : {id}...',
   'profile.received': 'Reçu {time}',
   'profile.status': 'Statut : {status}',

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// theme tokens not required here; gradient uses Theme.of(context)
 
 class AnimatedEcoBackground extends StatefulWidget {
   final Widget child;
@@ -35,8 +34,8 @@ class _AnimatedEcoBackgroundState extends State<AnimatedEcoBackground> with Sing
       final stopMid = 0.53 + 0.06 * (_controller.value - 0.5);
       final midColorA = Theme.of(context).colorScheme.background.withValues(alpha: 0.04);
 
-        return Container(
-          // keep background mostly transparent so Scaffold background shows
+  return Container(
+          
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [

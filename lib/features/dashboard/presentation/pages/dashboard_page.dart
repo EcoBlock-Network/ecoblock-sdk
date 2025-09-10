@@ -1,4 +1,3 @@
-// removed unused dart:ui import
 import 'dart:ui';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 import 'package:flutter/material.dart';
@@ -40,13 +39,13 @@ class DashboardPage extends ConsumerWidget {
                   children: [
                     EcoDashboardHeader(currentLevel: profile.niveau),
                     const SizedBox(height: 18),
-                    // hero-like node card (simple inline)
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: NodeCard(nodeId: profile.userId, addr: profile.pseudonyme, latency: '—', connected: false),
                     ),
                     const SizedBox(height: 18),
-                    // styled progress card + responsive layout
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: isWide

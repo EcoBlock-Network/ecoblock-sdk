@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 
 class BluetoothService {
   final FlutterReactiveBle _ble = FlutterReactiveBle();
-  final String meshServiceUuid = "0000181C-0000-1000-8000-00805f9b34fb"; // exemple UUID mesh
+  final String meshServiceUuid = "0000181C-0000-1000-8000-00805f9b34fb";
   final String meshDeviceName = "EcoBlockMeshNode";
 
   Stream<DiscoveredDevice> scanForMeshNodes() {

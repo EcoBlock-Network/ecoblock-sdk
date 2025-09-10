@@ -1,8 +1,6 @@
 // ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 
-/// Centralized app color tokens.
 class AppColors {
   AppColors._();
 
@@ -30,7 +28,6 @@ class AppColors {
 
   static const Color outline = Color(0xFF523B2B);
 
-  // Onboarding specific accents
   static const Color onboardingGradientStart = Color(0xFFA5D6A7);
   static const Color onboardingGradientEnd = Color(0xFFB2EBF2);
   static const Color greenStrong = Color(0xFF2E7D32);
@@ -56,7 +53,6 @@ class AppColors {
   static const Color darkMuted = Color(0xFF9AA79A);
 }
 
-/// ForestLuxury color scheme for the app using centralized tokens.
 final forestLuxuryScheme = ColorScheme(
   brightness: Brightness.light,
   primary: AppColors.primary,
