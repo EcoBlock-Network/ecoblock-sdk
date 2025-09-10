@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
+import 'package:ecoblock_mobile/services/memory_service.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dashboard_header.dart';
 import '../providers/profile_provider.dart';
 import 'dart:math';
@@ -39,7 +40,11 @@ class ProfilePage extends ConsumerWidget {
                   {'id': 'b5', 'title': 'Marathoner', 'unlocked': true},
                 ];
 
-                return Column(
+    // determine if this is a fresh/new profile (no persisted userId)
+    final bool isNew = profile.userId.isEmpty;
+    final String? memNodeId = memoryService.read<String>('nodeId');
+
+    return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     EcoDashboardHeader(currentLevel: profile.niveau),
@@ -47,10 +52,10 @@ class ProfilePage extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: NodeCard(
-                        nodeId: 'local-${profile.niveau}',
-                        addr: 'node-${profile.niveau}.local',
-                        latency: '${50 + (profile.xp.toInt() % 150)} ms',
-                        connected: true,
+      nodeId: memNodeId ?? (isNew ? '0' : 'local-${profile.niveau}'),
+      addr: isNew ? '0' : 'node-${profile.niveau}.local',
+      latency: isNew ? '0 ms' : '${50 + (profile.xp.toInt() % 150)} ms',
+      connected: !isNew,
                       ),
                     ),
 
@@ -156,9 +161,9 @@ class ProfilePage extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 13),
                       child: Row(
                         children: [
-                          _KpiCard(icon: Icons.device_hub, label: 'Nœuds connectés', value: '3'),
+                          _KpiCard(icon: Icons.device_hub, label: 'Nœuds connectés', value: isNew ? '0' : '3'),
                           const SizedBox(width: 10),
-                          _KpiCard(icon: Icons.data_usage, label: 'Données', value: '12.4 MB', backgroundColors: [scheme.tertiaryContainer, scheme.primaryContainer]),
+                          _KpiCard(icon: Icons.data_usage, label: 'Données', value: isNew ? '0 MB' : '12.4 MB', backgroundColors: [scheme.tertiaryContainer, scheme.primaryContainer]),
                         ],
                       ),
                     ),

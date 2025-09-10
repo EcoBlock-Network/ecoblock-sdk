@@ -29,26 +29,20 @@ class _AnimatedEcoBackgroundState extends State<AnimatedEcoBackground> with Sing
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-    return AnimatedBuilder(
+  return AnimatedBuilder(
       animation: _controller,
       builder: (context, _) {
-        final stopMid = 0.53 + 0.06 * (_controller.value - 0.5);
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final midColorA = isDark
-      ? Theme.of(context).colorScheme.background.withValues(alpha: 0.06)
-      : Theme.of(context).colorScheme.background.withValues(alpha: 0.06);
-    final midColorB = isDark
-      ? Theme.of(context).colorScheme.background.withValues(alpha: 0.02)
-      : Theme.of(context).colorScheme.background.withValues(alpha: 0.02);
+      final stopMid = 0.53 + 0.06 * (_controller.value - 0.5);
+      final midColorA = Theme.of(context).colorScheme.background.withValues(alpha: 0.04);
 
         return Container(
+          // keep background mostly transparent so Scaffold background shows
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                scheme.primaryContainer,
+                Colors.transparent,
                 midColorA,
-                midColorB,
+                Colors.transparent,
               ],
               stops: [0.0, stopMid.clamp(0.49, 0.59), 1.0],
               begin: Alignment.topLeft,

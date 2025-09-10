@@ -2,6 +2,7 @@ import 'package:ecoblock_mobile/features/onboarding/presentation/pages/join_ecob
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'features/settings/presentation/pages/settings_page.dart';
+import 'features/onboarding/presentation/pages/onboarding_flow_page.dart';
 
 import 'src/rust/frb_generated.dart';
 import 'services/bluetooth_service.dart';
@@ -29,7 +30,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final lang = ref.watch(languageProvider);
     final themeMode = ref.watch(themeProvider);
-    return MaterialApp(
+  return MaterialApp(
       theme: buildAppTheme(brightness: Brightness.light),
       darkTheme: buildAppTheme(brightness: Brightness.dark),
       themeMode: themeMode,
@@ -41,6 +42,10 @@ class MyApp extends ConsumerWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       home: AppShell(),
+      routes: {
+        '/onboarding': (_) => const OnboardingFlowPage(),
+        '/app': (_) => const AppShell(),
+      },
     );
   }
 }

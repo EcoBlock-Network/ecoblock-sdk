@@ -1,4 +1,5 @@
 import 'package:ecoblock_mobile/services/rust_bridge_service.dart';
+import 'package:ecoblock_mobile/services/memory_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/foundation.dart';
 import '../../data/datasources/onboarding_local_data_source.dart';
@@ -12,31 +13,39 @@ final onboardingControllerProvider =
 class OnboardingController extends StateNotifier<bool> {
   final OnboardingLocalDataSource localDataSource;
   final RustBridgeService rustApi;
+  final MemoryService memory;
 
-  // Allow injecting a RustBridgeService for tests; default to real implementation.
-  OnboardingController(this.localDataSource, {RustBridgeService? rustApi})
+  OnboardingController(this.localDataSource,
+      {RustBridgeService? rustApi, MemoryService? memorySvc})
       : rustApi = rustApi ?? RustBridgeService(),
+        memory = memorySvc ?? memoryService,
         super(false);
 
-  Future<void> associateNode() async {
+  Future<String?> associateNode() async {
     try {
-      // Vérifie si déjà initialisé (pour éviter le double init)
       final isInit = await rustApi.nodeIsInitialized();
       String nodeId;
       if (!isInit) {
   nodeId = await rustApi.createLocalNode();
   debugPrint('[EcoBlock] Nouveau node créé ! NodeId : $nodeId');
-        // Optionnel : tu peux le stocker/localiser ici si besoin
       } else {
   nodeId = await rustApi.getNodeId();
   debugPrint('[EcoBlock] Node déjà initialisé. NodeId : $nodeId');
       }
       await localDataSource.setNodeAssociated(true);
+      // store nodeId in memory for quick access by other parts of the app
+      try {
+        memory.write<String>('nodeId', nodeId);
+      } catch (e) {
+        debugPrint('[OnboardingController] Failed to write nodeId to MemoryService: $e');
+      }
       state = true;
+      return nodeId;
     } catch (e, stack) {
   debugPrint('[EcoBlock] Erreur lors de la création du node : $e');
   debugPrint('Details: ${e.toString()}');
   debugPrint('Stack: $stack');
+      return null;
     }
   }
 }
