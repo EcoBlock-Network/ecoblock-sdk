@@ -4,6 +4,7 @@ import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 import '../../providers/blog_providers.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import '../widgets/instagram_grid.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_controller.dart';
 
 class MessagingPage extends ConsumerStatefulWidget {
   const MessagingPage({super.key});
@@ -14,6 +15,17 @@ class MessagingPage extends ConsumerStatefulWidget {
 
 class _MessagingPageState extends ConsumerState<MessagingPage> {
   double _titleOpacity = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Notify quests that news page was opened
+    Future.microtask(() {
+      try {
+        ref.read(questControllerProvider.notifier).onOpenNews();
+      } catch (_) {}
+    });
+  }
 
   void _onScrollNotification(ScrollNotification notification) {
     final pixels = notification.metrics.pixels;

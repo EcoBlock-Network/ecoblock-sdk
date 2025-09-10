@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/providers/stories_provider.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/story_viewer.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_controller.dart';
 
 class EcoDashboardHeader extends ConsumerWidget {
   final int currentLevel;
@@ -39,7 +40,10 @@ class EcoDashboardHeader extends ConsumerWidget {
                               return GestureDetector(
                             onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryViewer(stories: stories, initialIndex: i)));
-                                if (s.id.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(s.id);
+                                if (s.id.isNotEmpty) {
+                                  ref.read(seenStoriesProvider.notifier).markSeen(s.id);
+                                  try { ref.read(questControllerProvider.notifier).onReadStory(); } catch (_) {}
+                                }
                             },
                             child: Column(
                               children: [

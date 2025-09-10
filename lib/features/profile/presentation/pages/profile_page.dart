@@ -10,6 +10,7 @@ import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dash
 import '../providers/profile_provider.dart';
 import 'dart:math';
 import '../widgets/node_card.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_controller.dart';
 import '../widgets/impact_card.dart';
 import '../widgets/activity_feed.dart';
 import '../widgets/quick_toggles.dart';
@@ -51,11 +52,19 @@ class ProfilePage extends ConsumerWidget {
                     const SizedBox(height: 12),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: NodeCard(
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          try {
+                            ref.read(questControllerProvider.notifier).onOpenProfileCard();
+                          } catch (_) {}
+                        },
+                        child: NodeCard(
       nodeId: memNodeId ?? (isNew ? '0' : 'local-${profile.niveau}'),
       addr: isNew ? '0' : 'node-${profile.niveau}.local',
       latency: isNew ? '0 ms' : '${50 + (profile.xp.toInt() % 150)} ms',
       connected: !isNew,
+                        ),
                       ),
                     ),
 

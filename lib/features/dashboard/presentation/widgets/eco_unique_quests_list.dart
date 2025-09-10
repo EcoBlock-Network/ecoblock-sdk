@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'eco_quest_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
 import 'package:ecoblock_mobile/features/quests/presentation/providers/unique_quests_provider.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
+import 'package:ecoblock_mobile/shared/widgets/top_snack_bar.dart';
 
 class EcoUniqueQuestsList extends ConsumerStatefulWidget {
   const EcoUniqueQuestsList({super.key});
@@ -24,19 +24,13 @@ class _EcoUniqueQuestsListState extends ConsumerState<EcoUniqueQuestsList> {
     await Future.delayed(const Duration(milliseconds: 400));
     final success = await profileNotifier.completeUniqueQuestAndAddXP(quest.id, xpToAdd);
     if (success && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(tr(context, 'xp_added', {'xp': xpToAdd.toString()})),
-          backgroundColor: AppColors.green,
-        ),
-      );
+      try {
+        TopSnackBar.show(context, Row(children: [Icon(Icons.star, color: Colors.white), const SizedBox(width: 8), Expanded(child: Text(tr(context, 'xp_added', {'xp': xpToAdd.toString()}), style: const TextStyle(color: Colors.white))) ]));
+      } catch (_) {}
     } else if (!success && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(tr(context, 'could_not_complete_quest')),
-          backgroundColor: AppColors.error,
-        ),
-      );
+      try {
+        TopSnackBar.show(context, Row(children: [Icon(Icons.error_outline, color: Colors.white), const SizedBox(width: 8), Expanded(child: Text(tr(context, 'could_not_complete_quest'), style: const TextStyle(color: Colors.white))) ]));
+      } catch (_) {}
     }
   }
 

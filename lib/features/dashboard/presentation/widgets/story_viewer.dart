@@ -5,6 +5,7 @@ import 'package:ecoblock_mobile/models/story.dart';
 import '../providers/stories_provider.dart';
 import 'package:ecoblock_mobile/theme/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/providers/quest_controller.dart';
 
 class StoryViewer extends ConsumerStatefulWidget {
   final List<Story> stories;
@@ -42,9 +43,15 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
         _progress[_currentIndex] = (_progress[_currentIndex] + inc).clamp(0.0, 1.0);
       });
       if (_progress[_currentIndex] >= 1.0) {
-  final sid = widget.stories[_currentIndex].id;
-  if (sid.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(sid);
-  _goNext();
+        final sid = widget.stories[_currentIndex].id;
+        if (sid.isNotEmpty) {
+          ref.read(seenStoriesProvider.notifier).markSeen(sid);
+          // notify quest controller
+          try {
+            ref.read(questControllerProvider.notifier).onReadStory();
+          } catch (_) {}
+        }
+        _goNext();
       }
     });
   }
@@ -108,9 +115,14 @@ class _StoryViewerState extends ConsumerState<StoryViewer> {
                   if (_progress[index] >= 1.0) _progress[index] = 0.0;
                 });
                 _startProgress();
-                // mark as seen when swiped into view
+                // mark as seen when swiped into view and notify quests
                 final sid = widget.stories[index].id;
-                if (sid.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(sid);
+                if (sid.isNotEmpty) {
+                  ref.read(seenStoriesProvider.notifier).markSeen(sid);
+                  try {
+                    ref.read(questControllerProvider.notifier).onReadStory();
+                  } catch (_) {}
+                }
               },
               itemBuilder: (context, index) {
                 final s = stories[index];

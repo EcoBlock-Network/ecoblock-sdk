@@ -28,5 +28,35 @@
     "progress": 0,
     "startDate": "2025-07-01",
     "endDate": "2025-12-31"
+  }  ,
+  {
+    "id": "qp8",
+    "type": "personal",
+    "title": "Consulter les news",
+    "description": "Ouvre la section actualités et consulte au moins une news.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-09-01",
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": "qp9",
+    "type": "personal",
+    "title": "Consulter la carte",
+    "description": "Ouvre la carte et visualise des nœuds ou zones.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-09-01",
+    "endDate": "2025-12-31"
+  },
+  {
+    "id": "qp10",
+    "type": "personal",
+    "title": "Ouvrir ta carte profil",
+    "description": "Va sur ta carte de profil et consulte les détails de ton compte.",
+    "goal": 1,
+    "progress": 0,
+    "startDate": "2025-09-01",
+    "endDate": "2025-12-31"
   }
 ]

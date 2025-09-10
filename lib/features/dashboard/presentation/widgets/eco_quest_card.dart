@@ -5,7 +5,7 @@ import 'package:ecoblock_mobile/features/quests/domain/entities/quest.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'eco_quest_badge.dart';
 import 'eco_progress_pill.dart';
-import 'eco_status_chip.dart';
+import 'package:ecoblock_mobile/shared/widgets/top_snack_bar.dart';
 
 class EcoQuestCard extends StatefulWidget {
   final Quest quest;
@@ -88,7 +88,7 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
     final progress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
   final reduceMotion = MediaQuery.of(context).accessibleNavigation;
 
-    final int rewardPoints = (widget.quest.goal * 5);
+    
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: widget.small ? 6 : 8, horizontal: widget.small ? 6 : 8),
@@ -109,18 +109,21 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
                 ),
               );
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(tr(context, 'quest_progress', {
-                    'title': widget.quest.title,
-                    'progress': widget.quest.progress.toString(),
-                    'goal': widget.quest.goal.toString()
-                  })),
-                  backgroundColor: scheme.primary.withOpacity(0.95),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              try {
+                TopSnackBar.show(
+                  context,
+                  Row(children: [
+                    Icon(Icons.info_outline, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(tr(context, 'quest_progress', {
+                      'title': widget.quest.title,
+                      'progress': widget.quest.progress.toString(),
+                      'goal': widget.quest.goal.toString()
+                    }), style: const TextStyle(color: Colors.white))),
+                  ]),
                   duration: const Duration(milliseconds: 900),
-                ),
-              );
+                );
+              } catch (_) {}
             }
           },
           child: RepaintBoundary(
@@ -175,7 +178,6 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
                 ),
                 const SizedBox(width: 12),
                 Column(mainAxisSize: MainAxisSize.min, children: [
-                  if (!widget.small) Chip(label: Row(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.star, size: 14, color: Colors.amber[800]), const SizedBox(width: 6), Text('$rewardPoints pts', style: Theme.of(context).textTheme.bodySmall)]), backgroundColor: Colors.amber.withOpacity(0.12)),
                   const SizedBox(height: 8),
                 ])
               ],

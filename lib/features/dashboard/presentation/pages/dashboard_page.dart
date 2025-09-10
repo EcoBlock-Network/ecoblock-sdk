@@ -9,6 +9,7 @@ import '../widgets/eco_section_title.dart';
 import '../widgets/eco_progress_circle.dart';
 import '../widgets/eco_daily_quests_list.dart';
 import '../widgets/eco_unique_quests_list.dart';
+import 'package:ecoblock_mobile/features/quests/presentation/pages/unique_quests_page.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_provider.dart';
 import 'package:ecoblock_mobile/features/profile/presentation/widgets/node_card.dart';
 
@@ -66,7 +67,16 @@ class DashboardPage extends ConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        _GlassSection(child: Column(children: [EcoSectionTitle(title: tr(context, 'unique_quests.title'), icon: Icons.star), const SizedBox(height: 8), Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: EcoUniqueQuestsList())])),
+                        _GlassSection(child: Column(children: [
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            EcoSectionTitle(title: tr(context, 'unique_quests.title'), icon: Icons.star),
+                            TextButton(onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (_) => UniqueQuestsPage()));
+                            }, child: Text(tr(context, 'see_more'))),
+                          ]),
+                          const SizedBox(height: 8),
+                          Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: EcoUniqueQuestsList())
+                        ])),
                       ]),
                     ),
                     const SizedBox(height: 36),
