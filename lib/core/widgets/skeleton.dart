@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Lightweight shimmer-like skeleton box used for placeholders.
 class SkeletonBox extends StatefulWidget {
   final double? width;
   final double? height;

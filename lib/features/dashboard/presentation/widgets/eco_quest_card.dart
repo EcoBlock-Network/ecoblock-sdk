@@ -7,7 +7,6 @@ import 'eco_quest_badge.dart';
 import 'eco_progress_pill.dart';
 import 'eco_status_chip.dart';
 
-/// Modern EcoQuestCard — glass card, gradient icon badge, animated pill progress with percentage
 class EcoQuestCard extends StatefulWidget {
   final Quest quest;
   final bool small;
@@ -38,25 +37,25 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
   void initState() {
     super.initState();
     _lastProgress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
-    _pulseController = AnimationController(vsync: this, duration: const Duration(milliseconds: 260));
+    final reduceMotion = MediaQueryData.fromWindow(WidgetsBinding.instance.window).accessibleNavigation;
+    _pulseController = AnimationController(vsync: this, duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 320));
     _pulseAnim = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.08).chain(CurveTween(curve: Curves.easeOut)), weight: 60),
-      TweenSequenceItem(tween: Tween(begin: 1.08, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.09).chain(CurveTween(curve: Curves.easeOutCubic)), weight: 60),
+      TweenSequenceItem(tween: Tween(begin: 1.09, end: 1.0).chain(CurveTween(curve: Curves.easeIn)), weight: 40),
     ]).animate(_pulseController);
   }
 
   @override
   void didUpdateWidget(covariant EcoQuestCard oldWidget) {
     super.didUpdateWidget(oldWidget);
+  final reduceMotion = MediaQueryData.fromWindow(WidgetsBinding.instance.window).accessibleNavigation;
     final newProgress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
-    if ((newProgress - _lastProgress).abs() > 0.0001) {
-      // debounce rapid updates so the pulse remains punchy and not spammy
+  if ((newProgress - _lastProgress).abs() > 0.0005) {
       final now = DateTime.now();
       if (now.difference(_lastPulseAt) > const Duration(milliseconds: 300)) {
         _pulseController.forward(from: 0.0);
         _lastPulseAt = now;
       }
-      // compute delta in absolute units, show small transient badge
       final oldAbs = (_lastProgress * (widget.quest.goal)).round();
       final newAbs = (newProgress * (widget.quest.goal)).round();
       final delta = newAbs - oldAbs;
@@ -64,10 +63,10 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
         _lastShownDelta = delta;
         _showGlow = true;
         if (mounted) setState(() {});
-        Future.delayed(const Duration(milliseconds: 700), () {
+        Future.delayed(reduceMotion ? Duration.zero : const Duration(milliseconds: 900), () {
           if (mounted) setState(() => _showGlow = false);
         });
-        Future.delayed(const Duration(milliseconds: 900), () {
+        Future.delayed(reduceMotion ? Duration.zero : const Duration(milliseconds: 1200), () {
           if (mounted) setState(() => _lastShownDelta = null);
         });
       }
@@ -89,12 +88,14 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
     final progress = widget.quest.goal == 0 ? 0.0 : (widget.quest.progress / widget.quest.goal).clamp(0.0, 1.0);
   final reduceMotion = MediaQuery.of(context).accessibleNavigation;
 
+    final int rewardPoints = (widget.quest.goal * 5);
+
     return Padding(
       padding: EdgeInsets.symmetric(vertical: widget.small ? 6 : 8, horizontal: widget.small ? 6 : 8),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(widget.small ? 12 : 16),
+          borderRadius: BorderRadius.circular(widget.small ? 6 : 6),
           onTap: () async {
             HapticFeedback.selectionClick();
             if (isCompleted) {
@@ -127,14 +128,15 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCubic,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(widget.small ? 12 : 16),
-                color: scheme.surface.withOpacity(0.08),
-                border: Border.all(color: scheme.surfaceVariant.withOpacity(0.12)),
+                borderRadius: BorderRadius.circular(widget.small ? 6 : 6),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? scheme.surface.withOpacity(0.10)
+                    : scheme.surface.withOpacity(0.12),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 20, offset: const Offset(0, 10)),
+                  BoxShadow(color: scheme.primary.withOpacity(0.10), blurRadius: 20, offset: const Offset(0, 8)),
                 ],
               ),
-              padding: EdgeInsets.all(widget.small ? 12 : 16),
+              padding: EdgeInsets.all(widget.small ? 10 : 14),
             child: Row(
               children: [
                 EcoQuestBadge(isCompleted: isCompleted, badgeColor: badgeColor, lastShownDelta: _lastShownDelta, small: widget.small),
@@ -172,8 +174,10 @@ class _EcoQuestCardState extends State<EcoQuestCard> with SingleTickerProviderSt
                   ),
                 ),
                 const SizedBox(width: 12),
-                // status chip
-                EcoStatusChip(isCompleted: isCompleted, badgeColor: badgeColor, small: widget.small),
+                Column(mainAxisSize: MainAxisSize.min, children: [
+                  if (!widget.small) Chip(label: Row(mainAxisSize: MainAxisSize.min, children: [Icon(Icons.star, size: 14, color: Colors.amber[800]), const SizedBox(width: 6), Text('$rewardPoints pts', style: Theme.of(context).textTheme.bodySmall)]), backgroundColor: Colors.amber.withOpacity(0.12)),
+                  const SizedBox(height: 8),
+                ])
               ],
             ),
           ),

@@ -7,10 +7,18 @@ import 'package:ecoblock_mobile/features/profile/presentation/providers/profile_
 import 'package:ecoblock_mobile/features/quests/presentation/providers/unique_quests_provider.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 
-class EcoUniqueQuestsList extends ConsumerWidget {
+class EcoUniqueQuestsList extends ConsumerStatefulWidget {
   const EcoUniqueQuestsList({super.key});
 
-  void _handleCompletedQuestTap(BuildContext context, WidgetRef ref, Quest quest) async {
+  @override
+  ConsumerState<EcoUniqueQuestsList> createState() => _EcoUniqueQuestsListState();
+}
+
+class _EcoUniqueQuestsListState extends ConsumerState<EcoUniqueQuestsList> {
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
+  final List<Quest> _items = [];
+
+  void _handleCompletedQuestTap(BuildContext context, Quest quest) async {
     final profileNotifier = ref.read(profileProvider.notifier);
     final xpToAdd = 100;
     await Future.delayed(const Duration(milliseconds: 400));
@@ -32,68 +40,75 @@ class EcoUniqueQuestsList extends ConsumerWidget {
     }
   }
 
+  void _applyListDiffs(List<Quest> newItems) {
+    final prevIds = _items.map((e) => e.id).toList();
+    final newIds = newItems.map((e) => e.id).toList();
+    for (int i = prevIds.length - 1; i >= 0; i--) {
+      final id = prevIds[i];
+      if (!newIds.contains(id)) {
+        final removed = _items.removeAt(i);
+        _listKey.currentState?.removeItem(
+          i,
+          (context, animation) => SizeTransition(sizeFactor: animation, child: Padding(padding: const EdgeInsets.symmetric(vertical: 6.0), child: EcoQuestCard(quest: removed, small: false))),
+          duration: const Duration(milliseconds: 320),
+        );
+      }
+    }
+    for (int i = 0; i < newItems.length; i++) {
+      final id = newItems[i].id;
+      if (!prevIds.contains(id)) {
+        _items.insert(i, newItems[i]);
+        _listKey.currentState?.insertItem(i, duration: const Duration(milliseconds: 320));
+      } else {
+        final currentIndex = _items.indexWhere((e) => e.id == id);
+        if (currentIndex != i) {
+          final moved = _items.removeAt(currentIndex);
+          _items.insert(i, moved);
+        }
+      }
+    }
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final questsAsync = ref.watch(uniqueQuestsProvider);
     return questsAsync.when(
       data: (quests) {
         final showQuests = quests.take(3).toList();
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final q in showQuests)
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 400),
-                child: EcoQuestCard(
-                  key: ValueKey(q.id),
-                  quest: q,
-                  vibrant: true,
-                  onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
-                ),
-              ),
-            if (quests.length > 3)
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0, left: 8.0),
-                child: TextButton(
-                  onPressed: () {
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (ctx) => DraggableScrollableSheet(
-                        expand: false,
-                        initialChildSize: 0.7,
-                        minChildSize: 0.4,
-                        maxChildSize: 0.95,
-                        builder: (_, controller) => ListView.builder(
-                          controller: controller,
-                          padding: const EdgeInsets.all(16),
-                          itemCount: quests.length + 2,
-                          itemBuilder: (ctx, idx) {
-                            if (idx == 0) return Text(tr(context, 'unique_quests_all'), style: Theme.of(context).textTheme.titleLarge);
-                            if (idx == 1) return const SizedBox(height: 16);
-                            final q = quests[idx - 2];
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6.0),
-                              child: EcoQuestCard(
-                                key: ValueKey(q.id),
-                                quest: q,
-                                vibrant: true,
-                                onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, ref, q) : null,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text(tr(context, 'see_more')),
-                ),
-              ),
-          ],
-        );
+        return LayoutBuilder(builder: (context, constraints) {
+          final compact = constraints.maxWidth < 420;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _applyListDiffs(showQuests);
+          });
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 0),
+            child: AnimatedList(
+              key: _listKey,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              initialItemCount: _items.length,
+              itemBuilder: (context, idx, animation) {
+                final q = _items[idx];
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                    child: EcoQuestCard(
+                      key: ValueKey(q.id),
+                      quest: q,
+                      small: compact,
+                      vibrant: true,
+                      onCompletedTap: q.isCompleted ? () => _handleCompletedQuestTap(context, q) : null,
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        });
       },
       loading: () => const Center(child: CircularProgressIndicator()),
-  error: (_, __) => Center(child: Text(tr(context, 'loading_error'))),
+      error: (_, __) => Center(child: Text(tr(context, 'loading_error'))),
     );
   }
 }

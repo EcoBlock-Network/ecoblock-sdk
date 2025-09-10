@@ -62,25 +62,8 @@ class EcoProgressPill extends StatelessWidget {
             ),
           Positioned(
             left: 8,
-            child: pulseAnim == null
-                ? Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.06),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.white.withOpacity(0.03)),
-                    ),
-                    child: Row(
-                      children: [
-                        Text('${(progress * 100).round()}%', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w800, fontSize: small ? 12 : 14)),
-                        const SizedBox(width: 6),
-                        Icon(Icons.arrow_upward, size: small ? 12 : 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.85)),
-                      ],
-                    ),
-                  )
-                : ScaleTransition(
-                    scale: pulseAnim!,
-                    child: Container(
+              child: pulseAnim == null
+                  ? Container(
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.06),
@@ -89,13 +72,40 @@ class EcoProgressPill extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Text('${(progress * 100).round()}%', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w800, fontSize: small ? 12 : 14)),
+                          TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0.0, end: progress * 100),
+                            duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 700),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, child) => Text('${value.round()}%', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w800, fontSize: small ? 12 : 14)),
+                          ),
                           const SizedBox(width: 6),
                           Icon(Icons.arrow_upward, size: small ? 12 : 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.85)),
                         ],
                       ),
+                    )
+                  : ScaleTransition(
+                      scale: pulseAnim!,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.06),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white.withOpacity(0.03)),
+                        ),
+                        child: Row(
+                          children: [
+                            TweenAnimationBuilder<double>(
+                              tween: Tween(begin: 0.0, end: progress * 100),
+                              duration: reduceMotion ? Duration.zero : const Duration(milliseconds: 700),
+                              curve: Curves.easeOutCubic,
+                              builder: (context, value, child) => Text('${value.round()}%', style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontWeight: FontWeight.w800, fontSize: small ? 12 : 14)),
+                            ),
+                            const SizedBox(width: 6),
+                            Icon(Icons.arrow_upward, size: small ? 12 : 14, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.85)),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
           ),
         ],
       );

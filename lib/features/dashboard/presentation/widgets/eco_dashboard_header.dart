@@ -39,7 +39,6 @@ class EcoDashboardHeader extends ConsumerWidget {
                               return GestureDetector(
                             onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (_) => StoryViewer(stories: stories, initialIndex: i)));
-                                // mark this story as seen immediately for header state
                                 if (s.id.isNotEmpty) ref.read(seenStoriesProvider.notifier).markSeen(s.id);
                             },
                             child: Column(
