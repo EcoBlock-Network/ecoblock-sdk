@@ -33,7 +33,7 @@ class _SkeletonBoxState extends State<SkeletonBox> with SingleTickerProviderStat
     return AnimatedBuilder(
       animation: _ctrl,
       builder: (context, child) {
-        final t = (_ctrl.value * 2) - 1; // -1..1
+        final t = (_ctrl.value * 2) - 1;
         final dx = (t * 0.6) * (widget.width ?? MediaQuery.of(context).size.width);
         return Container(
           width: widget.width,

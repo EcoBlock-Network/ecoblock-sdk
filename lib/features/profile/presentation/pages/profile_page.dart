@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:ecoblock_mobile/l10n/translation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,12 @@ import 'package:ecoblock_mobile/shared/widgets/eco_page_background.dart';
 import 'package:ecoblock_mobile/features/dashboard/presentation/widgets/eco_dashboard_header.dart';
 import '../providers/profile_provider.dart';
 import 'dart:math';
+import '../widgets/node_card.dart';
+import '../widgets/impact_card.dart';
+import '../widgets/activity_feed.dart';
+import '../widgets/quick_toggles.dart';
+import '../widgets/data_usage_graph.dart';
+import '../widgets/wallet_card.dart';
 
 class ProfilePage extends ConsumerWidget {
   const ProfilePage({super.key});
@@ -34,15 +42,22 @@ class ProfilePage extends ConsumerWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Header with avatar + level
                     EcoDashboardHeader(currentLevel: profile.niveau),
                     const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: NodeCard(
+                        nodeId: 'local-${profile.niveau}',
+                        addr: 'node-${profile.niveau}.local',
+                        latency: '${50 + (profile.xp.toInt() % 150)} ms',
+                        connected: true,
+                      ),
+                    ),
 
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Row(
                         children: [
-                          // Avatar placeholder (glass)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(18),
                             child: BackdropFilter(
@@ -57,9 +72,7 @@ class ProfilePage extends ConsumerWidget {
                                     end: Alignment.bottomRight,
                                   ),
                                   borderRadius: BorderRadius.circular(18),
-                                  // subtle green-tinted border for the glass effect
                                   border: Border.all(color: scheme.primary.withOpacity(0.12)),
-                                  // faint green glow shadow
                                   boxShadow: [BoxShadow(color: scheme.primary.withOpacity(0.06), blurRadius: 14, offset: const Offset(0, 6))],
                                 ),
                                 child: Icon(Icons.person, size: 48, color: scheme.primary),
@@ -77,7 +90,6 @@ class ProfilePage extends ConsumerWidget {
                               ],
                             ),
                           ),
-                          // Small xp ring
                           Column(
                             children: [
                               SizedBox(
@@ -86,10 +98,52 @@ class ProfilePage extends ConsumerWidget {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    CircularProgressIndicator(value: profile.xp / 1000, strokeWidth: 6, color: scheme.primary, backgroundColor: scheme.onSurface.withOpacity(0.04)),
-                                    Text('${(profile.xp / 10).toInt()}%', style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
+                                    CircularProgressIndicator(value: profile.xp / 1000.0, strokeWidth: 6, color: scheme.primary, backgroundColor: scheme.onSurface.withOpacity(0.04)),
+                                    Text('${((profile.xp / 10.0)).toInt()}%', style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold)),
                                   ],
                                 ),
+                              ),
+                              const SizedBox(height: 8),
+                              IconButton(
+                                icon: Icon(Icons.share, color: scheme.primary),
+                                tooltip: 'Partager le profil',
+                                onPressed: () {
+                                  final snapshot = {'niveau': profile.niveau, 'xp': profile.xp};
+                                  final json = jsonEncode(snapshot);
+                                  showModalBottomSheet<void>(
+                                    context: context,
+                                    backgroundColor: Theme.of(context).colorScheme.surface,
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                                    ),
+                                    builder: (ctx) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                                        child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                          Row(children: [
+                                            const Icon(Icons.share, size: 28),
+                                            const SizedBox(width: 12),
+                                            Expanded(child: Text('Partager le profil', style: Theme.of(ctx).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold))),
+                                          ]),
+                                          const SizedBox(height: 12),
+                                          SelectableText(json, style: Theme.of(ctx).textTheme.bodySmall),
+                                          const SizedBox(height: 12),
+                                          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                                            TextButton(onPressed: () => Navigator.of(ctx).pop(), child: const Text('Fermer')),
+                                            const SizedBox(width: 8),
+                                            ElevatedButton(
+                                              onPressed: () async {
+                                                await Clipboard.setData(ClipboardData(text: json));
+                                                Navigator.of(ctx).pop();
+                                              },
+                                              child: const Text('Copier JSON'),
+                                            ),
+                                          ])
+                                        ]),
+                                      );
+                                    },
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -98,8 +152,6 @@ class ProfilePage extends ConsumerWidget {
                     ),
 
                     const SizedBox(height: 16),
-
-                    // KPI cards
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 13),
                       child: Row(
@@ -111,9 +163,13 @@ class ProfilePage extends ConsumerWidget {
                       ),
                     ),
 
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      child: WalletCard(points: profile.xp.toInt(), tokens: 12, lastClaim: DateTime.now().subtract(const Duration(days: 2))),
+                    ),
 
-                    // Missions / Actions quick list
+                    const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 13),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -130,9 +186,50 @@ class ProfilePage extends ConsumerWidget {
                       ]),
                     ),
 
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Impact', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                        const SizedBox(height: 8),
+                        // derive simple fallbacks from profile.xp if detailed metrics aren't available
+                        ImpactCard(dataBytes: (profile.xp * 120), points: profile.xp),
+                        const SizedBox(height: 10),
+                        Text('Usage des 7 derniers jours', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: scheme.onSurfaceVariant)),
+                        const SizedBox(height: 8),
+                        DataUsageGraph(values: List.generate(7, (i) => ((i + 1) * (profile.xp % 5 + 1) * 2.5))),
+                      ]),
+                    ),
+
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Activité récente', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                        const SizedBox(height: 8),
+                        ActivityFeed(items: [
+                          ActivityItemModel(id: 'a1', type: 'sync', title: 'Synchronisation', subtitle: '3 nœuds mis à jour', timestamp: DateTime.now().subtract(const Duration(minutes: 15))),
+                          ActivityItemModel(id: 'a2', type: 'badge', title: 'Badge obtenu', subtitle: 'Network Starter', timestamp: DateTime.now().subtract(const Duration(days: 1))),
+                        ]),
+                        const SizedBox(height: 12),
+                      ]),
+                    ),
+
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 13),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text('Réglages rapides', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold, color: scheme.onSurface)),
+                        const SizedBox(height: 8),
+                        QuickToggles(
+                          autoSync: true,
+                          sharePublic: false,
+                          onToggle: (k, v) {},
+                        ),
+                      ]),
+                    ),
                     const SizedBox(height: 14),
 
-                    // Achievements / Badges carousel
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 13),
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -198,7 +295,6 @@ class _SurfaceCard extends StatelessWidget {
   }
 }
 
-// Background circles are now provided by `EcoPageBackground`.
 
 class _KpiCard extends StatelessWidget {
   const _KpiCard({Key? key, required this.icon, required this.label, required this.value, this.backgroundColors}) : super(key: key);
@@ -222,12 +318,9 @@ class _KpiCard extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: backgroundColors != null
                   ? LinearGradient(colors: backgroundColors!, begin: Alignment.topLeft, end: Alignment.bottomRight)
-                  // when no explicit backgroundColors are provided, add a faint green-tinted wash
                   : LinearGradient(colors: [scheme.surfaceVariant.withOpacity(0.06), scheme.primary.withOpacity(0.06)], begin: Alignment.topLeft, end: Alignment.bottomRight),
               borderRadius: BorderRadius.circular(12),
-              // gentle green border to emphasize the tint
               border: Border.all(color: scheme.primary.withOpacity(0.10)),
-              // slightly green-tinged shadow
               boxShadow: [BoxShadow(color: scheme.primary.withOpacity(0.04), blurRadius: 12, offset: const Offset(0, 8))],
             ),
             child: Row(
@@ -335,7 +428,6 @@ class _TangleNodeItem extends StatefulWidget {
   State<_TangleNodeItem> createState() => _TangleNodeItemState();
 }
 
-// Tangle node list: interactive connect/disconnect simulation
 class _TangleNodeList extends StatefulWidget {
   final List<Map<String, Object?>> initialPeers;
 
@@ -353,13 +445,11 @@ class _TangleNodeListState extends State<_TangleNodeList> with TickerProviderSta
   void initState() {
     super.initState();
     peers = List.from(widget.initialPeers);
-    // Simulate dynamic connect/disconnect
     Future.delayed(const Duration(seconds: 3), _simulateChange);
   }
 
   void _simulateChange() async {
     if (!mounted) return;
-    // connect a new node
     setState(() {
       peers.add({'id': 'p${peers.length + 1}', 'addr': 'node-${peers.length + 1}.eco', 'latency': '${50 + peers.length * 10}ms', 'connected': 'true'});
     });
@@ -503,3 +593,9 @@ class _TangleNodeItemState extends State<_TangleNodeItem> with SingleTickerProvi
     );
   }
 }
+
+
+
+// Peer comparison removed (mini leaderboard)
+
+// Removed unused additional cards to keep file tidy. Re-add when needed.
